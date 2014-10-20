@@ -12,8 +12,8 @@
 			trackingEvent='mercury-toc'
 		}}
 			{{#each sections}}
-			<li {{action 'trackClick' 'toc' 'header' on='mouseDown'}}>
-				<a href='#{{unbound id}}' title='{{unbound name}}'>
+			<li {{action 'scrollToSection' id}}>
+				<a href='#{{unbound id}}' title='{{unbound name}}' >
 					{{unbound name}}
 					{{svg 'chevron' viewBox='0 0 12 7' class='icon chevron'}}
 				</a>

@@ -68,6 +68,9 @@ App.ArticleView = Em.View.extend(App.AdsMixin, {
 				this.jumpToAnchor();
 				this.lazyLoadMedia(model.get('media'));
 				this.handleTables();
+				if(location.hash) { 
+					this.controller.send('scrollToSection', location.hash); 
+				}
 
 				if (Wikia.Utils.Tracking) {
 					Wikia.Utils.Tracking.trackPageView();

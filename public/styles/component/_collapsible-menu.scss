@@ -75,6 +75,7 @@ $border-color: #d0d0d0;
 
 				text-overflow: ellipsis;
 				white-space: nowrap;
+				pointer-events: none;
 			}
 
 			a > .chevron {

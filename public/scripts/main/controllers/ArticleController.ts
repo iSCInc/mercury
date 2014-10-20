@@ -30,6 +30,20 @@ App.ArticleController = Em.ObjectController.extend({
 			if (this.get('file')) {
 				this.send('openLightbox', 'media-lightbox');
 			}
+		},
+
+		scrollToSection: function(hash:string){
+		 	if(hash.indexOf("#") !== 0) { //if hash is without #on the beginning
+		 		hash='#'+hash;
+		 	}
+		 	if($(hash).length){
+			 	location.hash = hash;
+			 	var hght = $('nav.site-head').height();
+	            $('html,body').animate({
+	                scrollTop: $(hash).offset().top - hght},
+	                'slow'); 
+		 	}
+		 	this.send('trackClick', 'toc', 'header');
 		}
 	}
 });
