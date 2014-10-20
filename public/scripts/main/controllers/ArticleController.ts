@@ -31,9 +31,14 @@ App.ArticleController = Em.ObjectController.extend({
 				this.send('openLightbox', 'media-lightbox');
 			}
 		},
-
+		/**
+		 * scrolllToSection
+		 * @description Function scrolls page to the selected section. It can be passed with '#' when 
+		 * comes from reloading page or without '#' when comes from clicking on menu-elecemt (pure id)
+		 * then we have to add '#' to make it consistent
+		 */
 		scrollToSection: function(hash:string){
-		 	if(hash.indexOf("#") !== 0) { //if hash is without #on the beginning
+		 	if(hash.indexOf("#") !== 0) { //if hash is without # on the beginning
 		 		hash='#'+hash;
 		 	}
 		 	if($(hash).length){
