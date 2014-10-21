@@ -37,16 +37,15 @@ App.ArticleController = Em.ObjectController.extend({
 		 * comes from reloading page or without '#' when comes from clicking on menu-elecemt (pure id)
 		 * then we have to add '#' to make it consistent
 		 */
-		scrollToSection: function(hash:string){
-		 	if(hash.indexOf("#") !== 0) { //if hash is without # on the beginning
+		scrollToSection: function (hash:string) {
+		 	if (hash.indexOf("#") !== 0) {
 		 		hash='#'+hash;
 		 	}
-		 	if($(hash).length){
+		 	if ($(hash).length){
 			 	location.hash = hash;
-			 	var hght = $('nav.site-head').height();
-	            $('html,body').animate({
-	                scrollTop: $(hash).offset().top - hght},
-	                'slow'); 
+			 	var height = $('nav.site-head').height();
+			 	console.log("offset top: " + $(hash).offset().top + "height: " + height);
+	            window.scrollTo(0, $(hash).offset().top - height);
 		 	}
 		 	this.send('trackClick', 'toc', 'header');
 		}
