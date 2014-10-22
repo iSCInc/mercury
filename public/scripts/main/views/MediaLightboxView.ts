@@ -18,6 +18,7 @@ App.MediaLightboxView = App.LightboxView.extend({
 	templateName: 'app/media-lightbox',
 	maxZoom: 5,
 	lastX: 0,
+	lastCurrentX: 0,
 	lastY: 0,
 	lastScale: 1,
 	//opening, open
@@ -33,6 +34,14 @@ App.MediaLightboxView = App.LightboxView.extend({
 			width: Math.max(document.documentElement.clientWidth, window.innerWidth || 0),
 			height: Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
 		}
+	}.property(),
+
+	lastNextX: function () : number {
+		return this.get('lastX') + this.get('viewportSize').width / 2;
+	}.property(),
+
+	lastPrevX: function () : number {
+		return this.get('lastX') - this.get('viewportSize').width / 2;
 	}.property(),
 
 	/**
@@ -85,6 +94,27 @@ App.MediaLightboxView = App.LightboxView.extend({
 
 		return 0;
 	}.property('viewportSize', 'imageWidth'),
+
+	/**
+	 * @desc calculates X for panning with respect to maxX
+	 */
+	newCurrentX: function (key: string, value?: number): number {
+		return value || 0;
+	}.property(),
+
+	/**
+	 * @desc calculates X for panning with respect to maxX
+	 */
+	newNextX: function (key: string, value?: number): number {
+		return value || 200;
+	}.property(),
+
+	/**
+	 * @desc calculates X for panning with respect to maxX
+	 */
+	newPrevX: function (key: string, value?: number): number {
+		return value || -200;
+	}.property(),
 
 	/**
 	 * @desc calculates Y for panning with respect to maxY
@@ -160,35 +190,49 @@ App.MediaLightboxView = App.LightboxView.extend({
 	},
 
 	gestures: {
-		swipeLeft: function (): void {
-			if (this.get('isGallery') && !this.get('isZoomed')) {
-				this.nextMedia();
-			}
-		},
-
-		swipeRight: function (): void {
-			if (this.get('isGallery') && !this.get('isZoomed')) {
-				this.prevMedia();
-			}
-		},
-
 		pan: function (event: HammerEvent): void {
 			var scale = this.get('scale');
-
 			this.setProperties({
 				newX: this.get('lastX') + event.deltaX / scale,
 				newY: this.get('lastY') + event.deltaY / scale
 			});
+			if (!this.get('isZoomed') && this.get('controller').get('isGallery')) {
+				this.setProperties({
+					newNextX: this.get('lastNextX') + event.deltaX,
+					newCurrentX: this.get('lastCurrentX') + event.deltaX,
+					newPrevX: this.get('lastPrevX') + event.deltaX
+				});
+			}
 		},
 
 		panEnd: function () {
-			this.setProperties({
-				lastX: this.get('newX'),
-				lastY: this.get('newY')
-			});
+			if (this.get('isZoomed')) {
+				this.setProperties({
+					lastX: this.get('newX'),
+					lastY: this.get('newY')
+				});
+			} else {
+				var newGalleryRef: number,
+					currentGalleryRef = this.get('controller').get('currentGalleryRef'),
+					minPanForChange = this.get('viewportSize').width / 3;
+				if (this.get('newCurrentX') < -minPanForChange) {
+					this.nextMedia();
+				}
+				if (this.get('newCurrentX') > minPanForChange ) {
+					this.prevMedia();
+				}
+				this.setProperties({
+					newCurrentX: 0,
+					lastNextX: this.get('viewportSize').width / 2,
+					lastPrevX: -this.get('viewportSize').width / 2,
+					newPrevX: -this.get('viewportSize').width / 2,
+					newNextX: this.get('viewportSize').width / 2
+				});
+			}
 		},
 
 		doubleTap: function () {
+			debugger;
 			var scale = this.get('scale') > 1 ? 1 : 3;
 
 			this.setProperties({
@@ -235,6 +279,24 @@ App.MediaLightboxView = App.LightboxView.extend({
 			this.get('newY').toFixed(2)
 		);
 	}.property('scale', 'newX', 'newY'),
+
+	currentStyle: function (): string {
+		return '-webkit-transform: translate3d(%@1px,0,0); transform: translate3d(%@2px,%@3px,0);'.fmt(
+			this.get('newCurrentX').toFixed(2)
+		);
+	}.property('newCurrentX'),
+
+	nextStyle: function (): string {
+		return '-webkit-transform: translate3d(%@1px,0,0); transform: translate3d(%@2px,%@3px,0);'.fmt(
+			this.get('newNextX').toFixed(2)
+		);
+	}.property('newNextX'),
+
+	prevStyle: function (): string {
+		return '-webkit-transform: translate3d(%@1px,0,0); transform: translate3d(%@2px,%@3px,0);'.fmt(
+			this.get('newPrevX').toFixed(2)
+		);
+	}.property('newPrevX'),
 
 	/**
 	 * @method currentMediaObserver

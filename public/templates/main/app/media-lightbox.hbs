@@ -1,6 +1,12 @@
 {{#if currentMedia}}
 	{{#if currentMedia.url}}
-		<img class='current' {{bind-attr src=currentMedia.url}} {{bind-attr style=view.style}}>
+		{{#if prevMedia}}
+			<img class='prev' {{bind-attr src=prevMedia.url}} {{bind-attr style=view.prevStyle}}>
+		{{/if}}
+		<img class='current' {{bind-attr src=currentMedia.url}} {{bind-attr style=view.currentStyle}}>
+		{{#if nextMedia}}
+			<img class='next' {{bind-attr src=nextMedia.url}} {{bind-attr style=view.nextStyle}}>
+		{{/if}}
 	{{else}}
 		{{{currentMedia.embed.html}}}
 	{{/if}}

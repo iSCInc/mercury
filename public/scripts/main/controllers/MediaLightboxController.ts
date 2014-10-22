@@ -105,6 +105,17 @@ App.MediaLightboxController = App.LightboxController.extend({
 		return this.get('model').find(this.get('currentMediaRef'));
 	}.property('model', 'currentMediaRef'),
 
+	prev: function (): ArticleMedia {
+		var model = this.get('model'),
+			currentRef = this.get('currentMediaRef');
+
+		return model.find(currentRef - 1) || null;
+	},
+
+	next: function (): ArticleMedia {
+		return this.get('model').find(this.get('currentMediaRef') + 1) || null;
+	},
+
 	/**
 	 * gets current media or current media from gallery
 	 *
@@ -119,6 +130,36 @@ App.MediaLightboxController = App.LightboxController.extend({
 			return current;
 		}
 	}.property('current', 'isGallery', 'currentGalleryRef'),
+
+	/**
+	 * gets current media or current media from gallery
+	 *
+	 * @return object
+	 */
+	prevMedia: function (): ArticleMedia {
+		var current = this.get('current');
+
+		if (this.get('isGallery')) {
+			return current[this.get('currentGalleryRef') - 1] || current[this.get('galleryLength') - 1];
+		} else {
+			return null;
+		}
+	}.property('current', 'isGallery', 'currentGalleryRef', 'galleryLength'),
+
+	/**
+	 * gets current media or current media from gallery
+	 *
+	 * @return object
+	 */
+	nextMedia: function (): ArticleMedia {
+		var current = this.get('current');
+		debugger;
+		if (this.get('isGallery')) {
+			return current[this.get('currentGalleryRef') + 1 % this.get('galleryLength') - 1];
+		} else {
+			return null;
+		}
+	}.property('current', 'isGallery', 'currentGalleryRef', 'galleryLength'),
 
 	galleryLength: function (): number {
 		if (this.get('isGallery')) {
