@@ -45,6 +45,24 @@ export function createFullArticle(params: ArticleRequestParams, callback: any, g
 }
 
 /**
+ * Handler for /article/{wiki}/?random
+ * @param params
+ * @param callback
+ * @returns {"bluebird"<any>}
+ */
+export function createRandomArticle(params: ArticleRequestParams, callback: any): void {
+	logger.debug(params, 'Fetching random article');
+
+	new MediaWiki.ArticleRequest(params.wikiDomain).fetchRandom()
+		.then((article) => {
+			callback(article.exception, article.data);
+		})
+		.catch((error) => {
+			callback(error);
+		});
+}
+
+/**
  * Handle Article api request
  * @param request
  * @param reply

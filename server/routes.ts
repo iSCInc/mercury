@@ -92,14 +92,21 @@ function routes(server: Hapi.Server) {
 		config: config,
 		handler: (request: Hapi.Request, reply: Function) => {
 			var params = {
-				wikiDomain: getWikiDomainName(request.headers.host),
-				title: request.params.articleTitle,
-				redirect: request.params.redirect
+				wikiDomain: getWikiDomainName(request.headers.host)
 			};
 
-			server.methods.getArticleData(params, (error: any, result: any) => {
-				reply(error || result);
-			});
+			if(request.query.hasOwnProperty('random')) {
+				server.methods.getRandomArticleData(params, (error: any, result: any) => {
+					reply(error || result);
+				});
+			} else {
+				params.title = request.params.articleTitle;
+				params.redirect = request.params.redirect;
+
+				server.methods.getArticleData(params, (error: any, result: any) => {
+					reply(error || result);
+				});
+			}
 		}
 	});
 
@@ -179,4 +186,3 @@ function routes(server: Hapi.Server) {
 }
 
 export = routes;
-

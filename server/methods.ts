@@ -33,6 +33,8 @@ function methods(server: Hapi.Server): void {
 
 	server.method('getArticleData', article.createFullArticle, cacheOptions.default);
 
+	server.method('getRandomArticleData', article.createRandomArticle, cacheOptions.default);
+
 	server.method('getArticleComments', comments.handleRoute, cacheOptions.default);
 }
 export = methods;

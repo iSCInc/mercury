@@ -99,6 +99,10 @@ export class ArticleRequest {
 		return fetch(url);
 	}
 
+	fetchRandom () {
+		return fetch(createUrl(this.wikiDomain, 'api/v1/Mercury/RandomArticle'));
+	}
+
 	comments (articleId: number, page: number = 0) {
 		var url = createUrl(this.wikiDomain, 'api/v1/Mercury/ArticleComments', {
 			id: articleId,
