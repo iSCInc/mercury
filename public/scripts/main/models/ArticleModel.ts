@@ -41,7 +41,7 @@ App.ArticleModel = Em.Object.extend({
 });
 
 App.ArticleModel.reopenClass({
-	url: function (params: {title: string; redirect?: string}) {
+	buildArticleUrl: function (params: {title: string; redirect?: string}): string {
 		var redirect = '';
 
 		if (params.redirect) {
@@ -51,7 +51,23 @@ App.ArticleModel.reopenClass({
 		return App.get('apiBase') + '/article/' + params.title + redirect;
 	},
 
-	find: function (params: {wiki: string; title: string; redirect?: string}) {
+	buildRandomArticleUrl: function (): string {
+		return App.get('apiBase') + '/article/?random';
+	},
+
+	url: function (params: {title: string; redirect?: string; random?: boolean}) {
+		var url = '';
+
+		if (params.random === false) {
+			url = this.buildArticleUrl({title: params.title, redirect: params.redirect});
+		} else {
+			url = this.buildRandomArticleUrl();
+		}
+
+		return url;
+	},
+
+	find: function (params: {wiki: string; title?: string; redirect?: string; random?: boolean}) {
 		var model = App.ArticleModel.create(params);
 
 		if (Mercury._state.firstPage) {
@@ -104,7 +120,7 @@ App.ArticleModel.reopenClass({
 					id: details.id,
 					user: details.revision.user_id
 				});
-		}
+			}
 
 			if (source.article) {
 				var article = source.article;
@@ -117,7 +133,7 @@ App.ArticleModel.reopenClass({
 					}),
 					categories: article.categories
 				});
-		}
+			}
 
 			if (source.relatedPages) {
 				/**

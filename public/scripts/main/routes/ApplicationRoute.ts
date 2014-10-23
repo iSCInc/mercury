@@ -31,14 +31,21 @@ App.ApplicationRoute = Em.Route.extend({
 					model.get('title'),
 					target.hash,
 					target.href
-				);
+				),
+				isRandomArticleLink: boolean = target.dataset.mercuryRandomArticle || false;
 
-			if (info.article) {
+			if (info.article || isRandomArticleLink) {
 				if (info.hash) {
 					App.set('hash', info.hash);
 				}
-				controller.send('changePage', info.article);
 
+				if (info.article) {
+					// change page to selected article
+					controller.send('changePage', info.article);
+				} else {
+					// change page to random one
+					controller.send('changePage');
+				}
 			} else if (info.url) {
 				/**
 				 * If it's a jump link or a link to something in a Wikia domain, treat it like a normal link
