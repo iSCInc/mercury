@@ -13,19 +13,19 @@ import comments = require('./controllers/article/comments');
  */
 function methods(server: Hapi.Server): void {
 	var second = 1000,
-	    cacheOptions = {
-		    default: {
-			    cache: {
-				    expiresIn: 60 * second,
-				    staleIn: 10 * second,
-				    staleTimeout: 100
-			    },
-			    generateKey: (opts: any) => {
-				    return JSON.stringify(opts);
-			    }
-		    },
-		    noCache: {}
-	    };
+		cacheOptions = {
+			default: {
+				cache: {
+					expiresIn: 60 * second,
+					staleIn: 10 * second,
+					staleTimeout: 100
+				},
+				generateKey: (opts: any) => {
+					return JSON.stringify(opts);
+				}
+			},
+			noCache: {}
+		};
 
 	server.method('searchSuggestions', search.searchWiki, cacheOptions.noCache);
 
@@ -33,7 +33,7 @@ function methods(server: Hapi.Server): void {
 
 	server.method('getArticleData', article.createFullArticle, cacheOptions.default);
 
-	server.method('getRandomArticleData', article.createRandomArticle, cacheOptions.default);
+	server.method('getRandomArticleData', article.createRandomArticle, cacheOptions.noCache);
 
 	server.method('getArticleComments', comments.handleRoute, cacheOptions.default);
 }
