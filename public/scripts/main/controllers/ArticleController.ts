@@ -34,20 +34,19 @@ App.ArticleController = Em.ObjectController.extend({
 		/**
 		 * scrolllToSection
 		 * @description Function scrolls page to the selected section. It can be passed with '#' when 
-		 * comes from reloading page or without '#' when comes from clicking on menu-elecemt (pure id)
+		 * comes from reloading page or without '#' when comes from clicking on menu-element (pure id)
 		 * then we have to add '#' to make it consistent
 		 */
 		scrollToSection: function (hash:string) {
-		 	if (hash.indexOf("#") !== 0) {
-		 		hash='#'+hash;
-		 	}
-		 	if ($(hash).length){
-			 	location.hash = hash;
-			 	var height = $('nav.site-head').height();
-			 	console.log("offset top: " + $(hash).offset().top + "height: " + height);
-	            window.scrollTo(0, $(hash).offset().top - height);
-		 	}
-		 	this.send('trackClick', 'toc', 'header');
+			if (hash.indexOf("#") !== 0) {
+				hash = '#' + hash;
+			}
+			if ($(hash).length){
+				location.hash = hash;
+				var height = $('nav.site-head').height();
+				window.scrollTo(0, $(hash).offset().top - height);
+			}
+			this.send('trackClick', 'toc', 'header');
 		}
 	}
 });
