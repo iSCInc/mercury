@@ -25,27 +25,24 @@ App.ApplicationRoute = Em.Route.extend({
 			this.hideLoader();
 		},
 		handleLink: function (target: HTMLAnchorElement): void {
+			if ($(target).attr('href') === '/random') {
+				return;
+			}
+
 			var controller = this.controllerFor('article'),
 				model = controller.get('model'),
 				info = M.getLinkInfo(model.get('basePath'),
 					model.get('title'),
 					target.hash,
 					target.href
-				),
-				isRandomArticleLink: boolean = target.dataset.mercuryRandomArticle || false;
+				);
 
-			if (info.article || isRandomArticleLink) {
+			if (info.article) {
 				if (info.hash) {
 					App.set('hash', info.hash);
 				}
 
-				if (info.article) {
-					// change page to selected article
-					controller.send('changePage', info.article);
-				} else {
-					// change page to random one
-					controller.send('changePage');
-				}
+				controller.send('changePage', info.article);
 			} else if (info.url) {
 				/**
 				 * If it's a jump link or a link to something in a Wikia domain, treat it like a normal link

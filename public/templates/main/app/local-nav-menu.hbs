@@ -8,7 +8,11 @@
 			{{i18n 'side-nav-menu-label'}}
 		{{/if}}
 	</li>
-	<li><a data-mercury-random-article='true'>{{i18n 'random-page-label'}}</a></li>
+	<li>
+		{{#link-to 'randomArticle'}}
+			{{i18n 'random-page-label'}}
+		{{/link-to}}
+	</li>
 	{{#if parentItem}}
 		<li class="back" {{action 'goBack'}}>
 			{{svg 'chevron' viewBox='0 0 12 7' class='icon chevron'}}

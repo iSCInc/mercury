@@ -58,7 +58,7 @@ App.ArticleModel.reopenClass({
 	url: function (params: {title: string; redirect?: string; random?: boolean}) {
 		var url = '';
 
-		if (params.random === false) {
+		if (params.random !== true) {
 			url = this.buildArticleUrl({title: params.title, redirect: params.redirect});
 		} else {
 			url = this.buildRandomArticleUrl();
@@ -67,7 +67,7 @@ App.ArticleModel.reopenClass({
 		return url;
 	},
 
-	find: function (params: {wiki: string; title?: string; redirect?: string; random?: boolean}) {
+	find: function (params: {wiki: string; title: string; redirect?: string}) {
 		var model = App.ArticleModel.create(params);
 
 		if (Mercury._state.firstPage) {
@@ -81,6 +81,24 @@ App.ArticleModel.reopenClass({
 				dataType: 'json',
 				success: (data) => {
 					this.setArticle(model, data);
+					resolve(model);
+				},
+				error: (err) => {
+					reject($.extend(err, model));
+				}
+			});
+		});
+	},
+
+	findRandom: function (params: {wiki: string}) {
+		var model = App.ArticleModel.create(params);
+
+		return new Em.RSVP.Promise((resolve: Function, reject: Function) => {
+			Em.$.ajax({
+				url: this.url($.extend(params, {random: true})),
+				dataType: 'json',
+				success: (data) => {
+					this.setArticle($.extend(model, {title: data.details.title}), data);
 					resolve(model);
 				},
 				error: (err) => {
