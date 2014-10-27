@@ -91,6 +91,7 @@ App.ApplicationRoute = Em.Route.extend({
 		},
 
 		randomArticle: function (): void {
+			App.VisibilityStateManager.reset();
 			this.transitionTo('randomArticle');
 		}
 	}
