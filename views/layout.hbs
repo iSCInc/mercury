@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="no-js">
+<html class="no-js" lang="{{wiki.language.user}}" dir="{{wiki.language.userDir}}">
 	<head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -23,11 +23,15 @@
 			M.provide('_state.firstPage', true);
 			M.provide('ads.slots', []);
 			M.provide('apiBase', '{{{server.apiBase}}}');
+			M.provide('environment', '{{{server.environment}}}');
 			M.provide('wiki', {{{wiki.json}}});
 			M.provide('article', {{{article.json}}});
 			M.provide('tracking', {{{trackingJson}}});
 			{{#if error}}
 			M.provide('article.error', {{{error}}});
+			{{/if}}
+			{{#if server.mediawikiDomain}}
+			M.provide('adsUrl', '//{{server.mediawikiDomain}}/__am/{{wiki.cacheBuster}}/groups/-/mercury_ads_js');
 			{{/if}}
 		</script>
 
@@ -49,7 +53,12 @@
 			<script src="/public/vendor/jquery/dist/jquery.js"></script>
 			<script src="/public/vendor/hammerjs/hammer.js"></script>
 			<script src="/public/vendor/handlebars/handlebars.runtime.js"></script>
+			<!-- @if WIKIA_ENVIRONMENT='dev' -->
 			<script src="/public/vendor/ember/ember.js"></script>
+			<!-- @endif -->
+			<!-- @if WIKIA_ENVIRONMENT!='dev' -->
+			<script src="/public/vendor/ember/ember.prod.js"></script>
+			<!-- @endif -->
 			<script src="/public/vendor/ember-hammer/ember-hammer.js"></script>
 			<script src="/public/vendor/i18next/i18next.js"></script>
 		<!-- endbuild -->
@@ -59,10 +68,6 @@
 			<script src="/public/scripts/mercury.js"></script>
 			<script src="/public/scripts/main.js"></script>
 		<!-- endbuild -->
-
-		{{#if server.mediawikiDomain}}
-		<script async src="//{{server.mediawikiDomain}}/__am/{{wiki.cacheBuster}}/groups/-/mercury_ads_js"></script>
-		{{/if}}
 
 		{{> tracking-pixels}}
 	</body>

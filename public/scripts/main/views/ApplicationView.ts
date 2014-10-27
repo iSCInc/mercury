@@ -83,6 +83,10 @@ App.ApplicationView = Em.View.extend({
 		}
 	},
 
+	hammerOptions: {
+		touchAction: 'auto'
+	},
+
 	gestures: {
 		tap: function (event: Event): void {
 			/**
