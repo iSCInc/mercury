@@ -720,9 +720,6 @@ declare module "net" {
         setNoDelay(noDelay?: boolean): void;
         setKeepAlive(enable?: boolean, initialDelay?: number): void;
         address(): { port: number; family: string; address: string; };
-        unref(): void;
-		ref(): void;
-		
         remoteAddress: string;
         remotePort: number;
         bytesRead: number;
