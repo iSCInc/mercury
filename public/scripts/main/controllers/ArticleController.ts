@@ -41,7 +41,7 @@ App.ArticleController = Em.ObjectController.extend({
 			if (hash.indexOf("#") !== 0) {
 				hash = '#' + hash;
 			}
-			if ($(hash).length){
+			if ($(hash).length) {
 				location.hash = hash;
 				var height = $('nav.site-head').height();
 				window.scrollTo(0, $(hash).offset().top - height);
