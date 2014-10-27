@@ -92,7 +92,9 @@ function routes(server: Hapi.Server) {
 		config: config,
 		handler: (request: Hapi.Request, reply: Function) => {
 			var params = {
-				wikiDomain: getWikiDomainName(request.headers.host)
+				wikiDomain: getWikiDomainName(request.headers.host),
+				title: false,
+				redirect: false
 			};
 
 			if(request.query.hasOwnProperty('random')) {
