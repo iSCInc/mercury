@@ -8,10 +8,8 @@
 			{{i18n 'side-nav-menu-label'}}
 		{{/if}}
 	</li>
-	<li>
-		{{#link-to 'randomArticle'}}
-			{{i18n 'random-page-label'}}
-		{{/link-to}}
+	<li {{action 'randomArticle'}}>
+		{{i18n 'random-page-label'}}
 	</li>
 	{{#if parentItem}}
 		<li class="back" {{action 'goBack'}}>

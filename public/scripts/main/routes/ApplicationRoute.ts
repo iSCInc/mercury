@@ -25,10 +25,6 @@ App.ApplicationRoute = Em.Route.extend({
 			this.hideLoader();
 		},
 		handleLink: function (target: HTMLAnchorElement): void {
-			if ($(target).attr('href') === '/random') {
-				return;
-			}
-
 			var controller = this.controllerFor('article'),
 				model = controller.get('model'),
 				info = M.getLinkInfo(model.get('basePath'),
@@ -92,6 +88,10 @@ App.ApplicationRoute = Em.Route.extend({
 				category: category,
 				label: label
 			});
+		},
+
+		randomArticle: function (): void {
+			this.transitionTo('randomArticle');
 		}
 	}
 });
