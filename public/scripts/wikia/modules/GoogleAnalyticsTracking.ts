@@ -21,7 +21,7 @@ module Wikia.Modules {
 				];
 
 			this.accounts = Wikia.tracking.ga;
-			this.queue = window._gaq || [];
+			this.queue = window._gaq;
 
 			// Primary account
 			this.initAccount(this.accountPrimary);
