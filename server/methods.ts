@@ -29,11 +29,11 @@ function methods(server: Hapi.Server): void {
 
 	server.method('searchSuggestions', search.searchWiki, cacheOptions.noCache);
 
-	server.method('getPreRenderedData', indexController, cacheOptions.default);
+	server.method('getPreRenderedData', indexController, cacheOptions.noCache);
 
-	server.method('getArticleData', article.createFullArticle, cacheOptions.default);
+	server.method('getArticleData', article.createFullArticle, cacheOptions.noCache);
 
-	server.method('getArticleComments', comments.handleRoute, cacheOptions.default);
+	server.method('getArticleComments', comments.handleRoute, cacheOptions.noCache);
 }
 export = methods;
 

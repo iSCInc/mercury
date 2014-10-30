@@ -1,5 +1,5 @@
 /// <reference path="../typings/hapi/hapi.d.ts" />
-
+import heapdump = require('heapdump');
 import path = require('path');
 import Hapi = require('hapi');
 import localSettings = require('../config/localSettings');
@@ -174,6 +174,17 @@ function routes(server: Hapi.Server) {
 				.header('X-Memory', String(memoryUsage.rss))
 				.header('X-Uptime', String(~~ process.uptime()))
 				.code(200);
+		}
+	});
+
+	// Heartbeat route for monitoring
+	server.route({
+		method: 'GET',
+		path: '/heapdump',
+		handler: (request: any, reply: Function) => {
+			var memoryUsage = process.memoryUsage();
+			heapdump.writeSnapshot('/tmp/heap-' + Date.now() + '.heapsnapshot');
+			reply(memoryUsage);
 		}
 	});
 
