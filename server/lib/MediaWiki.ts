@@ -1,6 +1,6 @@
 /// <reference path="../../typings/bluebird/bluebird.d.ts" />
 /// <reference path="../../typings/node/node.d.ts" />
-/// <reference path="../../typings/wreck/wreck.d.ts" />
+/// <reference path="../../typings/request/request.d.ts" />
 
 /**
  * @description Mediawiki API functions
@@ -8,7 +8,7 @@
 
 import localSettings = require('../../config/localSettings');
 import Logger = require('./Logger');
-import Wreck = require('wreck');
+import Request = require('request');
 import Promise = require('bluebird');
 
 /**
@@ -119,8 +119,9 @@ export function fetch (url: string, redirects: number = 1): Promise<any> {
 	Logger.debug({url: url}, 'Fetching');
 
 	return new Promise((resolve, reject) => {
-		Wreck.get(url, {
-			redirects: redirects,
+		Request({
+			url: url,
+			maxRedirects: redirects,
 			timeout: localSettings.backendRequestTimeout
 		}, (err: any, res: any, payload: any): void => {
 			if (err) {

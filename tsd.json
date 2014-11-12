@@ -25,6 +25,12 @@
     },
     "google.analytics/ga.d.ts": {
       "commit": "6e8f579f26c48e743f5490f6882fa1f0067ea855"
+    },
+    "form-data/form-data.d.ts": {
+      "commit": "39531c32fe899cada2cc7e615610644fb6508416"
+    },
+    "request/request.d.ts": {
+      "commit": "39531c32fe899cada2cc7e615610644fb6508416"
     }
   }
 }
