@@ -30,6 +30,7 @@ class App {
 			second = 1000;
 
 		// Setup proxies
+		logger.info(localSettings.proxyList, "Setting Proxy servers");
 		Proxy.init(localSettings.proxyList);
 
 		server = hapi.createServer(localSettings.host, localSettings.port, {
