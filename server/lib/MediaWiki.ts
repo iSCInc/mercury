@@ -117,21 +117,23 @@ export class ArticleRequest {
  * @param redirects the number of redirects to follow, default 1
  */
 export function fetch (url: string, redirects: number = 1): Promise<any> {
-	Logger.debug({url: url}, 'Fetching');
-
 	return new Promise((resolve, reject) => {
 		var proxyAddress = Proxy.getProxy(),
 			requestOptions: Request.Options = {
 				url: url,
 				maxRedirects: redirects,
 				timeout: localSettings.backendRequestTimeout
+			},
+			logOptions = {
+				url: url
 			};
 		if (proxyAddress) {
 			requestOptions.proxy = proxyAddress;
 		}
+		Logger.debug(requestOptions, 'Fetching');
 		Request(requestOptions, (err: any, res: any, payload: any): void => {
 			if (err) {
-				Logger.error({url: url, error: err}, 'Error fetching url');
+				Logger.error({url: url, error: err, proxy: proxyAddress}, 'Error fetching url');
 				reject(err);
 			} else {
 				if (res.headers['content-type'].match('application/json')) {
