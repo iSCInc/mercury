@@ -46,4 +46,5 @@ interface LocalSettings {
 	wikiFallback: string;
 	workerCount: number;
 	workerDisconnectTimeout: number;
+	proxyList: string[];
 }

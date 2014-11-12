@@ -12,6 +12,7 @@ import path = require('path');
 import url = require('url');
 import localSettings = require('../config/localSettings');
 import logger = require('./lib/Logger');
+import Proxy = require('./lib/Proxy');
 
 /**
  * Application class
@@ -27,6 +28,9 @@ class App {
 			//Counter for maxRequestPerChild
 			counter = 0,
 			second = 1000;
+
+		// Setup proxies
+		Proxy.init(localSettings.proxyList);
 
 		server = hapi.createServer(localSettings.host, localSettings.port, {
 			// ez enable cross origin resource sharing

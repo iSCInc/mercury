@@ -59,7 +59,8 @@ var localSettings: LocalSettings = {
 	},
 	wikiFallback: 'community',
 	workerCount: parseInt(process.env.WORKER_COUNT, 10) || 2,
-	workerDisconnectTimeout: 3000
+	workerDisconnectTimeout: 3000,
+	proxyList: Utils.getProxyList(process.env.HTTP_PROXY_LIST || '')
 };
 
 export function getSettings(customLocalSet: any): LocalSettings {

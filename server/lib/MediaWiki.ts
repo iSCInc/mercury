@@ -8,6 +8,7 @@
 
 import localSettings = require('../../config/localSettings');
 import Logger = require('./Logger');
+import Proxy = require('./Proxy');
 import Request = require('request');
 import Promise = require('bluebird');
 
@@ -119,11 +120,16 @@ export function fetch (url: string, redirects: number = 1): Promise<any> {
 	Logger.debug({url: url}, 'Fetching');
 
 	return new Promise((resolve, reject) => {
-		Request({
-			url: url,
-			maxRedirects: redirects,
-			timeout: localSettings.backendRequestTimeout
-		}, (err: any, res: any, payload: any): void => {
+		var proxyAddress = Proxy.getProxy(),
+			requestOptions: Request.Options = {
+				url: url,
+				maxRedirects: redirects,
+				timeout: localSettings.backendRequestTimeout
+			};
+		if (proxyAddress) {
+			requestOptions.proxy = proxyAddress;
+		}
+		Request(requestOptions, (err: any, res: any, payload: any): void => {
 			if (err) {
 				Logger.error({url: url, error: err}, 'Error fetching url');
 				reject(err);

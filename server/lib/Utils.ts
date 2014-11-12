@@ -119,6 +119,18 @@ module Utils {
 	export function clearHost (host: string): string {
 		return host.split(':')[0]; //get rid of port
 	}
+
+	/**
+	 * @desc Returns list of proxy servers
+	 * @param proxyList list of proxy servers separated by `;`
+	 * @returns array
+	 */
+	export function getProxyList(proxyList: string): string[] {
+		if (proxyList.length > 0) {
+			return proxyList.split(';');
+		}
+		return [];
+	}
 }
 
 export = Utils;
