@@ -78,31 +78,34 @@ App.ArticleView = Em.View.extend(App.AdsMixin, {
 		});
 	},
 
+	createChildMedia: function (media: ArticleMedia[], data: any) {
+		return this.createChildView(
+			App.MediaComponent.newFromMedia(media), data
+		).createElement().$();
+	},
+
 	createMediaComponent: function (element: HTMLElement, model: typeof App.ArticleModel) {
 		var ref = parseInt(element.dataset.ref, 10),
-			media = model.find(ref);
-
-		if (Em.isArray(media)) {
-			var galleries = media.map((media: ArticleMedia[], index: number) => {
-					return this.createChildView(App.MediaComponent.newFromMedia(media), {
-						ref: ref,
-						width: parseInt(element.getAttribute('width'), 10),
-						height: parseInt(element.getAttribute('height'), 10),
-						imgWidth: element.offsetWidth,
-						media: media,
-						typeId: index
-					}).createElement().$();
-				});
-
-			return this.$().add(galleries);
-		} else {
-			return this.createChildView(App.MediaComponent.newFromMedia(media), {
+			media = model.find(ref),
+			data: any = {
 				ref: ref,
 				width: parseInt(element.getAttribute('width'), 10),
 				height: parseInt(element.getAttribute('height'), 10),
 				imgWidth: element.offsetWidth,
-				media: media
-			}).createElement().$();
+				media: null,
+				typedId: null
+			};
+
+		if (Em.isArray(media)) {
+			return media.map((mediaTypedArr: ArticleMedia[], index: number) => {
+				data.typeId = index;
+				data.media = mediaTypedArr;
+
+				return this.createChildMedia(mediaTypedArr, data);
+			});
+		} else {
+			data.media = media;
+			return this.createChildMedia(media, data);
 		}
 	},
 
