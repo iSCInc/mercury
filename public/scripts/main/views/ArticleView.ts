@@ -82,15 +82,28 @@ App.ArticleView = Em.View.extend(App.AdsMixin, {
 		var ref = parseInt(element.dataset.ref, 10),
 			media = model.find(ref);
 
-		var component = this.createChildView(App.MediaComponent.newFromMedia(media), {
-			ref: ref,
-			width: parseInt(element.getAttribute('width'), 10),
-			height: parseInt(element.getAttribute('height'), 10),
-			imgWidth: element.offsetWidth,
-			media: media
-		}).createElement();
+		if (Em.isArray(media)) {
+			var galleries = media.map((media: ArticleMedia[], index: number) => {
+					return this.createChildView(App.MediaComponent.newFromMedia(media), {
+						ref: ref,
+						width: parseInt(element.getAttribute('width'), 10),
+						height: parseInt(element.getAttribute('height'), 10),
+						imgWidth: element.offsetWidth,
+						media: media,
+						typeId: index
+					}).createElement().$();
+				});
 
-		return component.$().attr('data-ref', ref);
+			return this.$().add(galleries);
+		} else {
+			return this.createChildView(App.MediaComponent.newFromMedia(media), {
+				ref: ref,
+				width: parseInt(element.getAttribute('width'), 10),
+				height: parseInt(element.getAttribute('height'), 10),
+				imgWidth: element.offsetWidth,
+				media: media
+			}).createElement().$();
+		}
 	},
 
 	lazyLoadMedia: function (model: typeof App.ArticleModel) {

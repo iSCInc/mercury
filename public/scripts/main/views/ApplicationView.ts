@@ -80,16 +80,19 @@ App.ApplicationView = Em.View.extend({
 	},
 
 	handleMedia: function (target: HTMLElement): void {
-		var galleryRef = $(target).closest('[data-gallery-ref]').data('gallery-ref'),
-			mediaRef = $(target).closest('[data-ref]').data('ref');
+		var $target = $(target),
+			galleryRef = $target.closest('[data-gallery-ref]').data('gallery-ref'),
+			mediaRef = $target.closest('[data-ref]').data('ref'),
+			typeId = $target.closest('[data-type-id]').data('type-id');
 
 		if (mediaRef >= 0) {
-			Em.Logger.debug('Handling media:', mediaRef, 'gallery:', galleryRef);
+			Em.Logger.debug('Handling media:', mediaRef, 'gallery:', galleryRef, 'typeId:', typeId);
 
 			this.get('controller').send('openLightbox', 'media-lightbox', {
 				mediaRef: mediaRef,
 				galleryRef: galleryRef,
-				target: target
+				target: target,
+				typeId: typeId
 			});
 
 			if (galleryRef >= 0) {

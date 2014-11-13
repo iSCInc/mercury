@@ -10,6 +10,7 @@ interface ArticleMedia extends Em.Object {
 App.GalleryMediaComponent = App.MediaComponent.extend({
 	classNames: ['article-gallery'],
 	layoutName: 'components/gallery-media',
+	attributeBindings: ['typeId:data-type-id'],
 
 	thumbSize: 195,
 	//limit how many images get rendered before user scrolls to a gallery

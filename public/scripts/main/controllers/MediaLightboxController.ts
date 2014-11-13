@@ -11,7 +11,8 @@ App.MediaLightboxController = App.LightboxController.extend({
 	data: {
 		mediaRef: null,
 		galleryRef: null,
-		target: null
+		target: null,
+		typeId: null
 	},
 	//standard place where other components can set data for media lightbox
 	currentMediaRef: Em.computed.alias(
@@ -114,19 +115,19 @@ App.MediaLightboxController = App.LightboxController.extend({
 		var current = this.get('current');
 
 		if (this.get('isGallery')) {
-			return current[this.get('currentGalleryRef')];
+			return current[this.get('data.typeId')][this.get('currentGalleryRef')];
 		} else {
 			return current;
 		}
-	}.property('current', 'isGallery', 'currentGalleryRef'),
+	}.property('current', 'isGallery', 'currentGalleryRef', 'data.typeId'),
 
 	galleryLength: function (): number {
 		if (this.get('isGallery')) {
-			return this.get('current').length;
+			return this.get('current.' + this.get('data.typeId')).length;
 		} else {
 			return -1;
 		}
-	}.property('isGallery', 'current'),
+	}.property('isGallery', 'current', 'data.typeId'),
 
 	/**
 	 * observes curentMedia and updates file property

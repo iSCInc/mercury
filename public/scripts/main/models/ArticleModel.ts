@@ -17,7 +17,7 @@ interface Response {
 		article: {
 			content: string;
 			user: any;
-			media: any[];
+			media: ArticleMedia[];
 			users: any[];
 			categories: any[];
 		};
@@ -119,13 +119,24 @@ App.ArticleModel.reopenClass({
 			}
 
 			if (source.article) {
-				var article = source.article;
+				var article = source.article,
+					articleMedia = article.media.map((media: ArticleMedia[]): any[] => {
+						if (Em.isArray(media)) {
+							return [
+								media.filter((media) => media.type === 'image'),
+								media.filter((media) => media.type === 'video')
+							];
+
+						} else {
+							return media;
+						}
+					});
 
 				data = $.extend(data, {
 					article: article.content || source.content,
 					mediaUsers: article.users,
 					media: App.MediaModel.create({
-						media: article.media
+						media: articleMedia
 					}),
 					categories: article.categories
 				});
