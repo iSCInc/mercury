@@ -35,12 +35,14 @@ function getWikiDomainName(host: string): string {
 function routes(server: Hapi.Server) {
 	var second = 1000,
 		indexRoutes = [
+			'/category/{title*}',
 			'/wiki/{title*}',
 			'/{title*}'
 		],
 		proxyRoutes = [
 			'/favicon.ico',
-			'/robots.txt'
+			'/robots.txt',
+			'/api.php'
 		],
 		config = {
 			cache: {
@@ -64,6 +66,8 @@ function routes(server: Hapi.Server) {
 	 * @param reply Hapi reply function
 	 */
 	function articleHandler(request: Hapi.Request, reply: any) {
+		console.log('diana: tytul reguesta: ' + request.params.title);
+
 		if (request.params.title || request.path === '/') {
 			server.methods.getPreRenderedData({
 				wikiDomain: getWikiDomainName(request.headers.host),
@@ -177,13 +181,19 @@ function routes(server: Hapi.Server) {
 		}
 	});
 
+
 	proxyRoutes.forEach((route: string) => {
+		console.log('DIANA: route' + route);
+
 		server.route({
 			method: 'GET',
 			path: route,
 			handler: (request: any, reply: any) => {
-				var path = route.substr(1),
-					url = MediaWiki.createUrl(getWikiDomainName(request.headers.host), path);
+				console.log('DIANA: request.url: ',request.url);
+				var path = (request.url.path) ? request.url.path.substr(1) : route.substr(1),
+				url = MediaWiki.createUrl(getWikiDomainName(request.headers.host), path);
+				console.log('DIANA: route i domain name', route, getWikiDomainName(request.headers.host));
+				console.log('DIANA: path: ' + path);
 				reply.proxy({
 					uri: url,
 					redirects: localSettings.proxyMaxRedirects || 3

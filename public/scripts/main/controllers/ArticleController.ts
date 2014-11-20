@@ -22,6 +22,12 @@ App.ArticleController = Em.ObjectController.extend({
 			this.transitionToRoute('article', title);
 		},
 
+		handleCategories: function (): void {
+			//App.VisibilityStateManager.reset();
+			//this.set('file', null);
+			//this.transitionTo();
+		},
+
 		articleRendered: function () {
 			if (this.get('file')) {
 				this.send('openLightbox', 'media-lightbox');

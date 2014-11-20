@@ -48,10 +48,11 @@
 		trackingEvent='category'
 	}}
 		{{#each categories itemController='categoryListItem'}}
-		<li {{action 'trackClick' 'category' 'link'}}><a href='{{unbound url}}' title='{{unbound title}}'>
+		<li {{action 'trackClick' 'category' 'link'}}>{{#link-to 'category' title}}
 			{{cleanTitle}}
 			{{svg 'chevron' viewBox='0 0 12 7' class='icon chevron'}}
-		</a></li>
+			{{/link-to}}
+		</li>
 		{{/each}}
 	{{/collapsible-menu}}
 {{/if}}
