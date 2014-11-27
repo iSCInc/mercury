@@ -1,13 +1,21 @@
+var Logger = require('../../server/lib/Logger');
+
 module.exports = function (language) {
-	language = language || 'en';
+	var translations = {},
+		defaultLanguage = 'en';
 
-	var translations;
-
-	try {
-		translations = require('../../public/locales/' + language + '/translation.json');
-	} catch (exception) {
-		translations = {};
-	}
-
+	[language, defaultLanguage].forEach(function (lang) {
+		var translationPath = '../../public/locales/' + lang + '/translation.json';
+		try {
+			translations = require(translationPath);
+			return JSON.stringify(translations);
+		} catch (exception) {
+			Logger.error({
+				lang: lang,
+				path: translationPath,
+				error: exception.message
+			}, 'Translation not found');
+		}
+	});
 	return JSON.stringify(translations);
 };

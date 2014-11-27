@@ -51,14 +51,6 @@ function routes(server: Hapi.Server) {
 			}
 		};
 
-	// TODO: Remove the cookie when we handle all traffic
-	server.state('wk_mercury', {
-		// 30 days in millisecons
-		ttl: 2628000000,
-		path: '/',
-		autoValue: '1'
-	});
-
 	/**
 	 * Article request handler
 	 *
@@ -79,7 +71,7 @@ function routes(server: Hapi.Server) {
 				Tracking.handleResponse(result, request);
 
 				if (error) {
-					code = error.code;
+					code = error.code || 500;
 
 					result.error = JSON.stringify(error);
 				}
@@ -128,13 +120,16 @@ function routes(server: Hapi.Server) {
 		handler: (request: Hapi.Request, reply: Function) => {
 			var params = {
 					wikiDomain: getWikiDomainName(request.headers.host),
-					articleId: parseInt(request.params.articleId, 10),
+					articleId: parseInt(request.params.articleId, 10) || null,
 					page: parseInt(request.params.page, 10) || 0
 				};
-
-			server.methods.getArticleComments(params, (error: any, result: any) => {
-				reply(error || result);
-			});
+			if (params.articleId === null) {
+				reply(Hapi.error.badRequest('Invalid articleId'));
+			} else {
+				server.methods.getArticleComments(params, (error: any, result: any) => {
+					reply(error || result);
+				});
+			}
 		}
 	});
 
