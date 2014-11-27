@@ -49,21 +49,27 @@ App.CategoryModel.reopenClass({
 		if (params.redirect) {
 			redirect += '?redirect=' + encodeURIComponent(params.redirect);
 		}
+		console.log("w CategoryModel.url; title: ", params.title);
+		return App.get('apiBase') + '/article/' + params.title + redirect;
+	},
 
-		return App.get('apiBase') + '/category/' + params.title + redirect;
+	categoryUrl: function (params: {title: string; redirect?: string}) {
+		console.log("w CategoryModel.categoryUrl; title: ", params.title); //list=categorymembers
+		return App.get('apiBase') + '/' + params.title;
 	},
 
 	find: function (params: {basePath: string; wiki: string; title: string; redirect?: string}) {
+		console.log("w CategoryModel.find title: ", params.title);
 		var model = App.CategoryModel.create(params);
 
-		if (Mercury._state.firstPage) { // co to? check this out.
+		if (Mercury._state.firstPage) {
 			this.setArticle(model);
 			return model;
 		}
 
 		return new Em.RSVP.Promise((resolve: Function, reject: Function) => {
 			Em.$.ajax({
-				url: this.url(params),
+				url: this.Caturl(params),
 				dataType: 'json',
 				success: (data) => {
 					this.setArticle(model, data);
@@ -95,6 +101,7 @@ App.CategoryModel.reopenClass({
 	},
 
 	setArticle: function (model: typeof App.ArticleModel, source = this.getPreloadedData()) {
+		console.log("w CategoryModel.setArticle");
 		var data: any = {};
 
 		if (source.error) {

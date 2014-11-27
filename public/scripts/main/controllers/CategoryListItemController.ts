@@ -5,5 +5,8 @@
 App.CategoryListItemController = Em.ObjectController.extend({
 	cleanTitle: function () {
 		return M.String.normalize(this.get('title').toString());
+	}.property('title'),
+	categoryTitle: function () {
+		return 'Category:'+ this.get('title').toString();
 	}.property('title')
 });

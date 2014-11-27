@@ -23,8 +23,8 @@ App.CategoryRoute = Em.Route.extend({
 	},
 
 	model: function (params: any) {
+		console.log("w CategoryRoute!");
 		var title = 'Category:' + Mercury.Utils.String.sanitize(params.title);
-		console.log("model: title i basepath", title, Mercury.wiki.basePath);
 		return App.CategoryModel.find({
 			basePath: Mercury.wiki.basePath,
 			title: title,

@@ -35,7 +35,6 @@ function getWikiDomainName(host: string): string {
 function routes(server: Hapi.Server) {
 	var second = 1000,
 		indexRoutes = [
-			'/category/{title*}',
 			'/wiki/{title*}',
 			'/{title*}'
 		],
@@ -58,7 +57,7 @@ function routes(server: Hapi.Server) {
 	 * @param reply Hapi reply function
 	 */
 	function articleHandler(request: Hapi.Request, reply: any) {
-		console.log('diana: tytul reguesta: ' + request.params.title);
+		console.log('diana: tytul requesta: ' + request.params.title);
 
 		if (request.params.title || request.path === '/') {
 			server.methods.getPreRenderedData({

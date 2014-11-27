@@ -48,7 +48,7 @@
 		trackingEvent='category'
 	}}
 		{{#each categories itemController='categoryListItem'}}
-		<li {{action 'trackClick' 'category' 'link'}}>{{#link-to 'category' title}}
+		<li {{action 'trackClick' 'category' 'link'}}>{{#link-to 'article' categoryTitle}}
 			{{cleanTitle}}
 			{{svg 'chevron' viewBox='0 0 12 7' class='icon chevron'}}
 			{{/link-to}}
