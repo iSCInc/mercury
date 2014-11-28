@@ -53,26 +53,28 @@ App.ArticleModel.reopenClass({
 		return App.get('apiBase') + '/article/' + params.title + redirect;
 	},
 
-	find: function (params: {basePath: string; wiki: string; title: string; redirect?: string}) {
-		var model = App.ArticleModel.create(params);
+	find: function (params: {basePath: string; wiki: string; title: string; redirect?: string}, model: any) {
 
-		if (Mercury._state.firstPage) {
-			this.setArticle(model);
-			return model;
-		}
+		var model = model || App.ArticleModel.create(params);
 
 		return new Em.RSVP.Promise((resolve: Function, reject: Function) => {
-			Em.$.ajax({
-				url: this.url(params),
-				dataType: 'json',
-				success: (data) => {
-					this.setArticle(model, data);
-					resolve(model);
-				},
-				error: (err) => {
-					reject($.extend(err, model));
-				}
-			});
+			if (Mercury._state.firstPage) {
+				this.setArticle(model);
+				resolve(model);
+			}
+			else {
+				Em.$.ajax({
+					url: this.url(params),
+					dataType: 'json',
+					success: (data) => {
+						this.setArticle(model, data);
+						resolve(model);
+					},
+					error: (err) => {
+						reject($.extend(err, model));
+					}
+				});
+			}
 		});
 	},
 

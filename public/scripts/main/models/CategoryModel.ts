@@ -4,159 +4,62 @@
 /// <reference path="../../../../typings/i18next/i18next.d.ts" />
 
 interface Response {
-	data: {
-		details: {
-			revision: {
-				timestamp: number;
-			};
-			comments: any;
-			id: number;
-			ns: string;
+	categoryData: {
+		categorymembers: {
+			pageid: number;
+			ns: number;
 			title: string;
 		};
-		article: {
-			content: string;
-			user: any;
-			media: any[];
-			users: any[];
-			categories: any[];
-		};
-		relatedPages: any[];
-		userDetails: any[];
-		topContributors: any[];
 	};
 }
 
-App.CategoryModel = Em.Object.extend({
-	article: null,
-	basePath: null,
-	categories: [],
-	cleanTitle: null,
-	comments: 0,
-	media: [],
-	mediaUsers: [],
-	sections: [],
-	title: null,
-	user: null,
-	users: [],
-	wiki: null
+App.CategoryModel = App.ArticleModel.extend({
 });
 
 App.CategoryModel.reopenClass({
-	url: function (params: {title: string; redirect?: string}) {
-		var redirect = '';
-
-		if (params.redirect) {
-			redirect += '?redirect=' + encodeURIComponent(params.redirect);
-		}
-		console.log("w CategoryModel.url; title: ", params.title);
-		return App.get('apiBase') + '/article/' + params.title + redirect;
-	},
 
 	categoryUrl: function (params: {title: string; redirect?: string}) {
-		console.log("w CategoryModel.categoryUrl; title: ", params.title); //list=categorymembers
-		return App.get('apiBase') + '/' + params.title;
+		console.log("w CategoryModel.categoryUrl; title: ", params.title); //action=query&list=categorymembers&cmtitle=Category:Locations
+		//return App.get('apiBase') + '/wikia/' + params.title; // /api/vi/wikia/
+		return 'http://shadowofmordor.wikia.local:8000/api.php?action=query&list=categorymembers&cmtitle=Category:Locations&format=json';
 	},
 
 	find: function (params: {basePath: string; wiki: string; title: string; redirect?: string}) {
-		console.log("w CategoryModel.find title: ", params.title);
-		var model = App.CategoryModel.create(params);
-
-		if (Mercury._state.firstPage) {
-			this.setArticle(model);
-			return model;
-		}
-
-		return new Em.RSVP.Promise((resolve: Function, reject: Function) => {
-			Em.$.ajax({
-				url: this.Caturl(params),
-				dataType: 'json',
-				success: (data) => {
-					this.setArticle(model, data);
-					resolve(model);
-				},
-				error: (err) => {
-					reject($.extend(err, model));
-				}
+		var model = App.CategoryModel.create(params),
+			articleModel = this._super(params, model),
+			categoryModel = new Em.RSVP.Promise((resolve: Function, reject: Function) => {
+				Em.$.ajax({
+					url: this.categoryUrl(params),
+					dataType: 'json',
+					success: (categoryData) => {
+						articleModel.then((tmp) => {
+							App.CategoryModel.setCategory(tmp, categoryData);
+							resolve(tmp);
+						});
+					},
+					error: (err) => {
+						reject($.extend(err, model));
+					}
+				});
 			});
-		});
+		return categoryModel;
 	},
 
-	getPreloadedData: function () {
-		var article = Mercury.article,
-			adsInstance: Mercury.Modules.Ads;
-		Mercury._state.firstPage = false;
-		article.content = $('.article-content').html();
-
-		// Setup ads
-		if (Mercury.adsUrl) {
-			adsInstance = Mercury.Modules.Ads.getInstance();
-			adsInstance.init(Mercury.adsUrl, () => {
-				adsInstance.reload(article.adsContext);
-			});
-		}
-
-		delete Mercury.article;
-		return article;
-	},
-
-	setArticle: function (model: typeof App.ArticleModel, source = this.getPreloadedData()) {
-		console.log("w CategoryModel.setArticle");
-		var data: any = {};
+	setCategory: function (model: typeof App.ArticleModel, source: any) {
+		var categoryData: any = {};
 
 		if (source.error) {
 			var error = source.error;
-
-			data = {
-				article: error.details,
-				cleanTitle: M.String.normalize(model.title),
+			categoryData = {
 				error: error
 			};
-		} else if (source) {
-			if (source.details) {
-				var details = source.details;
-
-				data = $.extend(data, {
-					ns: details.ns,
-					cleanTitle: details.title,
-					comments: details.comments,
-					id: details.id,
-					user: details.revision.user_id
-				});
-			}
-
-			if (source.article) {
-				var article = source.article;
-
-				data = $.extend(data, {
-					article: article.content || source.content,
-					mediaUsers: article.users,
-					media: App.MediaModel.create({
-						media: article.media
-					}),
-					categories: article.categories
-				});
-			}
-
-			if (source.relatedPages) {
-				/**
-				 * Code to combat a bug observed on the Karen Traviss page on the Star Wars wiki, where there
-				 * are no relatedPages for some reason. Moving forward it would be good for the Wikia API
-				 * to handle this and never return malformed structures.
-				 */
-				data.relatedPages = source.relatedPages;
-			}
-
-			if (source.adsContext) {
-				data.adsContext = source.adsContext;
-			}
-
-			if (source.topContributors) {
-				// Same issue: the response to the ajax should always be valid and not undefined
-				data.topContributors = source.topContributors;
-			}
+		} else if (source.query.categorymembers) {
+				var categorymembers = source.query.categorymembers;
+				categoryData = {
+					categorymembers: categorymembers,
+				};
 		}
-
-		model.setProperties(data);
+	console.log("-----> sa categorymembers!!!!", categoryData);
+	model.setProperties(categoryData);
 	}
 });

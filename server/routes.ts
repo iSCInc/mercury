@@ -57,8 +57,6 @@ function routes(server: Hapi.Server) {
 	 * @param reply Hapi reply function
 	 */
 	function articleHandler(request: Hapi.Request, reply: any) {
-		console.log('diana: tytul requesta: ' + request.params.title);
-
 		if (request.params.title || request.path === '/') {
 			server.methods.getPreRenderedData({
 				wikiDomain: getWikiDomainName(request.headers.host),
@@ -177,8 +175,6 @@ function routes(server: Hapi.Server) {
 
 
 	proxyRoutes.forEach((route: string) => {
-		console.log('DIANA: route' + route);
-
 		server.route({
 			method: 'GET',
 			path: route,

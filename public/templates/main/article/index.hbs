@@ -29,6 +29,17 @@
 		{{/if}}
 	{{/view}}
 </section>
+<section class='category-pages'>
+	{{#if categorymembers}}
+	LISTA KATEGORY MEMBEROW
+	{{#each categorymembers}}
+		<li {{action 'trackClick' 'category' 'link'}}>{{#link-to 'article' title}}
+			{{title}}
+			{{/link-to}}
+		</li>
+	{{/each}}
+	{{/if}}
+</section>
 <section class='article-footer'>
 {{wikia-users
 	users=topContributors

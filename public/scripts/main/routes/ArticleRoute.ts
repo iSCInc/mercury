@@ -24,12 +24,11 @@ App.ArticleRoute = Em.Route.extend({
 	},
 
 	model: function (params: any) {
-		console.log("article title: ", params.title);
-		console.log("mercudy wiki namespaces", Mercury.wiki.namespaces[14]);
 		if (params.title.indexOf(Mercury.wiki.namespaces[14]) > -1 )
 		{
-			console.log("article title: ", Mercury.Utils.String.sanitize(params.title));
-			console.log("jest to strona kategorii!");
+			console.log("this is the category page!");
+
+			//TODO: make it nice and easy by creating a instances and calling functions on them 
 			return App.CategoryModel.find({
 				basePath: Mercury.wiki.basePath,
 				title: Mercury.Utils.String.sanitize(params.title),
