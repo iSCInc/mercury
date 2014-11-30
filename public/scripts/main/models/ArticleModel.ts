@@ -39,39 +39,34 @@ App.ArticleModel = Em.Object.extend({
 	title: null,
 	user: null,
 	users: [],
-	wiki: null
-});
+	wiki: null,
+	redirect: null,
 
-App.ArticleModel.reopenClass({
-	url: function (params: {title: string; redirect?: string}) {
+	url: function () {
 		var redirect = '';
 
-		if (params.redirect) {
-			redirect += '?redirect=' + encodeURIComponent(params.redirect);
+		if (this.get(redirect)) {
+			redirect += '?redirect=' + encodeURIComponent(this.get(redirect));
 		}
-
-		return App.get('apiBase') + '/article/' + params.title + redirect;
+		return App.get('apiBase') + '/article/' + this.get('title') + redirect;
 	},
 
-	find: function (params: {basePath: string; wiki: string; title: string; redirect?: string}, model: any) {
-
-		var model = model || App.ArticleModel.create(params);
-
+	find: function (model?: typeof App.ArticleModel) {
 		return new Em.RSVP.Promise((resolve: Function, reject: Function) => {
 			if (Mercury._state.firstPage) {
-				this.setArticle(model);
-				resolve(model);
+				this.setArticle();
+				this.resolve();
 			}
 			else {
 				Em.$.ajax({
-					url: this.url(params),
+					url: this.url(),
 					dataType: 'json',
 					success: (data) => {
-						this.setArticle(model, data);
-						resolve(model);
+						this.setArticle(data);
+						this.resolve();
 					},
 					error: (err) => {
-						reject($.extend(err, model));
+						reject($.extend(err));
 					}
 				});
 			}
@@ -96,7 +91,7 @@ App.ArticleModel.reopenClass({
 		return article;
 	},
 
-	setArticle: function (model: typeof App.ArticleModel, source = this.getPreloadedData()) {
+	setArticle: function (source = this.getPreloadedData()) {
 		var data: any = {};
 
 		if (source.error) {
@@ -104,7 +99,7 @@ App.ArticleModel.reopenClass({
 
 			data = {
 				article: error.details,
-				cleanTitle: M.String.normalize(model.title),
+				cleanTitle: M.String.normalize(this.get('title')),
 				error: error
 			};
 		} else if (source) {
@@ -152,6 +147,6 @@ App.ArticleModel.reopenClass({
 			}
 		}
 
-		model.setProperties(data);
+		this.setProperties(data);
 	}
 });

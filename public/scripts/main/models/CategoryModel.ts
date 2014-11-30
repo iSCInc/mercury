@@ -14,31 +14,25 @@ interface Response {
 }
 
 App.CategoryModel = App.ArticleModel.extend({
-});
 
-App.CategoryModel.reopenClass({
 
-	categoryUrl: function (params: {title: string; redirect?: string}) {
-		console.log("w CategoryModel.categoryUrl; title: ", params.title); //action=query&list=categorymembers&cmtitle=Category:Locations
+	categoryUrl: function () {
+		console.log("w CategoryModel.categoryUrl; title: ", this.get('title')); //action=query&list=categorymembers&cmtitle=Category:Locations
 		//return App.get('apiBase') + '/wikia/' + params.title; // /api/vi/wikia/
 		return 'http://shadowofmordor.wikia.local:8000/api.php?action=query&list=categorymembers&cmtitle=Category:Locations&format=json';
 	},
 
-	find: function (params: {basePath: string; wiki: string; title: string; redirect?: string}) {
-		var model = App.CategoryModel.create(params),
-			articleModel = this._super(params, model),
-			categoryModel = new Em.RSVP.Promise((resolve: Function, reject: Function) => {
+	find: function (articleModel: typeof App.ArticleModel) {
+			var categoryModel = new Em.RSVP.Promise((resolve: Function, reject: Function) => {
 				Em.$.ajax({
-					url: this.categoryUrl(params),
+					url: this.categoryUrl(),
 					dataType: 'json',
 					success: (categoryData) => {
-						articleModel.then((tmp) => {
-							App.CategoryModel.setCategory(tmp, categoryData);
-							resolve(tmp);
-						});
+							this.setCategory(articleModel, categoryData);
+							resolve(articleModel);
 					},
 					error: (err) => {
-						reject($.extend(err, model));
+						console.log("error");
 					}
 				});
 			});

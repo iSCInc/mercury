@@ -24,22 +24,18 @@ App.ArticleRoute = Em.Route.extend({
 	},
 
 	model: function (params: any) {
+		var model, articleModel;
 		if (params.title.indexOf(Mercury.wiki.namespaces[14]) > -1 )
 		{
 			console.log("this is the category page!");
-
-			//TODO: make it nice and easy by creating a instances and calling functions on them 
-			return App.CategoryModel.find({
-				basePath: Mercury.wiki.basePath,
-				title: Mercury.Utils.String.sanitize(params.title),
-				wiki: this.controllerFor('application').get('domain')
-			});
+			model = App.CategoryModel.create(params);
+			articleModel = App.ArticleModel.create(params);
+			console.log("articlemodel: ",articleModel);
+		} 
+		else {
+			model = App.ArticleModel.create(params);
 		}
-		return App.ArticleModel.find({
-			basePath: Mercury.wiki.basePath,
-			title: Mercury.Utils.String.sanitize(params.title),
-			wiki: this.controllerFor('application').get('domain')
-		});
+		return model.find(articleModel);
 	},
 
 	actions: {
