@@ -134,6 +134,20 @@ function routes(server: Hapi.Server) {
 		}
 	});
 
+	// eg. /category/Locations
+	server.route({
+		method: 'GET',
+		path: localSettings.apiBase + '/category/{categoryTitle}',
+		handler: (request: any, reply: any) => {
+			var path = 'api.php?action=query&list=categorymembers&cmtitle=Category:' + request.params.categoryTitle + '&format=json',
+				url = MediaWiki.createUrl(getWikiDomainName(request.headers.host), path);
+			reply.proxy({
+				uri: url,
+				redirects: localSettings.proxyMaxRedirects
+			});
+		}
+	});
+
 	// eg. search/muppet
 	server.route({
 		method: 'GET',
@@ -200,4 +214,3 @@ function routes(server: Hapi.Server) {
 }
 
 export = routes;
-

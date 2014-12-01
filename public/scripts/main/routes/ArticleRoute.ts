@@ -22,14 +22,12 @@ App.ArticleRoute = Em.Route.extend({
 		);
 	},
 
-	model: function (params: any) {
-		var model;
+	model: function (params: {basePath: string; wiki: string; title: string; redirect?: string}) {
+		var model : any;
 
-		if (params.title.indexOf(Mercury.wiki.namespaces[14]) > -1 )
-		{
+		if (params.title.indexOf(Mercury.wiki.namespaces[14]) > -1 ) {
 			model = App.CategoryModel.create(params);
-		} 
-		else {
+		} else {
 			model = App.ArticleModel.create(params);
 		}
 		return model.find();

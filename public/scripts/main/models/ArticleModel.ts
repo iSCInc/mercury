@@ -68,8 +68,7 @@ App.ArticleModel = Em.Object.extend({
 						reject($.extend(err));
 					}
 				});
-}
-
+			}
 		});
 	},
 
