@@ -29,10 +29,10 @@ App.CategoryModel = App.ArticleModel.extend({
 					dataType: 'json',
 					success: (categoryData) => {
 						this.setCategory(categoryData);
-							resolve(this);
+						resolve(this);
 					},
 					error: (err) => {
-						console.log("error");
+						reject($.extend(err));
 					}
 				});
 			});

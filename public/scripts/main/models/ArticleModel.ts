@@ -52,7 +52,6 @@ App.ArticleModel = Em.Object.extend({
 	},
 
 	find: function () {
-		console.log("articlemodel.find", this);
 		return new Em.RSVP.Promise((resolve: Function, reject: Function) => {
 			if (Mercury._state.firstPage) {
 				this.setArticle();
@@ -147,7 +146,6 @@ App.ArticleModel = Em.Object.extend({
 				data.topContributors = source.topContributors;
 			}
 		}
-		//if (model) model.setProperties(data);
 		this.setProperties(data);
 	}
 });
