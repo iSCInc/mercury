@@ -17,25 +17,22 @@ App.ArticleRoute = Em.Route.extend({
 		if (Mercury.error) {
 			transition.abort();
 		}
-
 		this.transitionTo('article',
 			M.String.sanitize(transition.params.article.title)
 		);
 	},
 
 	model: function (params: any) {
-		var model, articleModel;
+		var model;
+
 		if (params.title.indexOf(Mercury.wiki.namespaces[14]) > -1 )
 		{
-			console.log("this is the category page!");
 			model = App.CategoryModel.create(params);
-			articleModel = App.ArticleModel.create(params);
-			console.log("articlemodel: ",articleModel);
 		} 
 		else {
 			model = App.ArticleModel.create(params);
 		}
-		return model.find(articleModel);
+		return model.find();
 	},
 
 	actions: {

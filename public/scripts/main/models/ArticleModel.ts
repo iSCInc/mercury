@@ -51,25 +51,26 @@ App.ArticleModel = Em.Object.extend({
 		return App.get('apiBase') + '/article/' + this.get('title') + redirect;
 	},
 
-	find: function (model?: typeof App.ArticleModel) {
+	find: function () {
+		console.log("articlemodel.find", this);
 		return new Em.RSVP.Promise((resolve: Function, reject: Function) => {
 			if (Mercury._state.firstPage) {
 				this.setArticle();
-				this.resolve();
-			}
-			else {
-				Em.$.ajax({
+				resolve(this);
+			} else {
+					Em.$.ajax({
 					url: this.url(),
 					dataType: 'json',
 					success: (data) => {
 						this.setArticle(data);
-						this.resolve();
+						resolve(this);
 					},
 					error: (err) => {
 						reject($.extend(err));
 					}
 				});
-			}
+}
+
 		});
 	},
 
@@ -146,7 +147,7 @@ App.ArticleModel = Em.Object.extend({
 				data.topContributors = source.topContributors;
 			}
 		}
-
+		//if (model) model.setProperties(data);
 		this.setProperties(data);
 	}
 });

@@ -15,31 +15,30 @@ interface Response {
 
 App.CategoryModel = App.ArticleModel.extend({
 
-
 	categoryUrl: function () {
 		console.log("w CategoryModel.categoryUrl; title: ", this.get('title')); //action=query&list=categorymembers&cmtitle=Category:Locations
 		//return App.get('apiBase') + '/wikia/' + params.title; // /api/vi/wikia/
-		return 'http://shadowofmordor.wikia.local:8000/api.php?action=query&list=categorymembers&cmtitle=Category:Locations&format=json';
+		return 'http://shadowofmordor.wikia.local:8000/api.php?action=query&list=categorymembers&cmtitle='+ this.get('title') + '&format=json';
 	},
 
-	find: function (articleModel: typeof App.ArticleModel) {
-			var categoryModel = new Em.RSVP.Promise((resolve: Function, reject: Function) => {
+	find: function () {
+			this._super();
+			return new Em.RSVP.Promise((resolve: Function, reject: Function) => {
 				Em.$.ajax({
 					url: this.categoryUrl(),
 					dataType: 'json',
 					success: (categoryData) => {
-							this.setCategory(articleModel, categoryData);
-							resolve(articleModel);
+						this.setCategory(categoryData);
+							resolve(this);
 					},
 					error: (err) => {
 						console.log("error");
 					}
 				});
 			});
-		return categoryModel;
 	},
 
-	setCategory: function (model: typeof App.ArticleModel, source: any) {
+	setCategory: function (source: any) {
 		var categoryData: any = {};
 
 		if (source.error) {
@@ -53,7 +52,6 @@ App.CategoryModel = App.ArticleModel.extend({
 					categorymembers: categorymembers,
 				};
 		}
-	console.log("-----> sa categorymembers!!!!", categoryData);
-	model.setProperties(categoryData);
+	this.setProperties(categoryData);
 	}
 });
