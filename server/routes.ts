@@ -139,8 +139,11 @@ function routes(server: Hapi.Server) {
 		method: 'GET',
 		path: localSettings.apiBase + '/category/{categoryTitle}',
 		handler: (request: any, reply: any) => {
-			var path = 'api.php?action=query&list=categorymembers&cmtitle=Category:' + request.params.categoryTitle + '&format=json',
+			var path = 'api.php?action=query&list=categorymembers&cmtitle=Category:' + request.params.categoryTitle + '&format=json' + (request.query.cmcontinue ? '&cmcontinue=' + request.query.cmcontinue : ''),
 				url = MediaWiki.createUrl(getWikiDomainName(request.headers.host), path);
+
+				console.log("reguest query", request.query.cmcontinue);
+				console.log("path", path);
 			reply.proxy({
 				uri: url,
 				redirects: localSettings.proxyMaxRedirects

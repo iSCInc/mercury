@@ -23,12 +23,6 @@ App.ArticleController = Em.ObjectController.extend({
 			this.transitionToRoute('article', title);
 		},
 
-		handleCategories: function (): void {
-			//App.VisibilityStateManager.reset();
-			//this.set('file', null);
-			//this.transitionTo();
-		},
-
 		articleRendered: function () {
 			if (this.get('file')) {
 				this.send('openLightbox', 'media-lightbox');
@@ -44,6 +38,13 @@ App.ArticleController = Em.ObjectController.extend({
 					id: id
 				});
 			}
+		},
+
+		loadMore: function () {
+			//if cmcontinue computed property jest true to tylko wtedy sie pojawiaj
+			console.log("cmcontinue: ", this.get('cmcontinue'));
+			var category = this.get('model');
+			category.loadMore();
 		}
 	}
 });
