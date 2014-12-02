@@ -28,18 +28,20 @@
 			{{i18n 'article-empty-label'}}
 		{{/if}}
 	{{/view}}
-</section>
-<section class='category-pages'>
-	{{#if categorymembers}}
-	LISTA KATEGORY MEMBEROW
+
+{{#if categorymembers}}
+<header> {{categorymembers.length}} {{i18n 'articles'}} </header>
+	CATEGORY MEMBERS LIST
 	{{#each categorymembers}}
-		<li {{action 'trackClick' 'category' 'link'}}>{{#link-to 'article' title}}
+	<ul class = 'wkList'>
+		<li {{action 'trackClick' 'category' 'link'}}>
+			{{#link-to 'article' title}}
 			{{title}}
 			{{/link-to}}
 		</li>
+	</ul>
 	{{/each}}
-	{{/if}}
-</section>
+{{/if}}
 <section class='article-footer'>
 {{wikia-users
 	users=topContributors
@@ -59,7 +61,7 @@
 		trackingEvent='category'
 	}}
 		{{#each categories itemController='categoryListItem'}}
-		<li {{action 'trackClick' 'category' 'link'}}>{{#link-to 'article' categoryTitle}}
+		<li {{action 'trackClick' 'category' 'link'}}>{{#link-to 'article' categoryTitle bubbles=false}}
 			{{cleanTitle}}
 			{{svg 'chevron' viewBox='0 0 12 7' class='icon chevron'}}
 			{{/link-to}}

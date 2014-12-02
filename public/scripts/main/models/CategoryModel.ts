@@ -11,7 +11,6 @@ interface Response {
 App.CategoryModel = App.ArticleModel.extend({
 
 	categoryUrl: function () {
-		//action=query&list=categorymembers&cmtitle=Category:Locations
 		return App.get('apiBase') + '/category/' + this.cleanTitle;
 	},
 
