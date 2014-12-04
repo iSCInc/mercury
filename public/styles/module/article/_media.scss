@@ -27,7 +27,6 @@
 figcaption {
 	color: #999;
 	padding: 5px 0;
-	pointer-events: none;
 	text-align: left;
 }
 
@@ -45,7 +44,7 @@ figcaption {
 	img {
 		// Fixes iOS Safari repaint bug when scrolling through gallery
 		transform: translate3d(0, 0, 0);
-		height: 195px;
+		height: auto;
 		margin-right: 8px;
 		width: 195px;
 	}
@@ -86,12 +85,11 @@ figcaption {
 			margin: 0;
 			position: relative;
 			width: 49%;
+			vertical-align: top;
 		}
 
 		img {
-			height: 100%;
 			margin-right: 6px;
-			width: 100%;
 		}
 	}
 }
@@ -139,7 +137,6 @@ figcaption {
 		font-size: 0.9rem;
 		line-height: 1rem;
 		padding: 10px;
-		pointer-events: none;
 		position: absolute;
 		width: 100%;
 		z-index: 1;
