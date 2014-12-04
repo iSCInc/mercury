@@ -32,16 +32,16 @@
 {{#if categorymembers}}
 <header> {{categorymembers.length}} {{i18n 'articles'}} </header>
 	CATEGORY MEMBERS LIST
+	<ul>
 	{{#each categorymembers}}
-	<ul class = 'wkList'>
-		<li {{action 'trackClick' 'category' 'link'}}>
-			{{#link-to 'article' title}}
+	<li {{action 'trackClick' 'category' 'link'}}>
+		{{#link-to 'article' title}}
 			{{title}}
-			{{/link-to}}
-		</li>
-	</ul>
+		{{/link-to}}
+	</li>
 	{{/each}}
-<button {{action 'loadMore'}}>Show More...</button>
+	</li>
+{{#if isMore}}<a id='catMore' class='lbl pag' {{action 'loadMore'}} {{bind-attr visible='false'}}>Load More</a> {{/if}}
 {{/if}}
 <section class='article-footer'>
 {{wikia-users
@@ -62,9 +62,10 @@
 		trackingEvent='category'
 	}}
 		{{#each categories itemController='categoryListItem'}}
-		<li {{action 'trackClick' 'category' 'link'}}>{{#link-to 'article' categoryTitle bubbles=false}}
-			{{cleanTitle}}
-			{{svg 'chevron' viewBox='0 0 12 7' class='icon chevron'}}
+		<li {{action 'trackClick' 'category' 'link'}}>
+			{{#link-to 'article' categoryTitle bubbles=false}}
+				{{cleanTitle}}
+				{{svg 'chevron' viewBox='0 0 12 7' class='icon chevron'}}
 			{{/link-to}}
 		</li>
 		{{/each}}

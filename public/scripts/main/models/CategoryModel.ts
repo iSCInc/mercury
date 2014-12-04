@@ -15,7 +15,8 @@ interface Response {
 }
 
 App.CategoryModel = App.ArticleModel.extend({
-	cmcontinue: null,
+	categorymembers: [],
+	isMore: true,
 
 	categoryUrl: function (more?: boolean) {
 
@@ -47,13 +48,9 @@ App.CategoryModel = App.ArticleModel.extend({
 	},
 
 	setCategory: function (source: any) {
-		console.log("setcategory z danymi: ", source);
 		var categoryData: any = {},
-			cmcontinue = null,
-			oldCD;
+			cmcontinue: string = null;
 
-		//oldCD = this.get(categoryData); 
-		//if (oldCD) oldCD.pushObjects(categorymembers);
 		if (source.error) {
 			var error = source.error;
 			categoryData = {
@@ -67,11 +64,19 @@ App.CategoryModel = App.ArticleModel.extend({
 				categorymembers: categorymembers
 			};
 		}
-		cmcontinue = source['query-continue']['categorymembers']['cmcontinue'];
-		if (cmcontinue) { //cannot read property 'categorymembers' of undefined
-			this.set('cmcontinue' , cmcontinue);
+		
+		if (source['query-continue']) {
+			this.set('cmcontinue' , source['query-continue']['categorymembers']['cmcontinue']);
+		} else {
+			this.set('isMore', false);
 		}
+
+		var tmp = this.get('categorymembers');
 		this.setProperties(categoryData);
+
+		tmp.pushObjects(categoryData.categorymembers);
+		this.set('categorymembers', tmp);
+		console.log("categorymembers: ",this.get('categorymembers'));
 	},
 
 	loadMore: function () {
