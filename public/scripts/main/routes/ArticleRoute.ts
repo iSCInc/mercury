@@ -33,6 +33,14 @@ App.ArticleRoute = Em.Route.extend({
 		return model.find();
 	},
 
+	setupController: function(controller, model) {
+		this._super(controller, model);
+		console.log("model"+model);
+		if (model instanceof App.CategoryModel) {
+			controller.reopen(App.CategoryMixin);
+		}
+	},
+
 	actions: {
 		error: function (error: any, transition: EmberStates.Transition) {
 			transition.abort();

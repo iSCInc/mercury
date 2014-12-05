@@ -29,19 +29,45 @@
 		{{/if}}
 	{{/view}}
 
+</section>
 {{#if categorymembers}}
-<header> {{categorymembers.length}} {{i18n 'articles'}} </header>
-	CATEGORY MEMBERS LIST
-	<ul>
-	{{#each categorymembers}}
-	<li {{action 'trackClick' 'category' 'link'}}>
-		{{#link-to 'article' title}}
-			{{title}}
-		{{/link-to}}
-	</li>
-	{{/each}}
-	</li>
-{{#if isMore}}<a id='catMore' class='lbl pag' {{action 'loadMore'}} {{bind-attr visible='false'}}>Load More</a> {{/if}}
+	<header> {{filteredArticles.length}} {{i18n 'articles'}} </header>
+
+	<div class='search-container'>
+		{{input placeholder='Search article in this category' value=searchQuery }}
+		<svg {{action 'clearSearch' }} viewbox='0 0 18 18' class='icon close-side-menu'>
+			<use xlink:href='#close-side-menu'></use>
+		</svg>
+	</div>
+
+		{{#each filteredArticles}}
+		<li {{action 'trackClick' 'category' 'link'}}>
+			{{#link-to 'article' title}}
+				{{title}}
+			{{/link-to}}
+		</li>
+		{{/each}}
+
+
+	{{#collapsible-menu
+			showMenuIcon=false
+			additionalClasses='article-categories-list'
+			tLabel='pages-in-category'
+			observe=cleanTitle
+			animSpeed=controller.controllers.application.globalAnimSpeed
+			trackingEvent='article'
+	}}
+
+		{{#each categorymembers}}
+		<li {{action 'trackClick' 'category' 'link'}}>
+			{{#link-to 'article' title}}
+				{{title}}
+			{{/link-to}}
+		</li>
+		{{/each}}
+	{{/collapsible-menu}}
+{{#if isMore}}<a {{action 'loadMore'}}>Load More</a> {{/if}}
+
 {{/if}}
 <section class='article-footer'>
 {{wikia-users

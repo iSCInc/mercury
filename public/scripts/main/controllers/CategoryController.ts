@@ -3,7 +3,7 @@
 /// <reference path="../mixins/VisibilityStateManager.ts" />
 'use strict';
 
-App.ArticleController = Em.ObjectController.extend({
+App.CategoryController = Em.ObjectController.extend({
 	needs: ['application'],
 
 	queryParams: ['file', 'commentsPage', 'map'],
@@ -11,6 +11,16 @@ App.ArticleController = Em.ObjectController.extend({
 	commentsPage: null,
 	map: null,
 
+	searchQuery: '',
+
+	filteredArticles: function () {
+		var filter = this.get('searchQuery'),
+			members = this.get('categorymembers'),
+			rx = new RegExp(filter, 'gi');
+		return members.filter( function (member: any) {
+			return member.title.match(rx);
+		});
+	}.property('@each','searchQuery'), 
 
 	actions: {
 		updateHeaders: function (headers: NodeList): void {
@@ -39,6 +49,18 @@ App.ArticleController = Em.ObjectController.extend({
 					id: id
 				});
 			}
+		},
+
+		/**
+		 * TODO: Create catgory mixin for methods below!
+		 */
+		loadMore: function () {
+			var category = this.get('model');
+			category.loadMore();
+		},
+
+		clearSearch: function (): void {
+			this.set('searchQuery', '');
 		}
 	}
 });

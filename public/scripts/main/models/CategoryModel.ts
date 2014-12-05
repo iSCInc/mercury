@@ -24,7 +24,6 @@ App.CategoryModel = App.ArticleModel.extend({
 
 		if (this.get('cmcontinue') && more) {
 			next += '?cmcontinue=' + this.get('cmcontinue');
-			//console.log('diana next: ', next);
 		}
 		//console.log(App.get('apiBase') + '/category/' + this.cleanTitle + next);
 		return App.get('apiBase') + '/category/' + this.cleanTitle + next;
@@ -76,7 +75,7 @@ App.CategoryModel = App.ArticleModel.extend({
 
 		tmp.pushObjects(categoryData.categorymembers);
 		this.set('categorymembers', tmp);
-		console.log("categorymembers: ",this.get('categorymembers'));
+		//console.log("categorymembers: ",this.get('categorymembers'));
 	},
 
 	loadMore: function () {
