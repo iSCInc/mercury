@@ -18,6 +18,10 @@ App.CategoryModel = App.ArticleModel.extend({
 	categorymembers: [],
 	isMore: true,
 	cleanTitle: null,
+	// in ms
+	debounceDuration: 250,
+	// Whether or not to display the loading search results message (en: 'Loading...')
+	isLoadingSearchResults: false,
 
 	categoryUrl: function (more?: boolean) {
 		var next = '';
@@ -75,6 +79,8 @@ App.CategoryModel = App.ArticleModel.extend({
 
 		tmp.pushObjects(categoryData.categorymembers);
 		this.set('categorymembers', tmp);
+
+		//$('.category-pages ul li').addClass('animated bounceInDown');
 	},
 
 	loadMore: function () {
@@ -98,7 +104,9 @@ App.CategoryModel = App.ArticleModel.extend({
 			var searchUrl = App.get('apiBase') + '/category/' + this.get('cleanTitle') + '&format=json&cmsort=sortkey&cmstartsortkeyprefix='+query;
 		}
 		console.log("query: ", query);
+
 		this.set('categorymembers', []); //zeruj kategory members
+
 		return new Em.RSVP.Promise((resolve: Function, reject: Function) => {
 			Em.$.ajax({
 				url: searchUrl ? searchUrl : this.categoryUrl(),
@@ -112,5 +120,10 @@ App.CategoryModel = App.ArticleModel.extend({
 				}
 			});
 		});
-	}
+	},
+
+	animateCategoryArticles: function () {
+		console.log("animacja! animateCategoryArticles");
+		$('.category-pages ul li').addClass('animated bounceInDown');
+	}.observes('categorymembers')
 });

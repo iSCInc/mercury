@@ -36,6 +36,7 @@ App.ArticleRoute = Em.Route.extend({
 		this._super(controller, model);
 		
 		if (model instanceof App.CategoryModel) {
+			console.log("model"+model);
 			controller.reopen(App.CategoryMixin);
 		}
 	},

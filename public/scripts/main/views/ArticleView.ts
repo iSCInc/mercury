@@ -219,6 +219,10 @@ App.ArticleView = Em.View.extend(App.AdsMixin, {
 		}
 	},
 
+	animateCategoryArticles: function () {
+		console.log("animacja! ArticleView");
+	},
+
 	hammerOptions: {
 		touchAction: 'auto'
 	},

@@ -15,18 +15,21 @@ interface searchResult {
 
 App.CategoryMixin = Em.Mixin.create({
 	searchQuery: '',
-	result: [],
+
+
+	search: function () {
+		//$('.category-pages ul li').addClass('animated bounceInDown');
+		var category = this.get('model');
+		category.search(this.get('searchQuery'));
+		//TODO: in index.hbs differ categorymembers from results of query
+		$('.search-container')[0].scrollIntoView();
+	}.observes('searchQuery'),
 
 	actions: {
 		loadMore: function () {
 			console.log("cmcontinue: ", this.get('cmcontinue'));
 			var category = this.get('model');
 			category.loadMore();
-		},
-
-		search: function () {
-			var category = this.get('model');
-			category.search(this.get('searchQuery'));
 		},
 
 		clearSearch: function (): void {
