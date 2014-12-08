@@ -49,18 +49,6 @@ App.CategoryController = Em.ObjectController.extend({
 					id: id
 				});
 			}
-		},
-
-		/**
-		 * TODO: Create catgory mixin for methods below!
-		 */
-		loadMore: function () {
-			var category = this.get('model');
-			category.loadMore();
-		},
-
-		clearSearch: function (): void {
-			this.set('searchQuery', '');
 		}
 	}
 });

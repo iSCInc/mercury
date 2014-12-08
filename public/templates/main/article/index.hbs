@@ -31,16 +31,15 @@
 
 </section>
 {{#if categorymembers}}
-	<header> {{filteredArticles.length}} {{i18n 'articles'}} </header>
-
 	<div class='search-container'>
 		{{input placeholder='Search article in this category' value=searchQuery }}
 		<svg {{action 'clearSearch' }} viewbox='0 0 18 18' class='icon close-side-menu'>
 			<use xlink:href='#close-side-menu'></use>
 		</svg>
+		<a {{action 'search'}}>Seach</a>
 	</div>
 
-		{{#each filteredArticles}}
+		{{#each categorymembers}}
 		<li {{action 'trackClick' 'category' 'link'}}>
 			{{#link-to 'article' title}}
 				{{title}}

@@ -17,16 +17,16 @@ interface Response {
 App.CategoryModel = App.ArticleModel.extend({
 	categorymembers: [],
 	isMore: true,
+	cleanTitle: null,
 
 	categoryUrl: function (more?: boolean) {
-
 		var next = '';
+		this.set('cleanTitle', this.get('title').replace('Category:', ''));
 
 		if (this.get('cmcontinue') && more) {
 			next += '?cmcontinue=' + this.get('cmcontinue');
 		}
-		//console.log(App.get('apiBase') + '/category/' + this.cleanTitle + next);
-		return App.get('apiBase') + '/category/' + this.cleanTitle + next;
+		return App.get('apiBase') + '/category/' + this.get('cleanTitle') + next;
 	},
 
 	find: function () {
@@ -75,13 +75,33 @@ App.CategoryModel = App.ArticleModel.extend({
 
 		tmp.pushObjects(categoryData.categorymembers);
 		this.set('categorymembers', tmp);
-		//console.log("categorymembers: ",this.get('categorymembers'));
 	},
 
 	loadMore: function () {
 		return new Em.RSVP.Promise((resolve: Function, reject: Function) => {
 			Em.$.ajax({
 				url: this.categoryUrl(true),
+				dataType: 'json',
+				success: (categoryData) => {
+					this.setCategory(categoryData);
+					resolve(this);
+				},
+				error: (err) => {
+					reject($.extend(err));
+				}
+			});
+		});
+	},
+
+	search: function (query: string) {
+		if (query) {
+			var searchUrl = App.get('apiBase') + '/category/' + this.get('cleanTitle') + '&format=json&cmsort=sortkey&cmstartsortkeyprefix='+query;
+		}
+		console.log("query: ", query);
+		this.set('categorymembers', []); //zeruj kategory members
+		return new Em.RSVP.Promise((resolve: Function, reject: Function) => {
+			Em.$.ajax({
+				url: searchUrl ? searchUrl : this.categoryUrl(),
 				dataType: 'json',
 				success: (categoryData) => {
 					this.setCategory(categoryData);

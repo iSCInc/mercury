@@ -2,16 +2,20 @@
 /// <reference path="../../../../typings/jquery/jquery.d.ts" />
 'use strict';
 
+interface searchResult {
+	resultData: {
+		categorymembers: {
+			pageid: number;
+			ns: number;
+			title: string;
+		};
+		cmcontinue: string;
+	};
+}
+
 App.CategoryMixin = Em.Mixin.create({
 	searchQuery: '',
-	filteredArticles: function (filter?: any) {
-		filter = this.get('searchQuery');
-		var members = this.get('categorymembers');
-		var rx = new RegExp(filter, 'gi');
-		return members.filter( function (member: any) {
-			return member.title.match(rx);
-		});
-	}.property('@each','searchQuery'),
+	result: [],
 
 	actions: {
 		loadMore: function () {
@@ -20,8 +24,15 @@ App.CategoryMixin = Em.Mixin.create({
 			category.loadMore();
 		},
 
+		search: function () {
+			var category = this.get('model');
+			category.search(this.get('searchQuery'));
+		},
+
 		clearSearch: function (): void {
 			this.set('searchQuery', '');
+			var category = this.get('model');
+			category.search(null);
 		}
 	}
 

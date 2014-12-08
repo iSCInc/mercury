@@ -11,7 +11,6 @@ App.ArticleController = Em.ObjectController.extend({
 	commentsPage: null,
 	map: null,
 
-
 	actions: {
 		updateHeaders: function (headers: NodeList): void {
 			var article = this.get('model');

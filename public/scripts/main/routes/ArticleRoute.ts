@@ -24,7 +24,6 @@ App.ArticleRoute = Em.Route.extend({
 
 	model: function (params: {basePath: string; wiki: string; title: string; redirect?: string}) {
 		var model : any;
-
 		if (params.title.indexOf(Mercury.wiki.namespaces[14]) > -1 ) {
 			model = App.CategoryModel.create(params);
 		} else {
@@ -35,7 +34,7 @@ App.ArticleRoute = Em.Route.extend({
 
 	setupController: function(controller, model) {
 		this._super(controller, model);
-		console.log("model"+model);
+		
 		if (model instanceof App.CategoryModel) {
 			controller.reopen(App.CategoryMixin);
 		}
