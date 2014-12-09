@@ -15,13 +15,8 @@ interface Response {
 }
 
 App.CategoryModel = App.ArticleModel.extend({
-	categorymembers: [],
 	isMore: true,
 	cleanTitle: null,
-	// in ms
-	debounceDuration: 250,
-	// Whether or not to display the loading search results message (en: 'Loading...')
-	isLoadingSearchResults: false,
 
 	categoryUrl: function (more?: boolean) {
 		var next = '';
@@ -62,6 +57,7 @@ App.CategoryModel = App.ArticleModel.extend({
 		return false;
 		}
 		if (source.query.categorymembers) {
+			this.set('membersExist', true);
 			var categorymembers = source.query.categorymembers;
 			categoryData = {
 				categorymembers: categorymembers
@@ -73,23 +69,20 @@ App.CategoryModel = App.ArticleModel.extend({
 		} else {
 			this.set('isMore', false);
 		}
-
-		var tmp = this.get('categorymembers');
 		this.setProperties(categoryData);
-
-		tmp.pushObjects(categoryData.categorymembers);
-		this.set('categorymembers', tmp);
-
-		//$('.category-pages ul li').addClass('animated bounceInDown');
 	},
 
 	loadMore: function () {
+		var tmp = this.get('categorymembers');
 		return new Em.RSVP.Promise((resolve: Function, reject: Function) => {
 			Em.$.ajax({
 				url: this.categoryUrl(true),
 				dataType: 'json',
 				success: (categoryData) => {
 					this.setCategory(categoryData);
+					tmp.pushObjects(this.get('categorymembers'));
+					this.set('categorymembers', tmp);
+					this.animateCategoryArticles();
 					resolve(this);
 				},
 				error: (err) => {
@@ -100,12 +93,10 @@ App.CategoryModel = App.ArticleModel.extend({
 	},
 
 	search: function (query: string) {
+		$('.category-pages ul li').slideUp(500);
 		if (query) {
-			var searchUrl = App.get('apiBase') + '/category/' + this.get('cleanTitle') + '&format=json&cmsort=sortkey&cmstartsortkeyprefix='+query;
+			var searchUrl = App.get('apiBase') + '/category/' + this.get('cleanTitle') + '&format=json&cmsort=sortkey&cmstartsortkeyprefix=' + query;
 		}
-		console.log("query: ", query);
-
-		this.set('categorymembers', []); //zeruj kategory members
 
 		return new Em.RSVP.Promise((resolve: Function, reject: Function) => {
 			Em.$.ajax({
@@ -123,7 +114,9 @@ App.CategoryModel = App.ArticleModel.extend({
 	},
 
 	animateCategoryArticles: function () {
+		var el = $('.category-pages ul li');
 		console.log("animacja! animateCategoryArticles");
-		$('.category-pages ul li').addClass('animated bounceInDown');
-	}.observes('categorymembers')
+		el.slideUp(500);
+		el.slideDown(500);
+	}
 });

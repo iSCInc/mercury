@@ -30,13 +30,10 @@
 	{{/view}}
 
 </section>
-{{#if categorymembers}}
+{{#if membersExist}}
 <nav class='category-pages'>
 	<div class='search-container'>
 		{{input placeholder='Search article in this category' value=searchQuery }}
-		<svg {{action 'search'}} viewBox='0 0 14 14' class='icon search-side-menu'>
-			<use xlink:href='#search-side-menu'></use>
-		</svg>
 		<svg {{action 'clearSearch' }} viewbox='0 0 18 18' class='icon close-side-menu'>
 			<use xlink:href='#close-side-menu'></use>
 		</svg>
@@ -52,7 +49,7 @@
 		{{/each}}
 		</ul>
 </nav>
-{{#if isMore}}<a {{action 'loadMore'}}>Load More</a> {{/if}}
+{{#if isMore}}<a class='loadMore' {{action 'loadMore'}}>Load More</a> {{/if}}
 {{/if}}
 <section class='article-footer'>
 {{wikia-users
