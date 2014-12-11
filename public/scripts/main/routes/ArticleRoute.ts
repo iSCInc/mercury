@@ -37,7 +37,7 @@ App.ArticleRoute = Em.Route.extend({
 	 * reopen it with CategoryMixin to get its special
 	 * properties
 	 */
-	setupController: function(controller: any, model: any) {
+	setupController: function(controller, model) {
 		this._super(controller, model);
 		
 		if (model instanceof App.CategoryModel) {
