@@ -107,11 +107,13 @@ App.CategoryModel = App.ArticleModel.extend({
 	 * @desc checks if query param is empty- in this case loads all possible category pages
 	 * (by default first 10). If the query exists, gets data from API and creates a new promise.
 	 * Additional filtering data received from API needed due to construction of api.php which
-	 * allows only for sorting from certain pattern (not searching in)
+	 * allows only for sorting from certain pattern (not searching in).
+	 * Sets isMore to true to reset consequence of previous loadMore/search actions
 	 * @param {string} query value to search for
 	 * @returns {Em.RSVP.Promise}
 	 */
 	search: function (query: string) {
+		this.set('isMore', true);
 		if (query) {
 			var searchUrl = App.get('apiBase') + '/category/' + this.get('cleanTitle') + '&format=json&cmsort=sortkey&cmstartsortkeyprefix=' + query;
 		}
@@ -140,7 +142,6 @@ App.CategoryModel = App.ArticleModel.extend({
 
 	animateCategoryArticles: function () {
 		var el = $('.category-pages ul li');
-		console.log("animacja! animateCategoryArticles");
 		el.slideUp(400);
 		el.slideDown(400);
 	}
