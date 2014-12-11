@@ -23,7 +23,7 @@ App.CategoryMixin = Em.Mixin.create({
 	}.observes('searchQuery'),
 
 	actions: {
-		loadMore: function () {
+		loadMore: function (): void {
 			var category = this.get('model');
 			category.loadMore();
 		},
