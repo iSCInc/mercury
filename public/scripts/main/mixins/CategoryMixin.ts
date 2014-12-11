@@ -19,7 +19,6 @@ App.CategoryMixin = Em.Mixin.create({
 	search: function (): void {
 		var category = this.get('model');
 		category.search(this.get('searchQuery'));
-		$('.search-container')[0].scrollIntoView();
 	}.observes('searchQuery'),
 
 	actions: {

@@ -61,7 +61,7 @@ App.CategoryModel = App.ArticleModel.extend({
 			categoryData = {
 				error: error
 			};
-		return false;
+			return false;
 		}
 		if (source.query.categorymembers) {
 			this.set('membersExist', true);

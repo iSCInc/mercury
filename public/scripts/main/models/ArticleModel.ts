@@ -45,8 +45,8 @@ App.ArticleModel = Em.Object.extend({
 	url: function () {
 		var redirect = '';
 
-		if (this.get(redirect)) {
-			redirect += '?redirect=' + encodeURIComponent(this.get(redirect));
+		if (this.get('redirect')) {
+			redirect += '?redirect=' + encodeURIComponent(this.get('redirect'));
 		}
 		return App.get('apiBase') + '/article/' + this.get('title') + redirect;
 	},
