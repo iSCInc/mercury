@@ -5,20 +5,6 @@ $border-color: #d0d0d0;
 	border-top: 1px solid $border-color;
 	border-bottom: 1px solid $border-color;
 
-	.title {
-		@extend %button-plain;
-		background: none;
-		display: block;
-		font-weight: bold;
-		line-height: 2.4rem;
-		position: relative;
-		text: {
-			align: left;
-			transform: uppercase;
-		}
-		width: 100%;
-	}
-
 	.search-container {
 		text-align: center;
 		line-height: 3.5;
@@ -29,7 +15,6 @@ $border-color: #d0d0d0;
 	}
 
 	ul {
-
 		margin: 0;
 		padding: 0;
 

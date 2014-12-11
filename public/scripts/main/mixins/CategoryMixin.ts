@@ -17,7 +17,6 @@ App.CategoryMixin = Em.Mixin.create({
 	searchQuery: '',
 
 	search: function () {
-		//$('.category-pages ul li').addClass('animated bounceOutDown');
 		var category = this.get('model');
 		category.search(this.get('searchQuery'));
 		$('.search-container')[0].scrollIntoView();

@@ -18,14 +18,21 @@ App.CategoryModel = App.ArticleModel.extend({
 	isMore: true,
 	cleanTitle: null,
 
+	/**
+	 * @desc Evaluates if we want to get url to first category page or load more category
+	 * members (and whether it is possible). Creates url.
+	 * @param {boolean} more value which is true when the method was called
+	 * to obtain url to the next part of category pages (called from 'loadMore' method)
+	 * @returns {string} url to appropriate category page
+	 */
 	categoryUrl: function (more?: boolean) {
-		var next = '';
+		var cmcontinue = '';
 		this.set('cleanTitle', this.get('title').replace('Category:', ''));
 
 		if (this.get('cmcontinue') && more) {
-			next += '?cmcontinue=' + this.get('cmcontinue');
+			cmcontinue += '?cmcontinue=' + this.get('cmcontinue');
 		}
-		return App.get('apiBase') + '/category/' + this.get('cleanTitle') + next;
+		return App.get('apiBase') + '/category/' + this.get('cleanTitle') + cmcontinue;
 	},
 
 	find: function () {
@@ -63,7 +70,6 @@ App.CategoryModel = App.ArticleModel.extend({
 				categorymembers: categorymembers
 			};
 		}
-		
 		if (source['query-continue']) {
 			this.set('cmcontinue' , source['query-continue']['categorymembers']['cmcontinue']);
 		} else {
@@ -72,6 +78,11 @@ App.CategoryModel = App.ArticleModel.extend({
 		this.setProperties(categoryData);
 	},
 
+	/**
+	 * @desc updates categorymembers list. New category pages are added to 
+	 * list, not replaced.
+	 * @returns {Em.RSVP.Promise}
+	 */
 	loadMore: function () {
 		var tmp = this.get('categorymembers');
 		return new Em.RSVP.Promise((resolve: Function, reject: Function) => {
@@ -92,17 +103,31 @@ App.CategoryModel = App.ArticleModel.extend({
 		});
 	},
 
+	/**
+	 * @desc checks if query param is empty- in this case loads all possible category pages
+	 * (by default first 10). If the query exists, gets data from API and creates a new promise.
+	 * Additional filtering data received from API needed due to construction of api.php which
+	 * allows only for sorting from certain pattern (not searching in)
+	 * @param {string} query value to search for
+	 * @returns {Em.RSVP.Promise}
+	 */
 	search: function (query: string) {
-		$('.category-pages ul li').slideUp(500);
 		if (query) {
 			var searchUrl = App.get('apiBase') + '/category/' + this.get('cleanTitle') + '&format=json&cmsort=sortkey&cmstartsortkeyprefix=' + query;
 		}
-
+		$('.category-pages ul li').slideUp(400);
 		return new Em.RSVP.Promise((resolve: Function, reject: Function) => {
 			Em.$.ajax({
 				url: searchUrl ? searchUrl : this.categoryUrl(),
 				dataType: 'json',
 				success: (categoryData) => {
+					if (query) {
+						var members = categoryData.query.categorymembers,
+							rx = new RegExp('^'+query, 'i');
+						categoryData.query.categorymembers = members.filter( function (member: any) {
+							return member.title.match(rx);
+						});
+					}
 					this.setCategory(categoryData);
 					resolve(this);
 				},
@@ -116,7 +141,7 @@ App.CategoryModel = App.ArticleModel.extend({
 	animateCategoryArticles: function () {
 		var el = $('.category-pages ul li');
 		console.log("animacja! animateCategoryArticles");
-		el.slideUp(500);
-		el.slideDown(500);
+		el.slideUp(400);
+		el.slideDown(400);
 	}
 });

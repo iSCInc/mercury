@@ -32,11 +32,15 @@ App.ArticleRoute = Em.Route.extend({
 		return model.find();
 	},
 
-	setupController: function(controller, model) {
+	/**
+	 * @desc if current model is the instance of CategoryModel,
+	 * reopen it with CategoryMixin to get its special
+	 * properties
+	 */
+	setupController: function(controller: any, model: any) {
 		this._super(controller, model);
 		
 		if (model instanceof App.CategoryModel) {
-			console.log("model"+model);
 			controller.reopen(App.CategoryMixin);
 		}
 	},
