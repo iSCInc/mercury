@@ -48,7 +48,7 @@ App.ArticleModel = Em.Object.extend({
 		if (this.get(redirect)) {
 			redirect += '?redirect=' + encodeURIComponent(this.get(redirect));
 		}
-		return App.get('apiBase') + '/article/' + this.get('title')+ redirect;
+		return App.get('apiBase') + '/article/' + this.get('title') + redirect;
 	},
 
 	find: function () {
@@ -57,7 +57,7 @@ App.ArticleModel = Em.Object.extend({
 				this.setArticle();
 				resolve(this);
 			} else {
-					Em.$.ajax({
+				Em.$.ajax({
 					url: this.url(),
 					dataType: 'json',
 					success: (data) => {

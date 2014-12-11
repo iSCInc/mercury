@@ -2,7 +2,7 @@
 /// <reference path="../../../../typings/jquery/jquery.d.ts" />
 'use strict';
 
-interface searchResult {
+interface SearchResult {
 	resultData: {
 		categorymembers: {
 			pageid: number;
@@ -16,7 +16,7 @@ interface searchResult {
 App.CategoryMixin = Em.Mixin.create({
 	searchQuery: '',
 
-	search: function () {
+	search: function (): void {
 		var category = this.get('model');
 		category.search(this.get('searchQuery'));
 		$('.search-container')[0].scrollIntoView();
