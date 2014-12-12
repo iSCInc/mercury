@@ -36,7 +36,6 @@ App.CategoryModel = App.ArticleModel.extend({
 	},
 
 	find: function () {
-		this._super();
 		return new Em.RSVP.Promise((resolve: Function, reject: Function) => {
 			Em.$.ajax({
 				url: this.categoryUrl(),
@@ -70,8 +69,9 @@ App.CategoryModel = App.ArticleModel.extend({
 				categorymembers: categorymembers
 			};
 		}
-		if (source['query-continue']) {
-			this.set('cmcontinue' , source['query-continue']['categorymembers']['cmcontinue']);
+		var queryContinue: any = {};
+		if (queryContinue = source['query-continue']) {
+			this.set('cmcontinue' , queryContinue['categorymembers']['cmcontinue']);
 		} else {
 			this.set('isMore', false);
 		}
@@ -84,15 +84,15 @@ App.CategoryModel = App.ArticleModel.extend({
 	 * @returns {Em.RSVP.Promise}
 	 */
 	loadMore: function () {
-		var tmp = this.get('categorymembers');
+		var tempCategoryMembers = this.get('categorymembers');
 		return new Em.RSVP.Promise((resolve: Function, reject: Function) => {
 			Em.$.ajax({
 				url: this.categoryUrl(true),
 				dataType: 'json',
 				success: (categoryData) => {
 					this.setCategory(categoryData);
-					tmp.pushObjects(this.get('categorymembers'));
-					this.set('categorymembers', tmp);
+					tempCategoryMembers.pushObjects(this.get('categorymembers'));
+					this.set('categorymembers', tempCategoryMembers);
 					this.animateCategoryArticles();
 					resolve(this);
 				},
@@ -117,15 +117,15 @@ App.CategoryModel = App.ArticleModel.extend({
 		if (query) {
 			var searchUrl = App.get('apiBase') + '/category/' + this.get('cleanTitle') + '&format=json&cmsort=sortkey&cmstartsortkeyprefix=' + query;
 		}
-		$('.category-pages ul li').slideUp(400);
+		$('.category-pages li').slideUp(400);
 		return new Em.RSVP.Promise((resolve: Function, reject: Function) => {
 			Em.$.ajax({
-				url: searchUrl ? searchUrl : this.categoryUrl(),
+				url: searchUrl ||  this.categoryUrl(),
 				dataType: 'json',
 				success: (categoryData) => {
 					if (query) {
 						var members = categoryData.query.categorymembers,
-							rx = new RegExp('^'+query, 'i');
+							rx = new RegExp('^' + query, 'i');
 						categoryData.query.categorymembers = members.filter( function (member: any) {
 							return member.title.match(rx);
 						});
@@ -141,7 +141,7 @@ App.CategoryModel = App.ArticleModel.extend({
 	},
 
 	animateCategoryArticles: function () {
-		var el = $('.category-pages ul li');
+		var el = $('.category-pages li');
 		el.slideUp(400);
 		el.slideDown(400);
 	}
