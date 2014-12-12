@@ -30,26 +30,27 @@
 	{{/view}}
 
 </section>
+{{#if membersNotFound}}<h4 class='category-members-error'>{{i18n 'category-members-error'}}</h4> {{/if}}
 {{#if membersExist}}
-<nav class='category-pages'>
-	<div class='search-container'>
-		{{input placeholder='Search article in this category' value=searchQuery }}
-		<svg {{action 'clearSearch' }} viewbox='0 0 18 18' class='icon close-side-menu'>
-			<use xlink:href='#close-side-menu'></use>
-		</svg>
-	</div>
+	<nav class='category-pages'>
+		<div class='search-container'>
+			{{input placeholder='Search article in this category' value=searchQuery }}
+			<svg {{action 'clearSearch' }} viewbox='0 0 18 18' class='icon close-side-menu'>
+				<use xlink:href='#close-side-menu'></use>
+			</svg>
+		</div>
 
-		<ul>
-		{{#each categorymembers}}
-		<li {{action 'trackClick' 'category' 'link'}}>
-			{{#link-to 'article' title}}
-				{{title}}
-			{{/link-to}}
-		</li>
-		{{/each}}
-		</ul>
-</nav>
-{{#if isMore}}<a class='loadMore' {{action 'loadMore'}}>Load More</a> {{/if}}
+			<ul>
+			{{#each categorymembers}}
+			<li {{action 'trackClick' 'category' 'link'}}>
+				{{#link-to 'article' title}}
+					{{title}}
+				{{/link-to}}
+			</li>
+			{{/each}}
+			</ul>
+	</nav>
+	{{#if isMore}}<a class='loadMore' {{action 'loadMore'}}>{{i18n 'load-more'}}</a> {{/if}}
 {{/if}}
 <section class='article-footer'>
 {{wikia-users

@@ -17,6 +17,7 @@ interface Response {
 App.CategoryModel = App.ArticleModel.extend({
 	isMore: true,
 	cleanTitle: null,
+	membersNotFound: null,
 
 	/**
 	 * @desc Evaluates if we want to get url to first category page or load more category
@@ -34,21 +35,24 @@ App.CategoryModel = App.ArticleModel.extend({
 		}
 		return App.get('apiBase') + '/category/' + this.get('cleanTitle') + cmcontinue;
 	},
-
+	/**
+	 * @desc Calls the ArticleModel.find funciton and returns its result. 
+	 * Request ajax to get and set additional category informations and sets.
+	 * @returns {Em.RSVP.Promise} returned by ArticleModel.find
+	 */
 	find: function () {
-		return new Em.RSVP.Promise((resolve: Function, reject: Function) => {
-			Em.$.ajax({
+		var articlePromise = this._super();
+		Em.$.ajax({
 				url: this.categoryUrl(),
 				dataType: 'json',
 				success: (categoryData) => {
 					this.setCategory(categoryData);
-					resolve(this);
 				},
 				error: (err) => {
-					reject($.extend(err));
+					this.set('membersNotFound', true);
 				}
-			});
 		});
+		return articlePromise;
 	},
 
 	setCategory: function (source: any) {
