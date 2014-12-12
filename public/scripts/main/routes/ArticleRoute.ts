@@ -23,11 +23,11 @@ App.ArticleRoute = Em.Route.extend({
 	},
 
 	model: function (params: {basePath: string; wiki: string; title: string; redirect?: string}) {
-		var model : any;
-		var categoryPattern = '%@:%@'.fmt(
+		var model : any,
+		categoryPattern = '%@:%@'.fmt(
 			Em.getWithDefault(Mercury, 'wiki.namespaces.14', 'Category'),
 			this.get('title')
-			);
+		);
 		if (params.title.indexOf(categoryPattern) > -1 ) {
 			model = App.CategoryModel.create(params);
 		} else {

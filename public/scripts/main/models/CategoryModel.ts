@@ -36,23 +36,24 @@ App.CategoryModel = App.ArticleModel.extend({
 		return App.get('apiBase') + '/category/' + this.get('cleanTitle') + cmcontinue;
 	},
 	/**
-	 * @desc Calls the ArticleModel.find funciton and returns its result. 
-	 * Request ajax to get and set additional category informations and sets.
-	 * @returns {Em.RSVP.Promise} returned by ArticleModel.find
+	 * @desc Calls the ArticleModel.find funciton and after 
+	 * requests ajax to get and set additional category informations.
+	 * @returns {Em.RSVP.Promise}
 	 */
 	find: function () {
-		var articlePromise = this._super();
-		Em.$.ajax({
-				url: this.categoryUrl(),
-				dataType: 'json',
-				success: (categoryData) => {
+		return this._super().then(() => {
+			return new Em.RSVP.Promise((resolve: Function, reject: Function) => {
+				Em.$.getJSON(
+					this.categoryUrl()
+				).done((categoryData) => {
 					this.setCategory(categoryData);
-				},
-				error: (err) => {
+					resolve(this)
+				}).fail((err) => {
 					this.set('membersNotFound', true);
-				}
+					reject(this)
+				});
+			})
 		});
-		return articlePromise;
 	},
 
 	setCategory: function (source: any) {
@@ -90,19 +91,17 @@ App.CategoryModel = App.ArticleModel.extend({
 	loadMore: function () {
 		var tempCategoryMembers = this.get('categorymembers');
 		return new Em.RSVP.Promise((resolve: Function, reject: Function) => {
-			Em.$.ajax({
-				url: this.categoryUrl(true),
-				dataType: 'json',
-				success: (categoryData) => {
-					this.setCategory(categoryData);
-					tempCategoryMembers.pushObjects(this.get('categorymembers'));
-					this.set('categorymembers', tempCategoryMembers);
-					this.animateCategoryArticles();
-					resolve(this);
-				},
-				error: (err) => {
-					reject($.extend(err));
-				}
+			Em.$.getJSON(
+				this.categoryUrl(true)
+			).done((categoryData) => {
+				this.setCategory(categoryData);
+				tempCategoryMembers.pushObjects(this.get('categorymembers'));
+				this.set('categorymembers', tempCategoryMembers);
+				this.animateCategoryArticles();
+				resolve(this)
+			}).fail((err) => {
+				this.set('membersNotFound', true);
+				reject(this)
 			});
 		});
 	},
