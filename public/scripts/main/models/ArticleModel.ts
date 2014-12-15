@@ -33,22 +33,35 @@ interface Response {
 	};
 }
 
-App.ArticleModel = Em.Object.extend({
-	article: null,
-	basePath: null,
-	categories: [],
-	cleanTitle: null,
-	comments: 0,
-	media: [],
-	mediaUsers: [],
-	sections: [],
-	title: null,
-	user: null,
-	users: [],
-	wiki: null
+declare var DS: any;
+
+App.Article = DS.Model.extend({
+	content: DS.attr('string'),
+	basePath: DS.attr('string'),
+	cleanTitle: DS.attr('string'),
+	comments: DS.attr('number'),
+	//sections: [], WTF? there is no sections in API
+	title: DS.attr('string'),
+	wiki: DS.attr('string'),
+
+	categories: DS.hasMany('category'),
+	media: DS.hasMany('media'),
+	//user: DS.belongsTo('user'),
+	users: DS.hasMany('user')
+	
 });
 
-App.ArticleModel.reopenClass({
+App.Category = DS.Model.extend({
+	title: DS.attr('string'),
+	url: DS.attr('string')
+});
+
+App.User = DS.Model.extend({
+	title: DS.attr('string'),
+	url: DS.attr('string')
+});
+
+App.Article.reopenClass({
 	url: function (params: {title: string; redirect?: string}) {
 		var redirect = '';
 
@@ -60,7 +73,9 @@ App.ArticleModel.reopenClass({
 	},
 
 	find: function (params: {basePath: string; wiki: string; title: string; redirect?: string}) {
-		var model = App.ArticleModel.create(params);
+		var model = store.createRecord('article', {
+			params
+		}); //App.Article.create(params);
 
 		if (Mercury._state.firstPage) {
 			this.setArticle(model);
@@ -103,7 +118,7 @@ App.ArticleModel.reopenClass({
 		return article;
 	},
 
-	setArticle: function (model: typeof App.ArticleModel, source = this.getPreloadedData()) {
+	setArticle: function (model: typeof App.Article, source = this.getPreloadedData()) {
 		var data: any = {};
 
 		if (source.error) {
@@ -122,8 +137,8 @@ App.ArticleModel.reopenClass({
 					ns: details.ns,
 					cleanTitle: details.title,
 					comments: details.comments,
-					id: details.id,
-					user: details.revision.user_id
+					id: details.id
+					//user: details.revision.user_id
 				});
 			}
 
@@ -132,8 +147,8 @@ App.ArticleModel.reopenClass({
 
 				data = $.extend(data, {
 					article: article.content || source.content,
-					mediaUsers: article.users,
-					media: App.MediaModel.create({
+					//mediaUsers: article.users,
+					media: store.createRecord('media', {
 						media: article.media
 					}),
 					categories: article.categories

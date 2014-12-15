@@ -14,7 +14,7 @@ interface ArticleMedia {
 	width: number;
 }
 
-App.MediaModel = Em.Object.extend({
+App.Media = DS.Model.extend({
 	find: function (id: number): ArticleMedia {
 		return this.get('media')[id];
 	}
