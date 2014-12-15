@@ -3,6 +3,13 @@
 
 'use strict';
 
+interface Params {
+	basePath: string; 
+	wiki: string; 
+	title: string; 
+	redirect: string
+}
+
 App.ArticleRoute = Em.Route.extend({
 	queryParams: {
 		file: {
@@ -22,7 +29,13 @@ App.ArticleRoute = Em.Route.extend({
 		);
 	},
 
-	model: function (params: {basePath: string; wiki: string; title: string; redirect?: string}) {
+	/**
+	 * @desc basing on title (taken from params) evaluates which model to create:
+	 * if title contains 'Category:' it means that it's category article and
+	 * the CategoryModel should be created. Otherwise it's normal page model.
+	 * @returns according to model returns Em.RSVP.Promise
+	 */
+	model: function (params: Params) {
 		var model : any,
 		categoryPattern = '%@:%@'.fmt(
 			Em.getWithDefault(Mercury, 'wiki.namespaces.14', 'Category'),

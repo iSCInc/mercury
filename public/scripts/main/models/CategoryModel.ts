@@ -15,9 +15,16 @@ interface Response {
 }
 
 App.CategoryModel = App.ArticleModel.extend({
-	isMore: true,
-	cleanTitle: null,
-	membersNotFound: null,
+	moreCategoriesAvailable: true,
+	membersNotFound: false,
+
+	cleanTitle: function (): string {
+		var categoryPattern = '%@:%@'.fmt(
+			Em.getWithDefault(Mercury, 'wiki.namespaces.14', 'Category'),
+			this.get('title')
+		);
+		return this.get('title').replace(categoryPattern + ':', '');
+	}.property('title'),
 
 	/**
 	 * @desc Evaluates if we want to get url to first category page or load more category
@@ -28,7 +35,6 @@ App.CategoryModel = App.ArticleModel.extend({
 	 */
 	categoryUrl: function (more?: boolean) {
 		var cmcontinue = '';
-		this.set('cleanTitle', this.get('title').replace('Category:', ''));
 
 		if (this.get('cmcontinue') && more) {
 			cmcontinue += '?cmcontinue=' + this.get('cmcontinue');
@@ -58,7 +64,9 @@ App.CategoryModel = App.ArticleModel.extend({
 
 	setCategory: function (source: any) {
 		var categoryData: any = {},
-			cmcontinue: string = null;
+			cmcontinue: string = null,
+			categorymembers: any = {},
+			queryContinue: any = {};
 
 		if (source.error) {
 			var error = source.error;
@@ -67,18 +75,18 @@ App.CategoryModel = App.ArticleModel.extend({
 			};
 			return false;
 		}
-		if (source.query.categorymembers) {
+		categorymembers = source.query.categorymembers;
+		if (categorymembers) {
 			this.set('membersExist', true);
-			var categorymembers = source.query.categorymembers;
 			categoryData = {
 				categorymembers: categorymembers
 			};
 		}
-		var queryContinue: any = {};
-		if (queryContinue = source['query-continue']) {
+		queryContinue = source['query-continue'];
+		if (queryContinue) {
 			this.set('cmcontinue' , queryContinue['categorymembers']['cmcontinue']);
 		} else {
-			this.set('isMore', false);
+			this.set('moreCategoriesAvailable', false);
 		}
 		this.setProperties(categoryData);
 	},
@@ -111,12 +119,12 @@ App.CategoryModel = App.ArticleModel.extend({
 	 * (by default first 10). If the query exists, gets data from API and creates a new promise.
 	 * Additional filtering data received from API needed due to construction of api.php which
 	 * allows only for sorting from certain pattern (not searching in).
-	 * Sets isMore to true to reset consequence of previous loadMore/search actions
+	 * Sets moreCategoriesAvailable to true to reset consequence of previous loadMore/search actions
 	 * @param {string} query value to search for
 	 * @returns {Em.RSVP.Promise}
 	 */
 	search: function (query: string) {
-		this.set('isMore', true);
+		this.set('moreCategoriesAvailable', true);
 		if (query) {
 			var searchUrl = App.get('apiBase') + '/category/' + this.get('cleanTitle') + '&format=json&cmsort=sortkey&cmstartsortkeyprefix=' + query;
 		}
@@ -129,7 +137,7 @@ App.CategoryModel = App.ArticleModel.extend({
 					if (query) {
 						var members = categoryData.query.categorymembers,
 							rx = new RegExp('^' + query, 'i');
-						categoryData.query.categorymembers = members.filter( function (member: any) {
+						categoryData.query.categorymembers = members.filter((member: any): string[] => {
 							return member.title.match(rx);
 						});
 					}

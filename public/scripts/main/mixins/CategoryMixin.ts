@@ -2,17 +2,6 @@
 /// <reference path="../../../../typings/jquery/jquery.d.ts" />
 'use strict';
 
-interface SearchResult {
-	resultData: {
-		categorymembers: {
-			pageid: number;
-			ns: number;
-			title: string;
-		};
-		cmcontinue: string;
-	};
-}
-
 App.CategoryMixin = Em.Mixin.create({
 	searchQuery: '',
 
