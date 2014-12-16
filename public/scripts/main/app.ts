@@ -13,6 +13,12 @@ var App: any = Em.Application.create({
 		apiBase: Mercury.apiBase || '/api/v1'
 	});
 
+App.ApplicationAdapter = DS.RESTAdapter.extend({
+	//
+	host: 'http://shadowofmordor.wikia.local:8000',
+	namespace: App.apiBase
+});
+
 App.initializer({
 	name: 'preload',
 	initialize: (container: any, application: any) => {

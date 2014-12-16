@@ -28,11 +28,24 @@ App.ArticleRoute = Em.Route.extend({
 	},
 
 	model: function (params: any) {
-		return App.Article.find({
+		console.log("this.store", this.store);
+		console.log("title: ", params.title);
+
+		/*return 
+		App.Article.find2({
 			basePath: Mercury.wiki.basePath,
 			title: Mercury.Utils.String.sanitize(params.title),
 			wiki: this.controllerFor('application').get('domain')
+		});*/
+		//moze tutaj stworz model?
+		var model=  this.store.find('article', {
+			//basePath: Mercury.wiki.basePath,
+			title: Mercury.Utils.String.sanitize(params.title)
+			//wiki: this.controllerFor('application').get('domain')
 		});
+
+		console.log("MODEL: "+ model);
+		return model;
 	},
 
 	actions: {

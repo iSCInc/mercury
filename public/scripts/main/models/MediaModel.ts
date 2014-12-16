@@ -15,6 +15,8 @@ interface ArticleMedia {
 }
 
 App.Media = DS.Model.extend({
+	user: DS.belongsTo('user'),
+
 	find: function (id: number): ArticleMedia {
 		return this.get('media')[id];
 	}

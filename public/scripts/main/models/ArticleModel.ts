@@ -46,19 +46,23 @@ App.Article = DS.Model.extend({
 
 	categories: DS.hasMany('category'),
 	media: DS.hasMany('media'),
-	//user: DS.belongsTo('user'),
+	topContributors: DS.hasMany('user'),
 	users: DS.hasMany('user')
 	
 });
 
 App.Category = DS.Model.extend({
 	title: DS.attr('string'),
-	url: DS.attr('string')
+	url: DS.attr('string'),
+
+	articles: DS.hasMany('article')
 });
 
 App.User = DS.Model.extend({
 	title: DS.attr('string'),
-	url: DS.attr('string')
+	url: DS.attr('string'),
+
+	articles: DS.hasMany('articles')
 });
 
 App.Article.reopenClass({
@@ -72,11 +76,11 @@ App.Article.reopenClass({
 		return App.get('apiBase') + '/article/' + params.title + redirect;
 	},
 
-	find: function (params: {basePath: string; wiki: string; title: string; redirect?: string}) {
-		var model = store.createRecord('article', {
-			params
-		}); //App.Article.create(params);
-
+	find2: function (params: {basePath: string; wiki: string; title: string; redirect?: string}) {
+		console.log("find!");
+		console.log("this.store", this.store);
+		var model = this.store.createRecord('article'); //App.Article.create(params);
+		console.log("find, model", model);
 		if (Mercury._state.firstPage) {
 			this.setArticle(model);
 			return model;
@@ -95,7 +99,7 @@ App.Article.reopenClass({
 				}
 			});
 		});
-	},
+	}, 
 
 	getPreloadedData: function () {
 		var article = Mercury.article,
@@ -119,6 +123,7 @@ App.Article.reopenClass({
 	},
 
 	setArticle: function (model: typeof App.Article, source = this.getPreloadedData()) {
+		console.log("setArticle", model);
 		var data: any = {};
 
 		if (source.error) {
@@ -146,12 +151,17 @@ App.Article.reopenClass({
 				var article = source.article;
 
 				data = $.extend(data, {
-					article: article.content || source.content,
-					//mediaUsers: article.users,
-					media: store.createRecord('media', {
-						media: article.media
+					content: article.content || source.content,
+					users: article.users,
+					media: DS.Store.createRecord('media', {
+						type: article.media.type,
+						url: article.media.url,
+						user: article.media.user
 					}),
-					categories: article.categories
+					categories: DS.Store.createRecord('category', {
+						title: article.category.title,
+						url: article.category.url
+					})
 				});
 			}
 
