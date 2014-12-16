@@ -30,6 +30,12 @@ App.initializer({
 			LOG_TRANSITIONS_INTERNAL: debug
 		});
 
+		$('link').filter(function (elm) {
+			return !!this.getAttribute('data-href');
+		}).each(function (i: number, $link: HTMLElement): void {
+			$link.setAttribute('href', $link.getAttribute('data-href'));
+		});
+
 		$('html').removeClass('preload');
 
 		i18n.init({
