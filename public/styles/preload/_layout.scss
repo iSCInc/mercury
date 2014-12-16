@@ -2,7 +2,19 @@
 	margin-top: 149px;
 }
 
+.wiki-title {
+  @extend %header-section-title;
+  @extend .subtext;
+  margin-bottom: rem-calc(20);
+
+  a {
+	color: $primary-color;
+	display: block;
+  }
+}
+
 .site-head {
+	background-color: rgb(255, 255, 255);
 	border-bottom: 1px solid $color-gray-light;
 	height: rem-calc(50);
 	left: 0;
