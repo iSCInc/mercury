@@ -2,15 +2,7 @@
 	@extend .row;
 	@extend .small-12;
 	background-color: rgb(255, 255, 255);
-	border-bottom: 1px solid $color-gray-light;
 	direction: ltr;
-	height: rem-calc(50);
-	left: 0;
-	margin: 0 auto;
-	position: fixed;
-	right: 0;
-	text-align: center;
-	top: 0;
 	z-index: $z-site-head;
 }
 
