@@ -30,7 +30,8 @@ App.initializer({
 			LOG_TRANSITIONS_INTERNAL: debug
 		});
 
-		$('link').filter(function (elm) {
+		//Lazy loading CSS
+		$('link').filter(function (): boolean {
 			return !!this.getAttribute('data-href');
 		}).each(function (i: number, $link: HTMLElement): void {
 			$link.setAttribute('href', $link.getAttribute('data-href'));
