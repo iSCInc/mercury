@@ -1,5 +1,22 @@
+.preload body {
+	padding: 0 1.125rem;
+}
+
 .preload .page-wrapper {
 	margin-top: 149px;
+}
+
+.preload .icon {
+	display: none;
+}
+
+.preload .icon.wikia-logo {
+	display: inline;
+}
+
+a {
+	text-decoration: none;
+	color: $anchor-color-normal;
 }
 
 .wiki-title {
@@ -7,10 +24,10 @@
   @extend .subtext;
   margin-bottom: rem-calc(20);
 
-  a {
-	color: $primary-color;
-	display: block;
-  }
+	a {
+		color: $primary-color;
+		display: block;
+	}
 }
 
 .site-head {
