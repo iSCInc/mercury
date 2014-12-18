@@ -31,17 +31,17 @@ App.ArticleRoute = Em.Route.extend({
 		console.log("this.store", this.store);
 		console.log("title: ", params.title);
 
-		/*return 
-		App.Article.find2({
+		/*
+		console.log("find, model", model);
+		if (Mercury._state.firstPage) {
+			var model = this.store.createRecord('article'); //App.Article.create(params);
+			model.setArticle(model);
+			return model;
+		}*/
+		var model=  this.store.find('article', {
 			basePath: Mercury.wiki.basePath,
 			title: Mercury.Utils.String.sanitize(params.title),
 			wiki: this.controllerFor('application').get('domain')
-		});*/
-		//moze tutaj stworz model?
-		var model=  this.store.find('article', {
-			//basePath: Mercury.wiki.basePath,
-			title: Mercury.Utils.String.sanitize(params.title)
-			//wiki: this.controllerFor('application').get('domain')
 		});
 
 		console.log("MODEL: "+ model);

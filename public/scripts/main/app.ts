@@ -13,11 +13,26 @@ var App: any = Em.Application.create({
 		apiBase: Mercury.apiBase || '/api/v1'
 	});
 
-App.ApplicationAdapter = DS.RESTAdapter.extend({
-	//
-	host: 'http://shadowofmordor.wikia.local:8000',
-	namespace: App.apiBase
+var MercuryAdapter = DS.Adapter.extend({
+	createRecord: function(store, type, record) {
+		//implement -> use this instead of setArtcile
+	},
+	find: function(params: {url: string; title: string; redirect?: string}) {
+		console.log("find!");
+
+		return new Ember.RSVP.Promise(function(resolve, reject) {
+	      jQuery.getJSON(params.url)
+	      .done((data) => {
+	      	this.setArticle(data);
+	      	resolve(this)
+	      }).fail((err) => {
+	      	reject(this) //reject($.extend(err, model));
+	      });
+	    });
+  	}
 });
+
+App.ApplicationAdapter = MercuryAdapter;
 
 App.initializer({
 	name: 'preload',
