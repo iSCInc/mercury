@@ -40,8 +40,8 @@ App.ArticleRoute = Em.Route.extend({
 		}*/
 		var model=  this.store.find('article', {
 			basePath: Mercury.wiki.basePath,
-			title: Mercury.Utils.String.sanitize(params.title),
-			wiki: this.controllerFor('application').get('domain')
+			wiki: this.controllerFor('application').get('domain'),
+			title: Mercury.Utils.String.sanitize(params.title)
 		});
 
 		console.log("MODEL: "+ model);
