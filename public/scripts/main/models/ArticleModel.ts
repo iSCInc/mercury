@@ -3,63 +3,76 @@
 /// <reference path="../../mercury/modules/Ads.ts" />
 /// <reference path="../../../../typings/i18next/i18next.d.ts" />
 
-interface Response {
-	data: {
-		details: {
-			id: number;
-			title: string;
-			ns: string;
-			url: string;
-			revision: {
-				id: number;
-				user: string;
-				user_id: number;
-				timestamp: string;
-			};
-			comments: number;
-			type: string;
-			abstract: string;
-			thumbnail: string;
-		};
-		article: {
-			content: string;
-			media: any[];
-			users: any;
-			categories: any[];
-		};
-		relatedPages: any[];
-		topContributors: any[];
-		adsContext: any
-	};
-}
-
 declare var DS: any;
 
 App.Article = DS.Model.extend({
-	id: DS.attr('number'),
-	ns: DS.attr('number'),
-	content: DS.attr('string'),
-	basePath: DS.attr('string'),
-	cleanTitle: DS.attr('string'),
-	comments: DS.attr('number'),
-	//sections: [], WTF? there is no sections in API
-	title: DS.attr('string'),
-	wiki: DS.attr('string'),
-	//categories: DS.attr('string'),
-
-	//categories: DS.hasMany('category'), maybe later
-	media: DS.hasMany('media'),
-	topContributors: DS.hasMany('user'),
-	users: DS.hasMany('user')
-	
+	details: DS.belongsTo('detail'),
+	//topContributors: DS.hasMany('top_contributor'),
+	article: DS.belongsTo('article_data'),
+	relatedPages: DS.hasMany('page'),
+	adsContext: DS.belongsTo('context')
 });
 
 App.User = DS.Model.extend({
-	user_id: DS.attr('string'),
-	title: DS.attr('string'),
+	id: DS.attr('number'),
 	url: DS.attr('string'),
+	avatar: DS.attr('string'),
 
-	articles: DS.hasMany('articles')
+	article_data: DS.belongsTo('article_data')
+});
+
+App.TopContributor = DS.Model.extend({
+	//id: 9,
+	user_id: DS.attr('number'),
+	title: DS.attr('string'),
+	name: DS.attr('string'),
+	url: DS.attr('string'),
+	numberofedits: DS.attr('number'),
+	avatar: DS.attr('string')
+
+	//article: DS.belongsTo('article')
+});
+
+App.Detail = DS.Model.extend({
+	id: DS.attr('number'),
+	title: DS.attr('string'),
+	ns: DS.attr('number'),
+	url: DS.attr('string'),
+	comments: DS.attr('number'),
+	type: DS.attr('string'),
+	abstract: DS.attr('string'),
+	thumbnail: DS.attr('string'),
+	//original_dimenstions
+
+	revision: DS.belongsTo('revision')
+});
+
+App.Revision = DS.Model.extend({
+	id: DS.attr('number'),
+	user: DS.attr('string'),
+	user_id: DS.attr('number'),
+	timestamp: DS.attr('string'),
+
+	detail: DS.belongsTo('detail')
+});
+
+App.ArticleData = DS.Model.extend({
+	content: DS.attr('string'),
+
+	media: DS.hasMany('media'),
+	users: DS.hasMany('user'),
+	categories: DS.hasMany('category')
+});
+
+App.Page = DS.Model.extend({
+	url: DS.attr('string'),
+	title: DS.attr('string'),
+	id: DS.attr('number'),
+	imgUrl: DS.attr('string'),
+	text: DS.attr('string')
+});
+
+App.Context = DS.Model.extend({
 });
 
 App.Article.reopenClass({
@@ -72,31 +85,6 @@ App.Article.reopenClass({
 
 		return App.get('apiBase') + '/article/' + params.title + redirect;
 	},
-
-	find2: function (params: {basePath: string; wiki: string; title: string; redirect?: string}) {
-		console.log("find!");
-		console.log("this.store", this.store);
-		var model = this.store.createRecord('article'); //App.Article.create(params);
-		console.log("find, model", model);
-		if (Mercury._state.firstPage) {
-			this.setArticle(model);
-			return model;
-		}
-
-		return new Em.RSVP.Promise((resolve: Function, reject: Function) => {
-			Em.$.ajax({
-				url: this.url(params),
-				dataType: 'json',
-				success: (data) => {
-					this.setArticle(model, data);
-					resolve(model);
-				},
-				error: (err) => {
-					reject($.extend(err, model));
-				}
-			});
-		});
-	}, 
 
 	getPreloadedData: function () {
 		var article = Mercury.article,
