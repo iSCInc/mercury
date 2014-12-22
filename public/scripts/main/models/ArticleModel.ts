@@ -36,6 +36,8 @@ interface Response {
 declare var DS: any;
 
 App.Article = DS.Model.extend({
+	id: DS.attr('number'),
+	ns: DS.attr('number'),
 	content: DS.attr('string'),
 	basePath: DS.attr('string'),
 	cleanTitle: DS.attr('string'),
@@ -43,22 +45,17 @@ App.Article = DS.Model.extend({
 	//sections: [], WTF? there is no sections in API
 	title: DS.attr('string'),
 	wiki: DS.attr('string'),
+	//categories: DS.attr('string'),
 
-	categories: DS.hasMany('category'),
+	//categories: DS.hasMany('category'), maybe later
 	media: DS.hasMany('media'),
 	topContributors: DS.hasMany('user'),
 	users: DS.hasMany('user')
 	
 });
 
-App.Category = DS.Model.extend({
-	title: DS.attr('string'),
-	url: DS.attr('string'),
-
-	articles: DS.hasMany('article')
-});
-
 App.User = DS.Model.extend({
+	user_id: DS.attr('string'),
 	title: DS.attr('string'),
 	url: DS.attr('string'),
 

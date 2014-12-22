@@ -41,16 +41,13 @@ var ArticleAdapter = DS.Adapter.extend({
 		console.log("this: "+ this);
 		console.log("url", this.url(params));
 
-		//
-
 		return new Em.RSVP.Promise((resolve: Function, reject: Function) => {
 			Em.$.getJSON(
 				this.url(params)
-				//'http://shadowofmordor.wikia.local:8000/api/v1/article/Sea_of_N%C3%BArnen'
 				).done((data) => {
-					resolve(this)
+					resolve(data)
 				}).fail((err) => {
-					reject(this)
+					reject(err)
 				});
 			})
 	},
@@ -61,82 +58,70 @@ var ArticleAdapter = DS.Adapter.extend({
 });
 
 var ArticleSerializer = DS.RESTSerializer.extend({
+	primaryKey: 'details.id',
 
-	extractArray: function(store, type, payload) {
-		console.log("payload.data: ", payload.data);
-		var data: any = {};
-		data = payload.data;
+	// extractArray: function(store, type, payload) {
+	// 	var data: any = {};
 
-		//TODO IMPLEMENT -> use this instead of setArtcile
+	// 	if (payload.details) {
+	// 		var details = payload.details;
+	// 		console.log("details:", details)
+	// 		data = $.extend(data, {
+	// 			ns: details.ns,
+	// 			cleanTitle: details.title,
+	// 			comments: details.comments,
+	// 			id: details.id,
+	// 			title: details.title,
+	// 			wiki: 'diana'
+	// 			//user: details.revision.user_id
+	// 		});
+	// 	}
 
-		return this._super(store, type, payload);
-	},
+	// 	if (payload.article) {
+	// 		var article = payload.article;
+	// 		console.log("article.categories", article.categories)
 
-	setArticle: function (model: typeof App.Article, source = this.getPreloadedData()) {
-		var data: any = {};
+	// 		//data = $.extend(data, {
+	// 			//content: article.content || payload.content,
+	// 			//users: article.users,
+	// 			/*media: store.createRecord('media', {
+	// 				type: article.media.type,
+	// 				url: article.media.url,
+	// 				user: article.media.user
+	// 			}),*/
+	// 			//categories: article.categories
+	// 		//});
 
-		if (source.error) {
-			var error = source.error;
+	// 		//article.media.forEach(function(medium) {
+	// 			//media.push(medium);
+	// 		//})
+	// 	}
 
-			data = {
-				article: error.details,
-				cleanTitle: M.String.normalize(model.title),
-				error: error
-			};
-		} else if (source) {
-			if (source.details) {
-				var details = source.details;
+	// 	if (payload.relatedPages) {
+	// 		/**
+	// 		* Code to combat a bug observed on the Karen Traviss page on the Star Wars wiki, where there
+	// 		* are no relatedPages for some reason. Moving forward it would be good for the Wikia API
+	// 		* to handle this and never return malformed structures.
+	// 		*/
+	// 		//data.relatedPages = payload.relatedPages;
+	// 	}
 
-				data = $.extend(data, {
-					ns: details.ns,
-					cleanTitle: details.title,
-					comments: details.comments,
-					id: details.id
-					//user: details.revision.user_id
-				});
-			}
+	// 	if (payload.adsContext) {
+	// 		//data.adsContext = payload.adsContext;
+	// 	}
 
-			if (source.article) {
-				var article = source.article;
-
-				data = $.extend(data, {
-					content: article.content || source.content,
-					users: article.users,
-					media: DS.Store.createRecord('media', {
-						type: article.media.type,
-						url: article.media.url,
-						user: article.media.user
-					}),
-					categories: DS.Store.createRecord('category', {
-						title: article.category.title,
-						url: article.category.url
-					})
-				});
-			}
-
-			if (source.relatedPages) {
-				/**
-				 * Code to combat a bug observed on the Karen Traviss page on the Star Wars wiki, where there
-				 * are no relatedPages for some reason. Moving forward it would be good for the Wikia API
-				 * to handle this and never return malformed structures.
-				 */
-				 data.relatedPages = source.relatedPages;
-				}
-
-				if (source.adsContext) {
-					data.adsContext = source.adsContext;
-				}
-
-				if (source.topContributors) {
-				// Same issue: the response to the ajax should always be valid and not undefined
-				data.topContributors = source.topContributors;
-			}
-		}
-
-		model.setProperties(data);
-	}
+	// 	if (payload.topContributors) {
+	// 		// Same issue: the response to the ajax should always be valid and not undefined
+	// 		//data.topContributors = payload.topContributors;
+	// 	}
+	// 	console.log("extractArray: ", arguments);
+	// 	console.log("DATA", data);
+	// 	console.log("type: ", type.type)
+	// 	var a = this._super(store, type, data);
+	// 	console.log("a", a);
+	// 	return a;
+	// }
 });
-
 
 App.initializer({
 	name: 'preload',
