@@ -78,9 +78,8 @@ function beforeArticleRender (request: Hapi.Request, result: any): void {
 		// we want to return the article content only once - as HTML and not JS variable
 		result.articleContent = result.article.article.content;
 		delete result.article.article.content;
+		result.displayTitle = title;
 	}
-
-	result.displayTitle = title;
 	result.canonicalUrl = result.wiki.basePath + result.wiki.articlePath + title.replace(/ /g, '_');
 }
 
