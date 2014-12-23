@@ -1,0 +1,22 @@
+.article-body {
+	padding: 0 1.125rem;
+}
+
+.article-media {
+	background-color: rgb(223,223,223);
+	height: auto;
+	width: 100%;
+}
+
+.article-title {
+	font-size: 2rem;
+	line-height: 2rem;
+
+	margin:{
+		bottom: 1em;
+		left: 0;
+		right: 0;
+		top: 3px;
+	}
+	word-break: break-word;
+}
