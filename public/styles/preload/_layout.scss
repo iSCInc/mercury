@@ -1,25 +1,22 @@
-.article-body {
-
-	padding: 0 1.125rem;
-}
-
 body {
-  margin: 0;
-  word-wrap: break-word;
-  font-size: 16px;
-  font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+	font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+	font-size: 16px;
+	margin: 0;
+	word-wrap: break-word;
 }
 
-.preload .page-wrapper {
-	margin-top: 99px;
-}
+.preload {
+	.page-wrapper {
+		margin-top: 99px;
+	}
 
-.preload svg {
-	display: none;
-}
+	svg {
+		display: none;
 
-.preload svg.wikia-logo {
-	display: inline;
+		&.wikia-logo {
+			display: inline;
+		}
+	}
 }
 
 a {
@@ -28,18 +25,19 @@ a {
 }
 
 .wiki-title {
-  margin: 0;
-
-  text-align: center;
-  text-transform: uppercase;
-  font-weight: bold;
-  font-size: 0.8125rem;
-  margin-bottom: 1.25rem;
+	font-size: 0.8125rem;
+	margin: 0 0 1.25rem 0;
 
 	a {
 		color: #006cb0;
 		display: block;
 	}
+}
+
+.wiki-title, .article-title {
+	font-weight: bold;
+	text-align: center;
+	text-transform: uppercase;
 }
 
 .site-head {
@@ -54,7 +52,7 @@ a {
 	top: 0;
 }
 
-.icon.wikia-logo {
+.wikia-logo {
 	height: 3.125rem;
 	width: 5rem;
 }
