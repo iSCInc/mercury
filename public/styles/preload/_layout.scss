@@ -1,3 +1,8 @@
+a {
+	text-decoration: none;
+	color: #006cb0;
+}
+
 body {
 	font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
 	font-size: 16px;
@@ -19,9 +24,16 @@ body {
 	}
 }
 
-a {
-	text-decoration: none;
-	color: #006cb0;
+.site-head {
+	background-color: rgb(255, 255, 255);
+	border-bottom: 1px solid #d0d0d0;
+	height: 3.125rem;
+	left: 0;
+	margin: 0 auto;
+	position: fixed;
+	right: 0;
+	text-align: center;
+	top: 0;
 }
 
 .wiki-title {
@@ -38,18 +50,6 @@ a {
 	font-weight: bold;
 	text-align: center;
 	text-transform: uppercase;
-}
-
-.site-head {
-	background-color: rgb(255, 255, 255);
-	border-bottom: 1px solid #d0d0d0;
-	height: 3.125rem;
-	left: 0;
-	margin: 0 auto;
-	position: fixed;
-	right: 0;
-	text-align: center;
-	top: 0;
 }
 
 .wikia-logo {
