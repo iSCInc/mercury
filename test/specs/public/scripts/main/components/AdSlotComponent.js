@@ -8,7 +8,7 @@ test('Name lower case', function () {
 	var component = this.subject(),
 		testCases = [
 			{
-				name: 'test1111',
+				name: 'test',
 				expected: 'test',
 				description: 'No change'
 			} , {
