@@ -67,6 +67,10 @@ var ArticleSerializer = DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, {
 	}
 });
 
+App.TopContributorSerializer = DS.RESTSerializer.extend({
+	primaryKey: 'user_id'
+});
+
 App.initializer({
 	name: 'preload',
 	initialize: (container: any, application: any) => {
