@@ -23,6 +23,7 @@
 				{{/each}}
 			{{/collapsible-menu}}
 		{{/if}}
+		<p>Content: {{model.article.content}}</p>
 		{{#view 'article-content'}}
 			{{#if article}}
 				{{{article}}}

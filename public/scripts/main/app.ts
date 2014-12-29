@@ -29,43 +29,28 @@ var ArticleAdapter = DS.Adapter.extend({
 		return App.get('apiBase') + '/article/' + params.title + redirect;
 	},
 
-	createRecord: function(store, type, record) {
-	},
-
-	find: function(params: {basePath: string; wiki: string; title: string; redirect?: string}) {
-		console.log("find! params: ", params);
-	},
-
 	findQuery: function(store, type, params: {basePath: string; wiki: string; title: string; redirect?: string}) {
 		console.log("this: "+ this);
 		console.log("url", this.url(params));
 		console.log( "relatedTypes: ", Ember.get(App.Article, 'relatedTypes'));
 
+		var source = App.Article.getPreloadedData();
+		console.log("source: ", source)
+		//return source;
+
 		return new Em.RSVP.Promise((resolve: Function, reject: Function) => {
 			Em.$.getJSON(
 				this.url(params)
 				).done((data) => {
+					console.log("***_____ data: ", data);
 					resolve(data)
 				}).fail((err) => {
 					reject(err)
 				});
-			})
-	},
-
-	findAll: function(params: {url: string; title: string; redirect?: string}) {
-		console.log("find all!");
+		})
 	}
 });
 
-var ArticleSerializer = DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, {
-	attrs: {
-		details: {embedded: 'always'},
-		topContributors: {embedded: 'always'},
-		article: {embedded: 'always'},
-		relatedPages: {embedded: 'always'},
-		adsContext: {embedded: 'always'}
-	}
-});
 
 App.TopContributorSerializer = DS.RESTSerializer.extend({
 	primaryKey: 'user_id'
@@ -82,7 +67,6 @@ App.initializer({
 		}
 
 		App.ArticleAdapter = ArticleAdapter;
-		App.ArticleSerializer = ArticleSerializer;
 
 		App.setProperties({
 			LOG_ACTIVE_GENERATION: debug,

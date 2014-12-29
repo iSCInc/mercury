@@ -28,16 +28,16 @@ App.ArticleRoute = Em.Route.extend({
 	},
 
 	model: function (params: any) {
-		console.log("this.store", this.store);
-		console.log("title: ", params.title);
 
-		var model=  this.store.find('article', {
+		var model = this.store.find('article', {
 			basePath: Mercury.wiki.basePath,
 			wiki: this.controllerFor('application').get('domain'),
 			title: Mercury.Utils.String.sanitize(params.title)
-		});
-
-		console.log("MODEL: ", model);
+		}).then(function (response) {
+			console.log('find.then: ', response)
+			console.log('find.then: '+ response)
+		}
+		console.log("MODEL-promise: ", model);
 		return model;
 	},
 
