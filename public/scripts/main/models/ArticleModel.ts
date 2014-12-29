@@ -7,10 +7,10 @@ declare var DS: any;
 
 App.Article = DS.Model.extend({
 	details: DS.belongsTo('detail'),
-	//topContributors: DS.hasMany('top_contributor'),
+	topContributors: DS.hasMany('top_contributor'),
 	article: DS.belongsTo('article_data'),
-	relatedPages: DS.hasMany('page'),
-	adsContext: DS.belongsTo('context')
+	relatedPages: DS.hasMany('related_page'),
+	adsContext: DS.belongsTo('ads_context')
 });
 
 App.User = DS.Model.extend({
@@ -64,15 +64,15 @@ App.ArticleData = DS.Model.extend({
 	categories: DS.hasMany('category')
 });
 
-App.Page = DS.Model.extend({
+App.RelatedPage = DS.Model.extend({
 	url: DS.attr('string'),
 	title: DS.attr('string'),
-	id: DS.attr('number'),
+	//id: DS.attr('number'),
 	imgUrl: DS.attr('string'),
 	text: DS.attr('string')
 });
 
-App.Context = DS.Model.extend({
+App.AdsContext = DS.Model.extend({
 });
 
 App.Article.reopenClass({
