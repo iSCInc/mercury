@@ -29,6 +29,7 @@ App.initializer({
 			LOG_TRANSITIONS: debug,
 			LOG_TRANSITIONS_INTERNAL: debug
 		});
+
 		$('html').removeClass('preload');
 
 		i18n.init({

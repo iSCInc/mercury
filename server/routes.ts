@@ -87,8 +87,6 @@ function beforeArticleRender (request: Hapi.Request, result: any): void {
 		result.isRtl = (userDir === 'rtl');
 	}
 
-	result.displayTitle = title;
-
 	result.canonicalUrl = result.wiki.basePath + result.wiki.articlePath + title.replace(/ /g, '_');
 	result.themeColor = Utils.getVerticalColor(localSettings, result.wiki.vertical);
 }
