@@ -36,7 +36,7 @@ Folder structure:
   styles
   	  all files
   	  app.scss
-  	  baseline.scss
+  	  preload.scss
   	  _settings.scss
   	  vendor/
   	  and so on
@@ -47,7 +47,7 @@ that is compiled to
 ```
   styles
     app.css
-    baseline.css
+    preload.css
 ```
 
 all files that begin with '_' are ignored
