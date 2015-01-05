@@ -17,15 +17,15 @@
 			<!-- build:css /public/styles/app.rtl.css -->
 			<link rel="stylesheet" href="/public/styles/app.rtl.css" defer>
 			<!-- endbuild -->
+			<style><!-- @include ../www/public/styles/preload.rtl.css --></style>
 		{{else}}
 			<!-- build:css /public/styles/app.css -->
 			<link rel="stylesheet" href="/public/styles/app.css" defer>
 			<!-- endbuild -->
+			<style><!-- @include ../www/public/styles/preload.css --></style>
 		{{/if}}
 
 		<link rel="canonical" href="{{canonicalUrl}}">
-
-		<style><!-- @include ../www/public/styles/preload.css --></style>
 
 		<script>
 			<!-- @include ../www/public/scripts/baseline.js -->
