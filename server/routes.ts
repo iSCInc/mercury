@@ -65,7 +65,8 @@ function getWikiDomainName (host: string): string {
  */
 function beforeArticleRender (request: Hapi.Request, result: any): void {
 	var title: string,
-		articleDetails: any;
+		articleDetails: any,
+		userDir = 'ltr';
 
 	if (result.article.details) {
 		articleDetails = result.article.details;
@@ -80,6 +81,14 @@ function beforeArticleRender (request: Hapi.Request, result: any): void {
 		delete result.article.article.content;
 		result.displayTitle = title;
 	}
+
+	if (result.wiki.language) {
+		userDir = result.wiki.language.userDir;
+		result.isRtl = (userDir === 'rtl');
+	}
+
+	result.displayTitle = title;
+
 	result.canonicalUrl = result.wiki.basePath + result.wiki.articlePath + title.replace(/ /g, '_');
 	result.themeColor = Utils.getVerticalColor(localSettings, result.wiki.vertical);
 }
