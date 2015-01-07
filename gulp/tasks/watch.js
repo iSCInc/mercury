@@ -20,10 +20,10 @@ gulp.task('watch', ['build', 'build-views'], function () {
 
 	gulp.watch(paths.styles.watch, ['sass']).on('change', function (event) {
 		/*
-		 * Baseline is a scss file that gets inlined, so the views must be recompiled
+		 * Preload is a scss file that gets inlined, so the views must be recompiled
 		 * when it is changed
 		 */
-		if (event.path.match('baseline.scss')) {
+		if (event.path.match('preload.scss')) {
 			gulp.start('build-views');
 		}
 	});
