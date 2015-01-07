@@ -16,17 +16,13 @@ body {
 		margin-top: 100px;
 	}
 
-	svg {
+	svg:not(.wikia-logo) {
 		display: none;
-
-		&.wikia-logo {
-			display: inline;
-		}
 	}
 }
 
 .site-head {
-	background-color: rgb(255, 255, 255);
+	background-color: white;
 	border-bottom: 1px solid #d0d0d0;
 	height: 3.125rem;
 	left: 0;
