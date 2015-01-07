@@ -13,6 +13,15 @@
 		<meta name="theme-color" content="{{themeColor}}">
 		{{/if}}
 
+		{{#if isRtl}}
+			<!-- build:css /public/styles/app.rtl.css -->
+			<link rel="stylesheet" href="/public/styles/app.rtl.css">
+			<!-- endbuild -->
+		{{else}}
+			<!-- build:css /public/styles/app.css -->
+			<link rel="stylesheet" href="/public/styles/app.css">
+			<!-- endbuild -->
+		{{/if}}
 
 		<link rel="canonical" href="{{canonicalUrl}}">
 
