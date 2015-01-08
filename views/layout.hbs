@@ -13,15 +13,7 @@
 		<meta name="theme-color" content="{{themeColor}}">
 		{{/if}}
 
-		{{#if isRtl}}
-			<!-- build:css /public/styles/app.rtl.css -->
-			<link rel="stylesheet" href="/public/styles/app.rtl.css">
-			<!-- endbuild -->
-		{{else}}
-			<!-- build:css /public/styles/app.css -->
-			<link rel="stylesheet" href="/public/styles/app.css">
-			<!-- endbuild -->
-		{{/if}}
+
 
 		<link rel="canonical" href="{{canonicalUrl}}">
 
@@ -84,5 +76,36 @@
 		<!-- endbuild -->
 
 		{{> tracking-pixels}}
+
+		<script>
+			var style,
+				raf = requestAnimationFrame || mozRequestAnimationFrame ||
+					webkitRequestAnimationFrame || msRequestAnimationFrame;
+			{{#if isRtl}}
+				<!-- build:css /public/styles/app.rtl.css -->
+				style = '/public/styles/app.rtl.css';
+				<!-- endbuild -->
+			{{else}}
+				<!-- build:css /public/styles/app.css -->
+				style = '/public/styles/app.css';
+				<!-- endbuild -->
+			{{/if}}
+			var cb = function() {
+				var l = document.createElement('link'); l.rel = 'stylesheet';
+					l.href = '/public/styles/app.css';
+				var h = document.getElementsByTagName('head')[0];
+				h.parentNode.insertBefore(l, h);
+				l.addEventListener('load', function(){
+					raf(function(){
+						$('html').removeClass('preload');
+					});
+				});
+			};
+			if (raf) {
+				raf(cb);
+			} else {
+				window.addEventListener('load', cb);
+			}
+            </script>
 	</body>
 </html>
