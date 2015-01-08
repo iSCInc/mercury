@@ -1,3 +1,10 @@
+.site-head {
+	@extend .row;
+	@extend .small-12;
+	direction: ltr;
+	z-index: $z-site-head;
+}
+
 .smart-banner-visible {
 	.headroom-top {
 		position: absolute;
