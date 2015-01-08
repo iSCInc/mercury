@@ -94,7 +94,7 @@
 			{{/if}}
 			var cb = function() {
 				var l = document.createElement('link'); l.rel = 'stylesheet';
-					l.href = '/public/styles/app.css';
+					l.href = style;
 				var h = document.getElementsByTagName('head')[0];
 				h.parentNode.insertBefore(l, h);
 				l.addEventListener('load', function(){
