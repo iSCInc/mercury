@@ -13,8 +13,6 @@
 		<meta name="theme-color" content="{{themeColor}}">
 		{{/if}}
 
-
-
 		{{> open-graph-tags}}
 
 		<link rel="canonical" href="{{canonicalUrl}}">
@@ -92,14 +90,15 @@
 				style = '/public/styles/app.css';
 				<!-- endbuild -->
 			{{/if}}
-			var cb = function() {
+			var cb = function () {
 				var l = document.createElement('link'); l.rel = 'stylesheet';
 					l.href = style;
 				var h = document.getElementsByTagName('head')[0];
 				h.parentNode.insertBefore(l, h);
 				l.addEventListener('load', function(){
 					raf(function(){
-						$('html').removeClass('preload');
+						var htmlElement = document.documentElement;
+						htmlElement.className = htmlElement.className.replace('preload', '');
 					});
 				});
 			};
