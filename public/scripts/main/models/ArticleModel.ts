@@ -1,6 +1,7 @@
 /// <reference path="../app.ts" />
 /// <reference path="../../mercury/utils/string.ts" />
 /// <reference path="../../mercury/modules/Ads.ts" />
+/// <reference path="../mixins/I18nMixin.ts" />
 /// <reference path="../../../../typings/i18next/i18next.d.ts" />
 
 interface Response {
@@ -45,10 +46,18 @@ App.ArticleModel = Em.Object.extend({
 	title: null,
 	user: null,
 	users: [],
-	wiki: null
+	wiki: null,
+	translations: []
 });
 
-App.ArticleModel.reopenClass({
+App.ArticleModel.reopenClass(App.I18nMixin, {
+
+	setTranslations: function () { 
+		console.log("ArticleModel#translations") 
+		//jaki jezyk? Z paramsa, wiki.language.user lub 'en'
+		console.log('this.translate("footer-link-licensing", null): ', this.translate("footer-link-licensing", null))
+	},
+
 	url: function (params: {title: string; redirect?: string}) {
 		var redirect = '';
 

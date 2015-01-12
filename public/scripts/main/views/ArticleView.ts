@@ -2,6 +2,7 @@
 /// <reference path="../models/ArticleModel.ts" />
 /// <reference path="../components/MediaComponent.ts" />
 /// <reference path="../components/WikiaMapComponent.ts" />
+/// <reference path="../mixins/I18nMixin.ts" />
 'use strict';
 
 interface HeadersFromDom {
@@ -14,8 +15,25 @@ interface HTMLElement {
 	scrollIntoViewIfNeeded: () => void
 }
 
-App.ArticleView = Em.View.extend(App.AdsMixin, {
+App.ArticleView = Em.View.extend(App.AdsMixin, App.I18nMixin, {
 	classNames: ['article-wrapper'],
+
+	translations: [
+		'footer-link-licensing'
+	]
+
+//	footerLinkLicensing: function() { return this.translate('footer-link-licensing');}.property('isLoaded'),
+//	footerLinkLicensing2: function(t) {return t}.property('isLoaded'),
+
+// init: function () {
+
+// 	this.setTranslations(['footer-link-licensing'])
+
+
+// //Ember.defineProperty(this, 'translations.footerLinkLicensing2', this.t('footer-link-licensing'))
+
+// 	this._super();
+// },
 
 	/**
 	 * willInsertElement
@@ -31,6 +49,10 @@ App.ArticleView = Em.View.extend(App.AdsMixin, {
 
 	didInsertElement: function () {
 		this.get('controller').send('articleRendered');
+
+
+setTimeout(() => {i18n.setLng('de', () => {this.notifyPropertyChange('isLoaded');});},5000);
+		
 	},
 
 	onArticleChange: function (): void {
