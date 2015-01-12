@@ -16,6 +16,19 @@ var App: any = Em.Application.create({
 App.initializer({
 	name: 'preload',
 	initialize: (container: any, application: any) => {
+
+		i18n.init({
+			resGetPath: '/public/locales/__lng__/translation.json',
+			detectLngQS: 'uselang',
+			lng: application.get('language'),
+			fallbackLng: 'en',
+			debug: debug,
+			//resStore: Mercury._state.translations,
+			useLocalStorage: false
+		}, function(t) {
+			console.log("i18n zaladowany")
+		});
+		
 		var debug: boolean = Mercury.environment === 'dev';
 
 		// turn on debugging with querystring ?debug=1
@@ -31,15 +44,5 @@ App.initializer({
 		});
 
 		$('html').removeClass('preload');
-
-		i18n.init({
-			resGetPath: '/public/locales/__lng__/translations.json',
-			detectLngQS: 'uselang',
-			lng: application.get('language'),
-			fallbackLng: 'en',
-			debug: debug,
-			resStore: Mercury._state.translations,
-			useLocalStorage: false
-		});
 	}
 });

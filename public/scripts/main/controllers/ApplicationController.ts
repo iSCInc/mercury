@@ -2,7 +2,8 @@
 'use strict';
 
 App.ApplicationController = Em.Controller.extend({
-	queryParams: [{noAds: 'noads'}],
+	queryParams: [{noAds: 'noads'}, {uselang: 'lang'}],
+	lang: 'en',
 	smartBannerVisible: false,
 	sideNavCollapsed: true,
 	noAds: '',
@@ -22,6 +23,7 @@ App.ApplicationController = Em.Controller.extend({
 			category: 'app',
 			label: 'load'
 		});
+
 
 		this._super();
 	},

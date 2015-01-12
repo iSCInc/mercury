@@ -11,6 +11,7 @@ App.ArticleController = Em.ObjectController.extend({
 	commentsPage: null,
 	map: null,
 	noAds: Em.computed.alias('controllers.application.noAds'),
+	uselang: Em.computed.alias('controllers.application.uselang'),
 
 	actions: {
 		updateHeaders: function (headers: NodeList): void {
