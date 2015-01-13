@@ -46,17 +46,10 @@ App.ArticleModel = Em.Object.extend({
 	title: null,
 	user: null,
 	users: [],
-	wiki: null,
-	translations: []
+	wiki: null
 });
 
 App.ArticleModel.reopenClass(App.I18nMixin, {
-
-	setTranslations: function () { 
-		console.log("ArticleModel#translations") 
-		//jaki jezyk? Z paramsa, wiki.language.user lub 'en'
-		console.log('this.translate("footer-link-licensing", null): ', this.translate("footer-link-licensing", null))
-	},
 
 	url: function (params: {title: string; redirect?: string}) {
 		var redirect = '';

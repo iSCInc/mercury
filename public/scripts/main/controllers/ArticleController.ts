@@ -13,10 +13,6 @@ App.ArticleController = Em.ObjectController.extend({
 	noAds: Em.computed.alias('controllers.application.noAds'),
 	uselang: Em.computed.alias('controllers.application.uselang'),
 
-	//translations
-	//lol: this.t('APP:klucz', {})
-	//console.log("this.translate('days-ago-label')", this.translate('days-ago-label'))
-
 	actions: {
 		updateHeaders: function (headers: NodeList): void {
 			var article = this.get('model');

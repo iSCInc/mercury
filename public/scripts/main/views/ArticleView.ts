@@ -18,22 +18,23 @@ interface HTMLElement {
 App.ArticleView = Em.View.extend(App.AdsMixin, App.I18nMixin, {
 	classNames: ['article-wrapper'],
 
-	translations: [
-		'footer-link-licensing'
-	]
+	count: 0,
+	lol: 3,
+
+	translations: [ //mixin sam ma paczec na ta tabice i updatowac ja
+		'footer-link-licensing',
+		'side-nav-menu-label',
+		'article-toc-label'//,
+		//{'article-comments-label': ['count', 'lol']}
+	],
 
 //	footerLinkLicensing: function() { return this.translate('footer-link-licensing');}.property('isLoaded'),
-//	footerLinkLicensing2: function(t) {return t}.property('isLoaded'),
+	articleTocLabel: function() {return this.t('article-toc-label')}.property('isLoaded'),
 
-// init: function () {
-
-// 	this.setTranslations(['footer-link-licensing'])
-
-
-// //Ember.defineProperty(this, 'translations.footerLinkLicensing2', this.t('footer-link-licensing'))
-
-// 	this._super();
-// },
+	init: function () {
+		//Ember.defineProperty(this, 'translations.article-toc-label', this.t('article-toc-label'))
+		this._super();
+	},
 
 	/**
 	 * willInsertElement
@@ -49,10 +50,7 @@ App.ArticleView = Em.View.extend(App.AdsMixin, App.I18nMixin, {
 
 	didInsertElement: function () {
 		this.get('controller').send('articleRendered');
-
-
-setTimeout(() => {i18n.setLng('de', () => {this.notifyPropertyChange('isLoaded');});},5000);
-		
+		setTimeout(() => {i18n.setLng('de', () => {this.notifyPropertyChange('isLoaded');});},10000);
 	},
 
 	onArticleChange: function (): void {
