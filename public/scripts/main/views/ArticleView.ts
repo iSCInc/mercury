@@ -18,23 +18,22 @@ interface HTMLElement {
 App.ArticleView = Em.View.extend(App.AdsMixin, App.I18nMixin, {
 	classNames: ['article-wrapper'],
 
-	count: 0,
+	count: 5,
 	lol: 3,
 
 	translations: [ //mixin sam ma paczec na ta tabice i updatowac ja
 		'footer-link-licensing',
 		'side-nav-menu-label',
-		'article-toc-label'//,
-		//{'article-comments-label': ['count', 'lol']}
+		'article-toc-label',
+		'article-comments-label'
 	],
 
 //	footerLinkLicensing: function() { return this.translate('footer-link-licensing');}.property('isLoaded'),
-	articleTocLabel: function() {return this.t('article-toc-label')}.property('isLoaded'),
-
-	init: function () {
-		//Ember.defineProperty(this, 'translations.article-toc-label', this.t('article-toc-label'))
-		this._super();
-	},
+	/*articleTocLabel: function() {
+		var tlum = this.t('article-toc-label')
+		console.log("tlum: ", tlum)
+		return tlum;
+	}.property('isLoaded'),
 
 	/**
 	 * willInsertElement
