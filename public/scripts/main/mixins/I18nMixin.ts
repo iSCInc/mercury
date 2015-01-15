@@ -5,30 +5,21 @@
 App.I18nMixin = Em.Mixin.create({
 	isLoaded: {},
 	i18nInited: false,
-	translated: [],
 
-	t: function(value: string, options: any): any {
+	t: function(value: string, options: any = {}): any {
 		//debugger
 		console.log("isLoaded: ", this.get('isLoaded'));
 		console.log("jezyk: ", i18n.lng())
 		console.log("i18n.t(value,...", i18n.t(value))
-		//return function () { 
-			return i18n.t(value, {count: this.get('count')})
-		//}
-		//}.property('isLoaded', 'count', 'lol')
-	//}.property('isLoaded', 'count', 'lol'),
+		return i18n.t(value, options)
 	},
 
 	translateStrings: function() {
 		console.log("funkcja translateStrings na jezyk", i18n.lng())
-		if (this.translations.length) { 
-				this.set('translated', 
-					this.translations.map((tr) => {
-						return this.t(tr)
-					})
-				);
-				//this.set('isLoaded.' + i18n.lng(), true );
-		}
+		Object.keys(this.translations).forEach((key: string) => {
+			this.set('translations.' + key, this.t(key, {count: this.get('commentsCount')}));
+		});
+		console.log("this.translations", this.translations)
 	}.observes('i18nInited', 'isLoaded'),
 
 	init: function (): any { //wykonuje sie tylko raz- na starcie
@@ -43,7 +34,6 @@ App.I18nMixin = Em.Mixin.create({
 			useLocalStorage: false
 			}, () => {
 				this.set('i18nInited', true);
-				//this.set('isLoaded.' + App.get('language'), true);
 			}
 		);
 
