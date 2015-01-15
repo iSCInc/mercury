@@ -22,10 +22,15 @@ App.ArticleView = Em.View.extend(App.AdsMixin, App.I18nMixin, {
 	lol: 3,
 
 	translations: { //mixin sam ma paczec na ta tabice i updatowac ja
-		'footer-link-licensing': null,
-		'side-nav-menu-label' : null,
-		'article-toc-label': null,
-		'article-comments-label': null
+		'footer-link-licensing': '', //we use '' instead of null because check if (key.options) doesn't fail then 
+		'side-nav-menu-label' : '',
+		'article-toc-label': '',
+		'article-comments-label': {
+			value: '', 
+			options: {
+				count: 5
+			}
+		}
 	},
 
 	/**
@@ -42,7 +47,7 @@ App.ArticleView = Em.View.extend(App.AdsMixin, App.I18nMixin, {
 
 	didInsertElement: function () {
 		this.get('controller').send('articleRendered');
-		setTimeout(() => {i18n.setLng('de', () => {this.notifyPropertyChange('isLoaded');});},10000);
+		setTimeout(() => {i18n.setLng('pl', () => {this.notifyPropertyChange('isLoaded');});},10000);
 	},
 
 	onArticleChange: function (): void {

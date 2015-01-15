@@ -10,19 +10,24 @@ App.I18nMixin = Em.Mixin.create({
 		//debugger
 		console.log("isLoaded: ", this.get('isLoaded'));
 		console.log("jezyk: ", i18n.lng())
-		console.log("i18n.t(value,...", i18n.t(value))
+		console.log("i18n.t(value,...", i18n.t(value, options))
 		return i18n.t(value, options)
 	},
 
 	translateStrings: function() {
 		console.log("funkcja translateStrings na jezyk", i18n.lng())
 		Object.keys(this.translations).forEach((key: string) => {
-			this.set('translations.' + key, this.t(key, {count: this.get('commentsCount')}));
+			if (this.get('translations.' + key + '.options')) {
+				this.set('translations.' + key + '.value', this.t(key, this.get('translations.' + key + '.options')));
+			} else {
+				this.set('translations.' + key, this.t(key));
+			}
+			//this.set('translations.' + key, this.t(key, key.options));
 		});
 		console.log("this.translations", this.translations)
 	}.observes('i18nInited', 'isLoaded'),
 
-	init: function (): any { //wykonuje sie tylko raz- na starcie
+	init: function (): any { //fires only once
 		console.log('dsf'); 
 
 		i18n.init({
