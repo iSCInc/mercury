@@ -6,20 +6,15 @@ App.I18nMixin = Em.Mixin.create({
 	isLoaded: {},
 	i18nInited: false,
 
-	t: function(value: string, options: any = {}): any {
-		console.log("i18n.t(value,options): ", i18n.t(value, options))
-		return i18n.t(value, options)
-	},
-
-	translateStrings: function() {
-		console.log("funkcja translateStrings na jezyk", i18n.lng())
+	translate: function() {
+		console.log("funkcja translate na jezyk", i18n.lng())
 
 		Object.keys(this.translations).forEach((key: string) => {
 			var getCurrent = this.get('translations.' + key)
 			if (getCurrent.options) {
-				this.set('translations.' + key + '.value', this.t(key, getCurrent.options));
+				this.set('translations.' + key + '.value', i18n.t(key, getCurrent.options));
 			} else {
-				this.set('translations.' + key, this.t(key));
+				this.set('translations.' + key, i18n.t(key));
 			}
 		});
 		console.log("this.translations", this.translations)
