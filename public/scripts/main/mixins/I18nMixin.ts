@@ -7,29 +7,25 @@ App.I18nMixin = Em.Mixin.create({
 	i18nInited: false,
 
 	t: function(value: string, options: any = {}): any {
-		//debugger
-		console.log("isLoaded: ", this.get('isLoaded'));
-		console.log("jezyk: ", i18n.lng())
-		console.log("i18n.t(value,...", i18n.t(value, options))
+		console.log("i18n.t(value,options): ", i18n.t(value, options))
 		return i18n.t(value, options)
 	},
 
 	translateStrings: function() {
 		console.log("funkcja translateStrings na jezyk", i18n.lng())
+
 		Object.keys(this.translations).forEach((key: string) => {
-			if (this.get('translations.' + key + '.options')) {
-				this.set('translations.' + key + '.value', this.t(key, this.get('translations.' + key + '.options')));
+			var getCurrent = this.get('translations.' + key)
+			if (getCurrent.options) {
+				this.set('translations.' + key + '.value', this.t(key, getCurrent.options));
 			} else {
 				this.set('translations.' + key, this.t(key));
 			}
-			//this.set('translations.' + key, this.t(key, key.options));
 		});
 		console.log("this.translations", this.translations)
 	}.observes('i18nInited', 'isLoaded'),
 
-	init: function (): any { //fires only once
-		console.log('dsf'); 
-
+	init: function (): any { //fires only once- at init
 		i18n.init({
 			resGetPath: '/public/locales/__lng__/translation.json',
 			detectLngQS: 'uselang',
