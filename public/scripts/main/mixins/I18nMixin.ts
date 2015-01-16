@@ -3,21 +3,29 @@
 'use strict';
 
 App.I18nMixin = Em.Mixin.create({
-	i18nInited: false,
+	readyToTranslate: false,
+
+	changeLng: function() {
+		var lng = this.get('controller.uselang');
+		i18n.setLng(lng, () => {
+			this.notifyPropertyChange('readyToTranslate');
+		});
+	}.observes('controller.uselang'),
 
 	translate: function() {
 		Object.keys(this.translations).forEach((key: string) => {
 			var getCurrent = this.get('translations.' + key)
 			if (getCurrent.options) {
 				this.set('translations.' + key + '.value', i18n.t(key, getCurrent.options));
+				//retun computed proprty bo sie musi updateowac
 			} else {
 				this.set('translations.' + key, i18n.t(key));
 			}
 		});
-		console.log("this.translations", this.translations)
-	}.observes('i18nInited', 'controller.uselang'),
+		console.log("this.translations: ", this.translations)
+	}.observes('readyToTranslate'),
 
-	init: function (): any { //fires only once- at init
+	init: function (): any {
 		i18n.init({
 			resGetPath: '/public/locales/__lng__/translation.json',
 			detectLngQS: 'uselang',
@@ -25,7 +33,7 @@ App.I18nMixin = Em.Mixin.create({
 			debug: true,
 			useLocalStorage: false
 			}, () => {
-				this.set('i18nInited', true);
+				this.set('readyToTranslate', true);
 			}
 		);
 
