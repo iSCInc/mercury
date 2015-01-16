@@ -32,10 +32,7 @@ App.I18nMixin = Em.Mixin.create({
 			fallbackLng: App.get('language'),
 			debug: true,
 			useLocalStorage: false
-			}, () => {
-				this.set('readyToTranslate', true);
-			}
-		);
+		});
 
 		this._super();
 	}
