@@ -3,12 +3,9 @@
 'use strict';
 
 App.I18nMixin = Em.Mixin.create({
-	isLoaded: {},
 	i18nInited: false,
 
 	translate: function() {
-		console.log("funkcja translate na jezyk", i18n.lng())
-
 		Object.keys(this.translations).forEach((key: string) => {
 			var getCurrent = this.get('translations.' + key)
 			if (getCurrent.options) {
@@ -18,14 +15,14 @@ App.I18nMixin = Em.Mixin.create({
 			}
 		});
 		console.log("this.translations", this.translations)
-	}.observes('i18nInited', 'isLoaded'),
+	}.observes('i18nInited', 'controller.uselang'),
 
 	init: function (): any { //fires only once- at init
+		console.log("this.get('controller.uselang') : ", this.get('controller.uselang'));
 		i18n.init({
 			resGetPath: '/public/locales/__lng__/translation.json',
 			detectLngQS: 'uselang',
-			lng: App.get('language'),
-			fallbackLng: 'en',
+			fallbackLng: App.get('language'),
 			debug: true,
 			useLocalStorage: false
 			}, () => {
