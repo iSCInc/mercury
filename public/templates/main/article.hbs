@@ -4,8 +4,6 @@
 <br>
 * {{view.translations.article-comments-label.value}}
 <br>
-<br>
-
 ===============
 
 
@@ -18,7 +16,7 @@
 			{{#collapsible-menu
 				showMenuIcon=true
 				additionalClasses='table-of-contents'
-				tLabel='article-toc-label'
+				tLabel=view.translations.article-toc-label
 				ordered=true
 				observe=cleanTitle
 				trackingEvent='toc'
@@ -37,7 +35,7 @@
 			{{#if article}}
 				{{{article}}}
 			{{else}}
-				{{i18n 'article-empty-label'}}
+				{{view.translations.article-empty-label}}
 			{{/if}}
 		{{/view}}
 	</section>
@@ -45,7 +43,7 @@
 	{{wikia-users
 		users=topContributors
 		classes='contributors'
-		label='article-top-contributors-label'
+		label=view.translations.article-top-contributors-label
 		trackingEvent='contributors'
 	}}
 	{{article-comments page=commentsPage articleId=id commentsCount=comments}}
@@ -53,7 +51,7 @@
 		{{#collapsible-menu
 			showMenuIcon=false
 			additionalClasses='article-categories-list'
-			tLabel='article-categories-list-label'
+			tLabel=view.translations.article-categories-list-label
 			ordered=false
 			observe=cleanTitle
 			trackingEvent='category'
