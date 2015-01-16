@@ -24,7 +24,6 @@ App.ApplicationController = Em.Controller.extend({
 			label: 'load'
 		});
 
-
 		this._super();
 	},
 

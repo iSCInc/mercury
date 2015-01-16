@@ -1,7 +1,6 @@
 /// <reference path="../app.ts" />
 /// <reference path="../../mercury/utils/string.ts" />
 /// <reference path="../../mercury/modules/Ads.ts" />
-/// <reference path="../mixins/I18nMixin.ts" />
 /// <reference path="../../../../typings/i18next/i18next.d.ts" />
 
 interface Response {
@@ -49,7 +48,7 @@ App.ArticleModel = Em.Object.extend({
 	wiki: null
 });
 
-App.ArticleModel.reopenClass(App.I18nMixin, {
+App.ArticleModel.reopenClass({
 
 	url: function (params: {title: string; redirect?: string}) {
 		var redirect = '';

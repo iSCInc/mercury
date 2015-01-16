@@ -16,7 +16,6 @@ var App: any = Em.Application.create({
 App.initializer({
 	name: 'preload',
 	initialize: (container: any, application: any) => {
-		
 		var debug: boolean = Mercury.environment === 'dev';
 
 		// turn on debugging with querystring ?debug=1

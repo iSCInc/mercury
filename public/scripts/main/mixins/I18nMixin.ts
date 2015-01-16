@@ -18,7 +18,6 @@ App.I18nMixin = Em.Mixin.create({
 	}.observes('i18nInited', 'controller.uselang'),
 
 	init: function (): any { //fires only once- at init
-		console.log("this.get('controller.uselang') : ", this.get('controller.uselang'));
 		i18n.init({
 			resGetPath: '/public/locales/__lng__/translation.json',
 			detectLngQS: 'uselang',
