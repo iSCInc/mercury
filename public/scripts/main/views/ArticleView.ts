@@ -27,10 +27,7 @@ App.ArticleView = Em.View.extend(App.AdsMixin, App.I18nMixin, {
 		'article-toc-label': '',
 		'article-top-contributors-label': '',
 		'article-comments-label': {
-			value: '', 
-			options: {
-				count: 5
-			}
+			count: 'commentsCount'
 		},
 		'article-categories-list-label': ''
 	},
@@ -45,13 +42,23 @@ App.ArticleView = Em.View.extend(App.AdsMixin, App.I18nMixin, {
 		// Trigger an article change once on insertion because the first insertion happens after article
 		// state has changed
 		this.get('controller').notifyPropertyChange('article');
+
 	},
 
 	didInsertElement: function () {
 		this.get('controller').send('articleRendered');
+		
 		setTimeout(() => {
 			this.set('controller.uselang', 'pl');
 		},10000);
+
+		setTimeout(() => {
+			this.set('commentsCount', 6);
+		},15000);
+
+		setTimeout(() => {
+			this.set('commentsCount', 7);
+		},20000);
 	},
 
 	onArticleChange: function (): void {
