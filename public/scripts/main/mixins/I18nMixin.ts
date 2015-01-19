@@ -3,9 +3,11 @@
 'use strict';
 
 App.I18nMixin = Em.Mixin.create({
+	needs: 'application',
 	readyToTranslate: false,
 
 	changeLng: function(): void {
+		
 		var lng = this.get('controller.uselang');
 		i18n.setLng(lng, () => {
 			this.notifyPropertyChange('readyToTranslate');
@@ -13,22 +15,39 @@ App.I18nMixin = Em.Mixin.create({
 	}.observes('controller.uselang'),
 
 	translate: function(): any {
-		console.log('------------------', this)
-		Object.keys(this.translations).forEach((key: string) => {
-			var getCurrent = this.get('translations.' + key)
-			if ( typeof getCurrent == 'string') {
-				this.set(key, i18n.t(key));
-			} else {
-				console.log("NIE jestem stringiem - jestem obiektem: ", getCurrent)
-				//this.set('translations.' + key + '.value', i18n.t(key, getCurrent.options));
-				Ember.defineProperty(this, key, 
-					Ember.computed('commentsCount', 'readyToTranslate', function() {
-						return i18n.t(key, {count: this.get('commentsCount')});
-					}));
-				console.log(key, this.get( key))
-			}
+		Object.keys(this.translations).forEach((translationKey: string) => {
+			var translationParams = this.translations[translationKey] || {};
+
+				console.log("NIE jestem stringiem - jestem obiektem: ", translationKey, translationParams);
+
+				var b = [
+					'readyToTranslate',
+					function() {
+						var o = {};
+						console.log("zmienilo sie commentsCount lub readyToTranslate");
+
+						Object.keys(translationParams).forEach((paramKey: any) => {
+							o[paramKey] = this.get(translationParams[paramKey]);
+
+						});
+
+						console.log("o: ", o);
+						return i18n.t(translationKey, o);
+					}
+				];
+
+
+				Object.keys(translationParams).forEach((paramKey: any) => {
+					b.unshift(translationParams[paramKey]); 
+				});
+
+
+				Ember.defineProperty(this, translationKey, 
+					Ember.computed.apply(this, b)
+				);
+				console.log(this.get(translationKey));
+			
 		});
-		console.log("this.translations: ", this.translations)
 	}.observes('readyToTranslate'),
 
 	init: function (): any {

@@ -18,18 +18,19 @@ interface HTMLElement {
 App.ArticleView = Em.View.extend(App.AdsMixin, App.I18nMixin, {
 	classNames: ['article-wrapper'],
 
-	commentsCount: 5,
+	commentsCount: 500,
 	lol: 3,
 
 	translations: { //mixin looks at this object and updates it
-		'footer-link-licensing': '', //we use '' instead of null because check if (key.options) doesn't fail then 
-		'side-nav-menu-label' : '',
-		'article-toc-label': '',
-		'article-top-contributors-label': '',
+		'footer-link-licensing': null, //we use '' instead of null because check if (key.options) doesn't fail then 
+		'side-nav-menu-label' : null,
+		'article-toc-label': null,
+		'article-top-contributors-label': null,
 		'article-comments-label': {
-			count: 'commentsCount'
+			count: 'commentsCount',
+			lolek: 'lol'
 		},
-		'article-categories-list-label': ''
+		'article-categories-list-label': null
 	},
 
 	/**
@@ -50,15 +51,15 @@ App.ArticleView = Em.View.extend(App.AdsMixin, App.I18nMixin, {
 		
 		setTimeout(() => {
 			this.set('controller.uselang', 'pl');
-		},10000);
+		},2000);
 
 		setTimeout(() => {
 			this.set('commentsCount', 6);
-		},15000);
+		},10000);
 
 		setTimeout(() => {
 			this.set('commentsCount', 7);
-		},20000);
+		},12000);
 	},
 
 	onArticleChange: function (): void {
