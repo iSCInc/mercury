@@ -3,11 +3,10 @@
 'use strict';
 
 App.I18nMixin = Em.Mixin.create({
-	needs: 'application',
+	//this param is used to trigger translate() function when language changed or i18n inited
 	readyToTranslate: false,
 
 	changeLng: function(): void {
-		
 		var lng = this.get('controller.uselang');
 		i18n.setLng(lng, () => {
 			this.notifyPropertyChange('readyToTranslate');
@@ -17,40 +16,31 @@ App.I18nMixin = Em.Mixin.create({
 	translate: function(): any {
 		Object.keys(this.translations).forEach((translationKey: string) => {
 			var translationParams = this.translations[translationKey] || {};
+			var computedProperty = [
+				'readyToTranslate',
+				function() {
+					var paramsHash = {};
+					Object.keys(translationParams).forEach((paramKey: string) => {
+						paramsHash[paramKey] = this.get(translationParams[paramKey]);
+					});
+					return i18n.t(translationKey, paramsHash);
+				}
+			];
 
-				console.log("NIE jestem stringiem - jestem obiektem: ", translationKey, translationParams);
+			Object.keys(translationParams).forEach((paramKey: any) => {
+				computedProperty.unshift(translationParams[paramKey]); 
+			});
 
-				var b = [
-					'readyToTranslate',
-					function() {
-						var o = {};
-						console.log("zmienilo sie commentsCount lub readyToTranslate");
-
-						Object.keys(translationParams).forEach((paramKey: any) => {
-							o[paramKey] = this.get(translationParams[paramKey]);
-
-						});
-
-						console.log("o: ", o);
-						return i18n.t(translationKey, o);
-					}
-				];
-
-
-				Object.keys(translationParams).forEach((paramKey: any) => {
-					b.unshift(translationParams[paramKey]); 
-				});
-
-
-				Ember.defineProperty(this, translationKey, 
-					Ember.computed.apply(this, b)
-				);
-				console.log(this.get(translationKey));
-			
+			Ember.defineProperty(this, translationKey, 
+				Ember.computed.apply(this, computedProperty)
+			);
+			//notifyPropertyChanges is necessary because we have to inform all other components
+			//about change ( we don't use this.set() )
+			this.notifyPropertyChange(translationKey)
 		});
 	}.observes('readyToTranslate'),
 
-	init: function (): any {
+	init: function (): void {
 		this._super();
 
 		i18n.init({
