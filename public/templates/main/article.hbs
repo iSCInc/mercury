@@ -1,11 +1,3 @@
-================
-<br>
-* {{view.article-toc-label}}
-<br>
-* {{view.article-comments-label}}
-<br>
-===============
-
 {{#if error}}
 	{{render 'not-found'}}
 {{else}}
@@ -15,7 +7,7 @@
 			{{#collapsible-menu
 				showMenuIcon=true
 				additionalClasses='table-of-contents'
-				tLabel=view.translations.article-toc-label
+				tLabel=view.T-article-toc-label
 				ordered=true
 				observe=cleanTitle
 				trackingEvent='toc'
@@ -34,7 +26,7 @@
 			{{#if article}}
 				{{{article}}}
 			{{else}}
-				{{view.translations.article-empty-label}}
+				{{view.T-article-empty-label}}
 			{{/if}}
 		{{/view}}
 	</section>
@@ -42,7 +34,7 @@
 	{{wikia-users
 		users=topContributors
 		classes='contributors'
-		label=view.translations.article-top-contributors-label
+		label=view.T-article-top-contributors-label
 		trackingEvent='contributors'
 	}}
 	{{article-comments page=commentsPage articleId=id commentsCount=comments}}
@@ -50,7 +42,7 @@
 		{{#collapsible-menu
 			showMenuIcon=false
 			additionalClasses='article-categories-list'
-			tLabel=view.translations.article-categories-list-label
+			tLabel=view.T-article-categories-list-label
 			ordered=false
 			observe=cleanTitle
 			trackingEvent='category'

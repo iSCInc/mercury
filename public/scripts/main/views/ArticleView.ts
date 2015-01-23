@@ -18,19 +18,17 @@ interface HTMLElement {
 App.ArticleView = Em.View.extend(App.AdsMixin, App.I18nMixin, {
 	classNames: ['article-wrapper'],
 
-	commentsCount: 500,
-	lol: 3,
-
 	translations: { //mixin looks at this object and updates it
-		'footer-link-licensing': null, //we use '' instead of null because check if (key.options) doesn't fail then 
-		'side-nav-menu-label' : null,
+		'article-categories-list-label': null,
+		'article-comments-label': {
+			count: 'controller.model.comments'
+		},
+		'article-empty-label': null,
+		'article-suggestions-label': null,
 		'article-toc-label': null,
 		'article-top-contributors-label': null,
-		'article-comments-label': {
-			count: 'commentsCount',
-			lolek: 'lol'
-		},
-		'article-categories-list-label': null
+		'comments-next-button': null,
+		'comments-prev-button': null
 	},
 
 	/**
@@ -48,18 +46,6 @@ App.ArticleView = Em.View.extend(App.AdsMixin, App.I18nMixin, {
 
 	didInsertElement: function () {
 		this.get('controller').send('articleRendered');
-		
-		setTimeout(() => {
-			this.set('controller.uselang', 'pl');
-		},2000);
-
-		setTimeout(() => {
-			this.set('commentsCount', 6);
-		},10000);
-
-		setTimeout(() => {
-			this.set('commentsCount', 7);
-		},12000);
 	},
 
 	onArticleChange: function (): void {

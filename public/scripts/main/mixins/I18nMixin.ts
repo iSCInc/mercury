@@ -3,7 +3,7 @@
 'use strict';
 
 App.I18nMixin = Em.Mixin.create({
-	//this param is used to trigger translate() function when language changed or i18n inited
+	//this param is used to trigger translate() function when language changed
 	readyToTranslate: false,
 
 	changeLng: function(): void {
@@ -13,30 +13,31 @@ App.I18nMixin = Em.Mixin.create({
 		});
 	}.observes('controller.uselang'),
 
-	translate: function(): any {
+	translate: function(): void {
 		Object.keys(this.translations).forEach((translationKey: string) => {
 			var translationParams = this.translations[translationKey] || {};
 			var computedProperty = [
 				'readyToTranslate',
-				function() {
-					var paramsHash = {};
+				() => {
+					var paramsHash : { [index: string]: any } = {};
 					Object.keys(translationParams).forEach((paramKey: string) => {
-						paramsHash[paramKey] = this.get(translationParams[paramKey]);
+						paramsHash[paramKey]= this.get(translationParams[paramKey]);
 					});
 					return i18n.t(translationKey, paramsHash);
 				}
 			];
 
-			Object.keys(translationParams).forEach((paramKey: any) => {
+			Object.keys(translationParams).forEach((paramKey: string) => {
 				computedProperty.unshift(translationParams[paramKey]); 
 			});
 
-			Ember.defineProperty(this, translationKey, 
+			Ember.defineProperty(this, 'T-' + translationKey, 
 				Ember.computed.apply(this, computedProperty)
 			);
-			//notifyPropertyChanges is necessary because we have to inform all other components
+
+			//notifyPropertyChange is necessary because we have to inform all other components
 			//about change ( we don't use this.set() )
-			this.notifyPropertyChange(translationKey)
+			this.notifyPropertyChange('T-' + translationKey)
 		});
 	}.observes('readyToTranslate'),
 
@@ -49,8 +50,6 @@ App.I18nMixin = Em.Mixin.create({
 			fallbackLng: App.get('language'),
 			debug: true,
 			useLocalStorage: false
-		},() => {
-			this.notifyPropertyChange('readyToTranslate');
 		});
 	}
 });
