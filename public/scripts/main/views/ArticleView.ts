@@ -41,7 +41,6 @@ App.ArticleView = Em.View.extend(App.AdsMixin, App.I18nMixin, {
 		// Trigger an article change once on insertion because the first insertion happens after article
 		// state has changed
 		this.get('controller').notifyPropertyChange('article');
-
 	},
 
 	didInsertElement: function () {
