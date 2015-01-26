@@ -6,7 +6,7 @@ App.I18nMixin = Em.Mixin.create({
 	//this param is used to trigger translate() function when language changed
 	readyToTranslate: false,
 
-	changeLng: function(): void {
+	changeLanguage: function(): void {
 		var lng = this.get('controller.uselang');
 		i18n.setLng(lng, () => {
 			this.notifyPropertyChange('readyToTranslate');
@@ -15,13 +15,13 @@ App.I18nMixin = Em.Mixin.create({
 
 	translate: function(): void {
 		Object.keys(this.translations).forEach((translationKey: string) => {
-			var translationParams = this.translations[translationKey] || {};
-			var computedProperty = [
+			var translationParams = this.translations[translationKey] || {},
+				computedProperty = [
 				'readyToTranslate',
 				() => {
-					var paramsHash : { [index: string]: any } = {};
+					var paramsHash: { [index: string]: any } = {};
 					Object.keys(translationParams).forEach((paramKey: string) => {
-						paramsHash[paramKey]= this.get(translationParams[paramKey]);
+						paramsHash[paramKey] = this.get(translationParams[paramKey]);
 					});
 					return i18n.t(translationKey, paramsHash);
 				}

@@ -49,7 +49,6 @@ App.ArticleModel = Em.Object.extend({
 });
 
 App.ArticleModel.reopenClass({
-
 	url: function (params: {title: string; redirect?: string}) {
 		var redirect = '';
 
