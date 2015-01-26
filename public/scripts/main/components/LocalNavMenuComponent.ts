@@ -1,4 +1,5 @@
 /// <reference path="../app.ts" />
+/// <reference path="../mixins/I18nMixin.ts" />
 'use strict';
 
 /**
@@ -25,9 +26,15 @@ interface NavItem extends RootNavItem {
 	text: string;
 }
 
-App.LocalNavMenuComponent = Em.Component.extend({
+App.LocalNavMenuComponent = Em.Component.extend(App.I18nMixin, {
 	tagName: 'ul',
 	classNames: ['local-nav-menu'],
+
+	translations: {
+		'random-page-label': null,
+		'navigation-back-label': null,
+		'side-nav-menu-label': null
+	},
 
 	/**
 	 * Note: this means that the model is stored directly

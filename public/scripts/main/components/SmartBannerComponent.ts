@@ -1,9 +1,10 @@
 /// <reference path="../app.ts" />
 /// <reference path="../../mercury/utils/browser.ts" />
 /// <reference path="../../../../typings/jquery.cookie/jquery.cookie.d.ts" />
+/// <reference path="../mixins/I18nMixin.ts" />
 'use strict';
 
-App.SmartBannerComponent = Em.Component.extend({
+App.SmartBannerComponent = Em.Component.extend(App.I18nMixin, {
 	classNames: ['smart-banner'],
 	classNameBindings: ['noIcon'],
 
@@ -17,6 +18,10 @@ App.SmartBannerComponent = Em.Component.extend({
 	},
 	day: 86400000,
 	isVisible: false,
+
+	translations: {
+		'smartbanner-price': null
+	},
 
 	appId: function (): string {
 		return this.get('config.appId.' + this.get('system'));

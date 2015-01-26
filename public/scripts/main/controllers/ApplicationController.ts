@@ -2,10 +2,10 @@
 'use strict';
 
 App.ApplicationController = Em.Controller.extend({
-	queryParams: [{noAds: 'noads'}, {uselang: 'uselang'}],
+	queryParams: [{noAds: 'noads'}, {useLang: 'uselang'}],
 	smartBannerVisible: false,
 	sideNavCollapsed: true,
-	uselang: '',
+	useLang: '',
 	noAds: '',
 	isLoading: false,
 

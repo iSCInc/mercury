@@ -1,8 +1,9 @@
 /// <reference path="../app.ts" />
 /// <reference path="../models/ArticleCommentsModel.ts" />
+/// <reference path="../mixins/I18nMixin.ts" />
 'use strict';
 
-App.ArticleCommentsComponent = Em.Component.extend({
+App.ArticleCommentsComponent = Em.Component.extend(App.I18nMixin, {
 	page: null,
 	articleId: null,
 	commentsCount: null,
@@ -13,6 +14,14 @@ App.ArticleCommentsComponent = Em.Component.extend({
 	nextButtonShown: false,
 	prevButtonShown: false,
 	showComments: Em.computed.bool('page'),
+
+	translations: {
+		'article-comments-label': {
+			count: 'model.comments'
+		},
+		'comments-next-button': null,
+		'comments-prev-button': null
+	},
 
 	/**
 	 * @desc scrolls to top of article's container, used for pagination

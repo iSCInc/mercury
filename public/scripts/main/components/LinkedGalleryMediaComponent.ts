@@ -1,8 +1,9 @@
 /// <reference path="../app.ts" />
 /// <reference path="./GalleryMediaComponent.ts" />
+/// <reference path="../mixins/I18nMixin.ts" />
 'use strict';
 
-App.LinkedGalleryMediaComponent = App.GalleryMediaComponent.extend({
+App.LinkedGalleryMediaComponent = App.GalleryMediaComponent.extend(App.I18nMixin, {
 	tagName: 'div',
 	classNames: ['linked-gallery'],
 	layoutName: 'components/linked-gallery-media',
@@ -11,6 +12,10 @@ App.LinkedGalleryMediaComponent = App.GalleryMediaComponent.extend({
 	// This is set the same as the limit property to prevent "empty" images
 	// from showing before "View more" button is clicked
 	incrementLimitValue: 4,
+
+	translations: {
+		'view-more': null
+	},
 
 	canShowMore: function (): boolean {
 		return this.get('media').length > this.get('limit');

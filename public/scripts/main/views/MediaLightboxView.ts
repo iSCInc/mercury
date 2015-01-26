@@ -1,5 +1,6 @@
 /// <reference path="./LightboxView.ts" />
 /// <reference path="../../mercury/modules/VideoLoader.ts" />
+/// <reference path="../mixins/I18nMixin.ts" />
 'use strict';
 
 interface HammerEvent {
@@ -17,7 +18,7 @@ interface Window {
 	scrollY: number;
 }
 
-App.MediaLightboxView = App.LightboxView.extend({
+App.MediaLightboxView = App.LightboxView.extend(App.I18nMixin, {
 	classNames: ['media-lightbox'],
 	maxZoom: 5,
 	lastX: 0,
@@ -30,6 +31,10 @@ App.MediaLightboxView = App.LightboxView.extend({
 
 	isGallery: Em.computed.alias('controller.isGallery'),
 	isZoomed: Em.computed.gt('scale', 1),
+
+	translations: {
+		'media-lightbox-error': null
+	},
 
 	viewportSize: function () {
 		return {

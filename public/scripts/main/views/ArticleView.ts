@@ -18,7 +18,8 @@ interface HTMLElement {
 App.ArticleView = Em.View.extend(App.AdsMixin, App.I18nMixin, {
 	classNames: ['article-wrapper'],
 
-	translations: { //mixin looks at this object and updates it
+	//mixin looks at this object and updates it
+	translations: {
 		'article-categories-list-label': null,
 		'article-comments-label': {
 			count: 'controller.model.comments'

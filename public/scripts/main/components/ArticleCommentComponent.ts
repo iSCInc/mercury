@@ -1,9 +1,16 @@
 /// <reference path="../app.ts" />
+/// <reference path="../mixins/I18nMixin.ts" />
 'use strict';
 
-App.ArticleCommentComponent = Em.Component.extend({
+App.ArticleCommentComponent = Em.Component.extend(App.I18nMixin, {
 	tagName: 'li',
 	classNames: ['article-comment'],
+
+	translations: {
+		'article-replies-label': {
+			count: 'comment.comments.length'
+		}
+	},
 
 	expanded: false,
 	users: null,
@@ -33,7 +40,7 @@ App.ArticleCommentComponent = Em.Component.extend({
 			regex = /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/;
 
 		if (regex.test(userName)) {
-			return i18n.t('app:username-anonymous');
+			return i18n.t('username-anonymous');
 		} else {
 			return userName;
 		}

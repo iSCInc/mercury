@@ -1,7 +1,8 @@
 /// <reference path="./ImageMediaComponent.ts" />
+/// <reference path="../mixins/I18nMixin.ts" />
 'use strict';
 
-App.WikiaMapComponent = App.ImageMediaComponent.extend({
+App.WikiaMapComponent = App.ImageMediaComponent.extend(App.I18nMixin, {
 	classNames: ['wikia-map'],
 
 	url: null,
@@ -11,6 +12,10 @@ App.WikiaMapComponent = App.ImageMediaComponent.extend({
 	templateName: 'components/wikia-map',
 
 	caption: Em.computed.alias('title'),
+
+	translations: {
+		'wikia-map-view-map': null
+	},
 
 	didInsertElement: function () {
 		//handle click with jquery because the 'normal' way to handle events doesn't work.

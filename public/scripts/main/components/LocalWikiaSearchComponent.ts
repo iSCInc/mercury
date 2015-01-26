@@ -1,4 +1,5 @@
 /// <reference path="../app.ts" />
+/// <reference path="../mixins/I18nMixin.ts" />
 'use strict';
 
 /**
@@ -8,7 +9,7 @@ interface SearchSuggestionItem {
 	title: string;
 }
 
-App.LocalWikiaSearchComponent = Em.Component.extend({
+App.LocalWikiaSearchComponent = Em.Component.extend(App.I18nMixin, {
 	classNames: ['local-wikia-search'],
 
 	query: '',
@@ -38,6 +39,11 @@ App.LocalWikiaSearchComponent = Em.Component.extend({
 	requestsInProgress: {},
 	// key: query string, value: Array<SearchSuggestionItem>
 	cachedResults: {},
+
+	translations: {
+		'search-no-results-msg': null,
+		'search-loading-msg': null
+	},
 
 	actions: {
 		collapseSideNav: function (): void {
