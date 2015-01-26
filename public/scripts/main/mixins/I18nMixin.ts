@@ -13,6 +13,14 @@ App.I18nMixin = Em.Mixin.create({
 		});
 	}.observes('controller.uselang'),
 
+	/**
+	 * Function iterates over all elemetns in translations object and for each of them
+	 * creates computedProperty array; first adds 'readyToTranslate' dependency and defines 
+	 * function which should launch when any of dependencies change. 
+	 * After, if translation contains any params, adds the rest of the dependencies
+	 * so if any of params change, function also should be launched.
+	 * Finally, the property (with 'T-' prefix) is created in object which Mixin is added to.
+	 */
 	translate: function(): void {
 		Object.keys(this.translations).forEach((translationKey: string) => {
 			var translationParams = this.translations[translationKey] || {},
