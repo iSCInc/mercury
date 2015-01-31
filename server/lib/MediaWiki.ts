@@ -44,7 +44,7 @@ export class SearchRequest {
 }
 
 /**
- * @desc a wrapper for making API requests for info about the wiki
+ * @desc a wrapper for making API requests to MediaWiki
  *
  */
 export class WikiRequest {
@@ -57,6 +57,21 @@ export class WikiRequest {
 	 */
 	constructor (params: {wikiDomain: string}) {
 		this.wikiDomain = params.wikiDomain;
+	}
+
+	/**
+	 * Gets resource type for URL like '/wiki/Main_Page'
+	 *
+	 * @return {Promise<any>}
+	 */
+	getResourceType (uri: string): Promise<any> {
+		var url = createUrl(this.wikiDomain, 'wikia.php', {
+			controller: 'MercuryApi',
+			method: 'getResourceType',
+			uri: uri
+		});
+
+		return fetch(url);
 	}
 
 	/**
@@ -131,6 +146,10 @@ export class ArticleRequest {
  */
 export function fetch (url: string, redirects: number = 1): Promise<any> {
 	return new Promise((resolve: Function, reject: Function) => {
+		Logger.debug({
+			url: url
+		}, 'Fetching url');
+
 		Wreck.get(url, {
 			redirects: redirects,
 			timeout: localSettings.backendRequestTimeout,

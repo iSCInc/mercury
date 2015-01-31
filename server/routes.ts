@@ -193,6 +193,21 @@ function routes (server: Hapi.Server) {
 		});
 	});
 
+	// TODO Remove later, this is just for testing purposes
+	server.route({
+		method: 'GET',
+		path: localSettings.apiBase + '/resource/{uri}',
+		config: config,
+		handler: (request: Hapi.Request, reply: Function) => {
+			article.getResourceType({
+				wikiDomain: getWikiDomainName(request.headers.host),
+				uri: request.params.uri
+			}, (error: any, result: any) => {
+				reply(error || result);
+			});
+		}
+	});
+
 	// eg. article/muppet/Kermit_the_Frog
 	server.route({
 		method: 'GET',

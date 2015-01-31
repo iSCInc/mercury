@@ -1,3 +1,8 @@
+interface ResourceTypeRequestParams {
+	wikiDomain: string;
+	uri: string;
+}
+
 interface ArticleRequestParams {
 	wikiDomain: string;
 	title: string;
