@@ -105,30 +105,6 @@ export function getFull (params: ArticleRequestParams, next: Function): void {
 }
 
 /**
- * Get resource type
- * @param {ResourceTypeRequestParams} params
- * @param {Function} next
- */
-export function getResourceType (params: ResourceTypeRequestParams, next: Function) {
-	var wikiRequest = new MediaWiki.WikiRequest({
-		wikiDomain: params.wikiDomain
-	});
-
-	logger.debug({
-		wiki: params.wikiDomain,
-		uri: params.uri
-	}, 'Fetching resource type');
-
-	wikiRequest
-		.getResourceType(params.uri)
-		.then((resourceType: any) => {
-			next(null, resourceType);
-		}, (error: any) => {
-			next(error, null);
-		});
-}
-
-/**
  * Get WikiVariables
  * @param {string} wikiDomain
  * @param {Function} next

@@ -10,6 +10,7 @@ import Caching = require('./lib/Caching');
 import Tracking = require('./lib/Tracking');
 import MediaWiki = require('./lib/MediaWiki');
 import util = require('util');
+import resource = require('./controllers/resource');
 import search = require('./controllers/search');
 import article = require('./controllers/article/index');
 import comments = require('./controllers/article/comments');
@@ -199,7 +200,7 @@ function routes (server: Hapi.Server) {
 		path: localSettings.apiBase + '/resource/{uri}',
 		config: config,
 		handler: (request: Hapi.Request, reply: Function) => {
-			article.getResourceType({
+			resource.getResourceType({
 				wikiDomain: getWikiDomainName(request.headers.host),
 				uri: request.params.uri
 			}, (error: any, result: any) => {
