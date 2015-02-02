@@ -123,7 +123,10 @@ class App {
 
 			if (response && response.header) {
 				response.header('x-backend-response-time', responseTimeSec);
-				response.header('x-served-by', servedBy);
+
+				if (response.headers['x-served-by']) {
+					response.header('x-served-by', [servedBy, response.headers['x-served-by']].join(', '));
+				}
 			} else if (response.isBoom) {
 				// see https://github.com/hapijs/boom
 				response.output.headers['x-backend-response-time'] = responseTimeSec;

@@ -146,7 +146,8 @@ function routes (server: Hapi.Server) {
 		],
 		proxyRoutes = [
 			'/favicon.ico',
-			'/robots.txt'
+			'/robots.txt',
+			'/proxy/{proxyUri*}'
 		],
 		config = {
 			cache: {
@@ -289,12 +290,30 @@ function routes (server: Hapi.Server) {
 			method: 'GET',
 			path: route,
 			handler: (request: any, reply: any) => {
-				var path = route.substr(1),
-					url = MediaWiki.createUrl(getWikiDomainName(request.headers.host), path);
+				var url,
+					proxyUri = request.params.proxyUri;
+
+				if (proxyUri) {
+					url = MediaWiki.createUrl(getWikiDomainName(request.headers.host), proxyUri);
+				} else {
+					url = MediaWiki.createUrl(getWikiDomainName(request.headers.host), route.substr(1))
+				}
+
+				console.log('in proxy');
 
 				reply.proxy({
-					uri: url,
-					redirects: localSettings.proxyMaxRedirects
+//					uri: url,
+					redirects: localSettings.proxyMaxRedirects,
+					passThrough: true,
+					xforward: true,
+					localStatePassThrough: true,
+//					onResponse: (err, res, request, reply, settings, ttl) => {
+//						reply.header('x-served-by', localSettings.host || 'mercury');
+//					}
+					mapUri: (request, callback) => {
+						console.log(request);
+						callback(null, url)
+					}
 				});
 			}
 		});
@@ -316,4 +335,3 @@ function routes (server: Hapi.Server) {
 }
 
 export = routes;
-
