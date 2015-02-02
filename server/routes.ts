@@ -140,14 +140,13 @@ function routes (server: Hapi.Server) {
 	var second = 1000,
 		indexRoutes = [
 			'/wiki/{title*}',
-//			'/{title*}',
+			'/{title*}',
 			// TODO this is special case needed for /wiki path, it should be refactored
 			'/{title}'
 		],
 		proxyRoutes = [
 			'/favicon.ico',
-			'/robots.txt',
-			'/public/{proxyUri*}'
+			'/robots.txt'
 		],
 		config = {
 			cache: {
@@ -255,11 +254,43 @@ function routes (server: Hapi.Server) {
 		}
 	});
 
+	server.route({
+		method: 'GET',
+		path: localSettings.apiBase + '/proxy/{proxyUri*}',
+		handler: (request: Hapi.Request, reply: any): void => {
+			var proxyUri = request.params.proxyUri;
+
+			reply.proxy({
+				redirects: localSettings.proxyMaxRedirects,
+				passThrough: true,
+				xforward: true,
+				localStatePassThrough: true,
+				mapUri: (request: Hapi.Request, next: Function) => {
+					next(null, MediaWiki.createUrl(getWikiDomainName(request.headers.host), proxyUri));
+				}
+			});
+		}
+	});
+
 	// Set up static assets serving, this is probably not a final implementation as we should probably setup
 	// nginx or apache to serve static assets and route the rest of the requests to node.
 	server.route({
 		method: 'GET',
 		path: '/front/{path*}',
+		handler: {
+			directory: {
+				path: path.join(__dirname, '../front'),
+				listing: false,
+				index: false,
+				lookupCompressed: true
+			}
+		}
+	});
+
+	//Temporary - will be removed after transition
+	server.route({
+		method: 'GET',
+		path: '/public/{path*}',
 		handler: {
 			directory: {
 				path: path.join(__dirname, '../front'),
@@ -276,30 +307,12 @@ function routes (server: Hapi.Server) {
 			method: 'GET',
 			path: route,
 			handler: (request: any, reply: any) => {
-				var url,
-					proxyUri = request.params.proxyUri;
-
-				if (proxyUri) {
-					url = MediaWiki.createUrl(getWikiDomainName(request.headers.host), proxyUri);
-				} else {
-					url = MediaWiki.createUrl(getWikiDomainName(request.headers.host), route.substr(1))
-				}
-
-				console.log('in proxy');
+				var path = route.substr(1),
+					url = MediaWiki.createUrl(getWikiDomainName(request.headers.host), path);
 
 				reply.proxy({
-//					uri: url,
-					redirects: localSettings.proxyMaxRedirects,
-					passThrough: true,
-					xforward: true,
-					localStatePassThrough: true,
-//					onResponse: (err, res, request, reply, settings, ttl) => {
-//						reply.header('x-served-by', localSettings.host || 'mercury');
-//					}
-					mapUri: (request, callback) => {
-						console.log(request);
-						callback(null, url)
-					}
+					uri: url,
+					redirects: localSettings.proxyMaxRedirects
 				});
 			}
 		});
