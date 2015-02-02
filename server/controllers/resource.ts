@@ -5,6 +5,7 @@
  * @description Resource controller
  */
 import MediaWiki = require('../lib/MediaWiki');
+import logger = require('../lib/Logger');
 
 /**
  * Get resource type
