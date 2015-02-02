@@ -269,9 +269,9 @@ function routes (server: Hapi.Server) {
 
 			reply.proxy({
 				redirects: localSettings.proxyMaxRedirects,
-				passThrough: true,
 				xforward: true,
-//				localStatePassThrough: true,
+				passThrough: true,
+				localStatePassThrough: true,
 				mapUri: (request: Hapi.Request, next: Function) => {
 					var cookie = request.headers.cookie;
 //					console.log(request.headers.cookie);
@@ -279,7 +279,7 @@ function routes (server: Hapi.Server) {
 					if (cookie) {
 						request.headers.cookie = cookie.replace(
 							/wikia_beacon_id=[A-Za-z0-9-_]{10}/,
-							'wikia_beacon_id=aaaaaaaaaa'
+							'wikia_beacon_id=aaaaaaaaaz'
 						);
 					}
 					next(null, mediaWikiUrl);
