@@ -140,7 +140,7 @@ function routes (server: Hapi.Server) {
 	var second = 1000,
 		indexRoutes = [
 			'/wiki/{title*}',
-			'/{title*}',
+//			'/{title*}',
 			// TODO this is special case needed for /wiki path, it should be refactored
 			'/{title}'
 		],
