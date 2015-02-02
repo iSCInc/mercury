@@ -9,6 +9,7 @@ import Utils = require('./lib/Utils');
 import Caching = require('./lib/Caching');
 import Tracking = require('./lib/Tracking');
 import MediaWiki = require('./lib/MediaWiki');
+import logger = require('./lib/Logger');
 import util = require('util');
 import search = require('./controllers/search');
 import article = require('./controllers/article/index');
@@ -258,7 +259,13 @@ function routes (server: Hapi.Server) {
 		method: 'GET',
 		path: localSettings.apiBase + '/proxy/{proxyUri*}',
 		handler: (request: Hapi.Request, reply: any): void => {
-			var proxyUri = request.params.proxyUri;
+			var proxyUri = request.params.proxyUri,
+				mediaWikiUrl = MediaWiki.createUrl(getWikiDomainName(request.headers.host), proxyUri);
+
+			logger.debug({
+				uri: proxyUri,
+				mediaWikiUrl: mediaWikiUrl
+			}, 'Proxy handler');
 
 			reply.proxy({
 				redirects: localSettings.proxyMaxRedirects,
@@ -266,7 +273,7 @@ function routes (server: Hapi.Server) {
 				xforward: true,
 				localStatePassThrough: true,
 				mapUri: (request: Hapi.Request, next: Function) => {
-					next(null, MediaWiki.createUrl(getWikiDomainName(request.headers.host), proxyUri));
+					next(null, mediaWikiUrl);
 				}
 			});
 		}
