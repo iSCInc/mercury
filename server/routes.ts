@@ -147,7 +147,7 @@ function routes (server: Hapi.Server) {
 		proxyRoutes = [
 			'/favicon.ico',
 			'/robots.txt',
-			'/proxy/{proxyUri*}'
+			'/public/{proxyUri*}'
 		],
 		config = {
 			cache: {
@@ -260,20 +260,6 @@ function routes (server: Hapi.Server) {
 	server.route({
 		method: 'GET',
 		path: '/front/{path*}',
-		handler: {
-			directory: {
-				path: path.join(__dirname, '../front'),
-				listing: false,
-				index: false,
-				lookupCompressed: true
-			}
-		}
-	});
-
-	//Temporary - will be removed after transition
-	server.route({
-		method: 'GET',
-		path: '/public/{path*}',
 		handler: {
 			directory: {
 				path: path.join(__dirname, '../front'),
