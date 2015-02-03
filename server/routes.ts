@@ -138,6 +138,123 @@ function onArticleResponse (request: Hapi.Request, reply: any, error: any, resul
  * @param server
  */
 function routes (server: Hapi.Server) {
+	var second = 1000,
+		indexRoutes = [
+			'/wiki/{title*}',
+			'/{title*}',
+			// TODO this is special case needed for /wiki path, it should be refactored
+			'/{title}'
+		],
+		proxyRoutes = [
+			'/favicon.ico',
+			'/robots.txt'
+		],
+		config = {
+			cache: {
+				privacy: Caching.policyString(Caching.Policy.Public),
+				expiresIn: 60 * second
+			}
+		};
+
+	// all the routes that should resolve to loading single page app entry view
+	indexRoutes.forEach((route: string) => {
+		server.route({
+			method: 'GET',
+			path: route,
+			config: config,
+			handler: (request: Hapi.Request, reply: any) => {
+				var path: string = request.path,
+					wikiDomain: string = getWikiDomainName(request.headers.host);
+
+				if (path === '/' || path === '/wiki/') {
+					article.getWikiVariables(wikiDomain, (error: any, wikiVariables: any) => {
+						if (error) {
+							// TODO check error.statusCode and react accordingly
+							reply.redirect(localSettings.redirectUrlOnNoData);
+						} else {
+							article.getArticle({
+								wikiDomain: wikiDomain,
+								title: wikiVariables.mainPageTitle,
+								redirect: request.query.redirect
+							}, wikiVariables, (error: any, result: any = {}) => {
+								onArticleResponse(request, reply, error, result);
+							});
+						}
+					});
+				} else  {
+					article.getFull({
+						wikiDomain: wikiDomain,
+						title: request.params.title,
+						redirect: request.query.redirect
+					}, (error: any, result: any = {}) => {
+						onArticleResponse(request, reply, error, result);
+					});
+				}
+			}
+		});
+	});
+
+	// eg. article/muppet/Kermit_the_Frog
+	server.route({
+		method: 'GET',
+		path: localSettings.apiBase + '/article/{articleTitle*}',
+		config: config,
+		handler: (request: Hapi.Request, reply: Function) => {
+			article.getData({
+				wikiDomain: getWikiDomainName(request.headers.host),
+				title: request.params.articleTitle,
+				redirect: request.params.redirect
+			}, (error: any, result: any) => {
+				var response: Hapi.Response = reply(error || result);
+				Caching.setResponseCaching(response, cachingTimes.articleAPI);
+			});
+		}
+	});
+
+	// eg. articleComments/muppet/154
+	server.route({
+		method: 'GET',
+		path: localSettings.apiBase + '/article/comments/{articleId}/{page?}',
+		handler: (request: Hapi.Request, reply: Function) => {
+			var params = {
+					wikiDomain: getWikiDomainName(request.headers.host),
+					articleId: parseInt(request.params.articleId, 10) || null,
+					page: parseInt(request.params.page, 10) || 0
+				};
+
+			if (params.articleId === null) {
+				reply(Boom.badRequest('Invalid articleId'));
+			} else {
+				comments.handleRoute(params, (error: any, result: any): void => {
+					var response = reply(error || result);
+					Caching.setResponseCaching(response, cachingTimes.commentsAPI);
+				});
+			}
+		}
+	});
+
+	// eg. search/muppet
+	server.route({
+		method: 'GET',
+		path: localSettings.apiBase + '/search/{query}',
+		handler: (request: any, reply: Function): void => {
+			var params = {
+				wikiDomain: getWikiDomainName(request.headers.host),
+				query: request.params.query
+			};
+
+			search.searchWiki(params, (error: any, result: any) => {
+				var response: Hapi.Response;
+				if (error) {
+					response = reply(error).code(error.exception.code);
+				} else {
+					response = reply(result);
+				}
+				Caching.setResponseCaching(response, cachingTimes.searchAPI);
+			});
+		}
+	});
+
 	server.route({
 		method: 'GET',
 		path: localSettings.apiBase + '/proxy/{proxyUri*}',
@@ -169,6 +286,66 @@ function routes (server: Hapi.Server) {
 					return err ? reply(err) : reply(res);
 				}
 			});
+		}
+	});
+
+	// Set up static assets serving, this is probably not a final implementation as we should probably setup
+	// nginx or apache to serve static assets and route the rest of the requests to node.
+	server.route({
+		method: 'GET',
+		path: '/front/{path*}',
+		handler: {
+			directory: {
+				path: path.join(__dirname, '../front'),
+				listing: false,
+				index: false,
+				lookupCompressed: true
+			}
+		}
+	});
+
+	//Temporary - will be removed after transition
+	server.route({
+		method: 'GET',
+		path: '/public/{path*}',
+		handler: {
+			directory: {
+				path: path.join(__dirname, '../front'),
+				listing: false,
+				index: false,
+				lookupCompressed: true
+			}
+		}
+	});
+
+	//eg. robots.txt
+	proxyRoutes.forEach((route: string) => {
+		server.route({
+			method: 'GET',
+			path: route,
+			handler: (request: any, reply: any) => {
+				var path = route.substr(1),
+					url = MediaWiki.createUrl(getWikiDomainName(request.headers.host), path);
+
+				reply.proxy({
+					uri: url,
+					redirects: localSettings.proxyMaxRedirects
+				});
+			}
+		});
+	});
+
+	// Heartbeat route for monitoring
+	server.route({
+		method: 'GET',
+		path: '/heartbeat',
+		handler: (request: any, reply: Function) => {
+			var memoryUsage = process.memoryUsage();
+
+			reply('Server status is: OK')
+				.header('X-Memory', String(memoryUsage.rss))
+				.header('X-Uptime', String(~~process.uptime()))
+				.code(200);
 		}
 	});
 }
