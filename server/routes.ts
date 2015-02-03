@@ -273,9 +273,17 @@ function routes (server: Hapi.Server) {
 				localStatePassThrough: true,
 				mapUri: (request: Hapi.Request, next: Function) => {
 					next(null, mediaWikiUrl, {
-						// let's try force the skin
+						// let's try to force the skin
 						'X-Skin': 'oasis'
 					});
+				},
+				onResponse: (err: any, res: Hapi.Response, request: Hapi.Request, reply: any, settings: any, ttl: any) => {
+					logger.debug({
+						requestHeaders: request.headers,
+						responseHeaders: res.headers
+					}, 'Proxy handler onResponse');
+
+					return err ? reply(err) : reply(res);
 				}
 			});
 		}
