@@ -273,7 +273,10 @@ function routes (server: Hapi.Server) {
 				xforward: true,
 				localStatePassThrough: true,
 				mapUri: (request: Hapi.Request, next: Function) => {
-					next(null, mediaWikiUrl);
+					next(null, mediaWikiUrl, {
+						// let's try force the skin
+						'X-Skin': 'oasis'
+					});
 				}
 			});
 		}
