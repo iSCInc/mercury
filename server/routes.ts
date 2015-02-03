@@ -270,7 +270,6 @@ function routes (server: Hapi.Server) {
 			reply.proxy({
 				redirects: localSettings.proxyMaxRedirects,
 				passThrough: true,
-				xforward: true,
 				localStatePassThrough: true,
 				mapUri: (request: Hapi.Request, next: Function) => {
 					next(null, mediaWikiUrl, {
