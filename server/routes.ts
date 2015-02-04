@@ -270,11 +270,12 @@ function routes (server: Hapi.Server) {
 			reply.proxy({
 				redirects: localSettings.proxyMaxRedirects,
 				passThrough: true,
-				//localStatePassThrough: true,
+				localStatePassThrough: true,
 				mapUri: (request: Hapi.Request, next: Function) => {
 					next(null, mediaWikiUrl, {
 						// let's try to force the skin
-						'X-Skin': 'oasis'
+						'X-Skin': 'oasis',
+						'User-Agent': 'Chrome'
 					});
 				},
 				onResponse: (err: any, res: Hapi.Response, request: Hapi.Request, reply: any, settings: any, ttl: any) => {
