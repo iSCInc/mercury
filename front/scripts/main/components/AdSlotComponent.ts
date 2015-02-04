@@ -27,15 +27,5 @@ App.AdSlotComponent = Em.Component.extend({
 		} else {
 			Em.Logger.info('Ad disabled for:', this.get('name'));
 		}
-	},
-
-	willDestroyElement: function() {
-		var name = this.get('name');
-
-		Mercury.Modules.Ads.getInstance().removeSlot(this.get('name'));
-
-		this.$().remove();
-
-		Em.Logger.info('Will destroy ad:', name);
 	}
 });
