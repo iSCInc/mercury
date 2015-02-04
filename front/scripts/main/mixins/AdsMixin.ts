@@ -52,7 +52,6 @@ App.AdsMixin = Em.Mixin.create({
 		// Setup ads
 		if (Mercury.adsUrl && !Em.get(Mercury, 'query.noExternals')) {
 			this.ads.init(Mercury.adsUrl, () => {
-				console.log('handleAds')
 				this.handleAds = this.injectAds;
 				this.injectAds(adsContext);
 			});
