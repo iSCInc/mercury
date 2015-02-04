@@ -1,6 +1,5 @@
 /// <reference path="../app.ts" />
 /// <reference path="../../mercury/utils/string.ts" />
-/// <reference path="../../mercury/modules/Ads.ts" />
 /// <reference path="../../../../typings/i18next/i18next.d.ts" />
 
 interface Response {
@@ -90,14 +89,6 @@ App.ArticleModel.reopenClass({
 
 		// On first page load the article content is available only in HTML
 		article.content = $('.article-content').html();
-
-		// Setup ads
-		if (Mercury.adsUrl && !Em.get(Mercury, 'query.noExternals')) {
-			adsInstance = Mercury.Modules.Ads.getInstance();
-			adsInstance.init(Mercury.adsUrl, () => {
-				adsInstance.reload(article.adsContext);
-			});
-		}
 
 		delete Mercury.article;
 		return article;
