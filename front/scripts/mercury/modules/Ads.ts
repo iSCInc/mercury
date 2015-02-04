@@ -11,7 +11,7 @@ module Mercury.Modules {
 
 	export class Ads {
 		private static instance: Mercury.Modules.Ads = null;
-		private adSlots: string[][] = [];
+		private adSlots: string[] = [];
 		private adsContext: any = null;
 		private adEngineModule: any;
 		private adContextModule: any;
@@ -33,7 +33,7 @@ module Mercury.Modules {
 		 * Initializes the Ad module
 		 *
 		 * @param adsUrl Url for the ads script
-		 * @param callback Callback function to exwecute when the script is loaded
+		 * @param callback Callback function to execute when the script is loaded
 		 */
 		public init (adsUrl: string, callback: () => void) {
 			//Required by ads tracking code
@@ -50,6 +50,9 @@ module Mercury.Modules {
 						this.adContextModule = adContextModule;
 						this.adConfigMobile = adConfigMobile;
 						this.isLoaded = true;
+
+						this.adEngineModule.run(this.adConfigMobile, this.adSlots, 'queue.mercury');
+
 						callback.call(this);
 					});
 				} else {
@@ -78,31 +81,17 @@ module Mercury.Modules {
 			}
 		}
 
-		private setContext (adsContext: any) {
-			this.adsContext = adsContext ? adsContext : null;
-		}
-
 		/**
 		 * Reloads the ads with the provided adsContext
 		 * @param adsContext
 		 */
-		public reload (adsContext: any) {
+		public setContext (adsContext: any) {
 			// Store the context for external reuse
-			this.setContext(adsContext);
+			this.adsContext = adsContext ? adsContext : null;
+
 			if (this.isLoaded && adsContext) {
 				this.adContextModule.setContext(adsContext);
-				// We need a copy of adSlots as .run destroys it
-				this.adEngineModule.run(this.adConfigMobile, this.getSlots(), 'queue.mercury');
 			}
-		}
-
-		/**
-		 * Returns copy of adSlots
-		 *
-		 * @returns {string[][]}
-		 */
-		getSlots (): string[][] {
-			return <string[][]>$.extend([], this.adSlots);
 		}
 
 		/**
@@ -112,18 +101,7 @@ module Mercury.Modules {
 		 * @returns {number} index of the inserted slot
 		 */
 		public addSlot (name: string): number {
-			return this.adSlots.push([name]);
-		}
-
-		/**
-		 * Removes ad slot by name
-		 *
-		 * @param name Name of ths slot to remove
-		 */
-		public removeSlot (name:string): void {
-			this.adSlots = $.grep(this.adSlots, (slot) => {
-				return slot[0] && slot[0] === name;
-			}, true);
+			return this.adSlots.push(name);
 		}
 
 		/**
