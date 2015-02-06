@@ -132,15 +132,15 @@ function onArticleResponse (request: Hapi.Request, reply: any, error: any, resul
 	}
 }
 
-function articleRouteHandler (request: Hapi.Request, reply: any) {
-	console.log('~~~~~\narticleRouteHandler\n~~~~~');
+function articleRouteHandler (request: Hapi.Request, reply: any, uriPrefix: string) {
+	console.log('~~~~~\nARTICLE Route Handler\n~~~~~');
 
 	var path: string = request.path,
-		wikiDomain: string = getWikiDomainName(request.headers.host);
+		wikiDomain: string = getWikiDomainName(request.headers.host),
+		defaultUriPrefix: string = '/wiki/',
+		title: string;
 
-	console.log('path for articleRouteHandler: ' + path);
-
-	if (path === '/' || path === '/wiki/') {
+	if (path === '/' || path === defaultUriPrefix) {
 		article.getWikiVariables(wikiDomain, (error: any, wikiVariables: any) => {
 			if (error) {
 				// TODO check error.statusCode and react accordingly
@@ -156,10 +156,20 @@ function articleRouteHandler (request: Hapi.Request, reply: any) {
 			}
 		});
 	} else {
+		// If the request path contains '/wiki/' (defaultUriPrefix) at the beginning,
+		// but the article path for the wiki is set to be '/wiki/'-less, strip it
+		// (as the MediaWiki redirects work in the same manner).
+		if (uriPrefix === '/' && path.indexOf(defaultUriPrefix) === 0) {
+			title = path.substr(defaultUriPrefix.length);
+		} else if (path.indexOf(uriPrefix) === 0) {
+			title = path.substr(uriPrefix.length);
+		} else {
+			title = path;
+		}
+
 		article.getFull({
 			wikiDomain: wikiDomain,
-			// what happens if there is an article named 'wiki/something'?
-			title: request.params.uri,
+			title: title,
 			redirect: request.query.redirect
 		}, (error: any, result: any = {}) => {
 			onArticleResponse(request, reply, error, result);
@@ -168,7 +178,7 @@ function articleRouteHandler (request: Hapi.Request, reply: any) {
 }
 
 function nonArticleRouteHandler (request: Hapi.Request, reply: any) {
-	console.log('~~~~~\nnonArticleRouteHandler\n~~~~~');
+	console.log('~~~~~\nNON-article Route Handler\n~~~~~');
 
 	var uri = request.params.uri,
 		mediaWikiUrl = MediaWiki.createUrl(getWikiDomainName(request.headers.host), uri);
@@ -230,7 +240,7 @@ function routes (server: Hapi.Server) {
 			console.log('~~~~~\nselecting the handler for ' + uri + '\n~~~~~');
 
 			if (!uri || uri === 'wiki') {
-				return articleRouteHandler(request, reply);
+				return articleRouteHandler(request, reply, '/');
 			}
 
 			if (proxyRoutes.indexOf('/' + uri) !== -1) {
@@ -245,7 +255,7 @@ function routes (server: Hapi.Server) {
 				).then(function(response: any) {
 					console.log('response.isArticle: ', response.isArticle);
 					return response.isArticle ?
-						articleRouteHandler(request, reply) :
+						articleRouteHandler(request, reply, response.uriPrefix) :
 						nonArticleRouteHandler(request, reply);
 				}); //.catch(function(error: any) {
 ////						callback(error, null);
