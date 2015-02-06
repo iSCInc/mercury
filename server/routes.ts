@@ -132,6 +132,75 @@ function onArticleResponse (request: Hapi.Request, reply: any, error: any, resul
 	}
 }
 
+function articleRouteHandler (request: Hapi.Request, reply: any) {
+	console.log('~~~~~\narticleRouteHandler\n~~~~~');
+
+	var path: string = request.path,
+		wikiDomain: string = getWikiDomainName(request.headers.host);
+
+	console.log('path for articleRouteHandler: ' + path);
+
+	if (path === '/' || path === '/wiki/') {
+		article.getWikiVariables(wikiDomain, (error: any, wikiVariables: any) => {
+			if (error) {
+				// TODO check error.statusCode and react accordingly
+				reply.redirect(localSettings.redirectUrlOnNoData);
+			} else {
+				article.getArticle({
+					wikiDomain: wikiDomain,
+					title: wikiVariables.mainPageTitle,
+					redirect: request.query.redirect
+				}, wikiVariables, (error: any, result: any = {}) => {
+					onArticleResponse(request, reply, error, result);
+				});
+			}
+		});
+	} else {
+		article.getFull({
+			wikiDomain: wikiDomain,
+			// what happens if there is an article named 'wiki/something'?
+			title: request.params.uri,
+			redirect: request.query.redirect
+		}, (error: any, result: any = {}) => {
+			onArticleResponse(request, reply, error, result);
+		});
+	}
+}
+
+function nonArticleRouteHandler (request: Hapi.Request, reply: any) {
+	console.log('~~~~~\nnonArticleRouteHandler\n~~~~~');
+
+	var uri = request.params.uri,
+		mediaWikiUrl = MediaWiki.createUrl(getWikiDomainName(request.headers.host), uri);
+
+//	logger.debug({
+//		uri: uri,
+//		mediaWikiUrl: mediaWikiUrl
+//	}, 'Proxy handler');
+
+	reply.proxy({
+		uri: mediaWikiUrl,
+		redirects: localSettings.proxyMaxRedirects,
+		passThrough: true,
+		localStatePassThrough: true//,
+//		mapUri: (request: Hapi.Request, next: Function) => {
+//			next(null, mediaWikiUrl, {
+////				// let's try to force the skin
+////				'X-Skin': 'oasis',
+////				'User-Agent': 'Chrome'
+//			});
+//		},
+//		onResponse: (err: any, res: Hapi.Response, request: Hapi.Request, reply: any, settings: any, ttl: any) => {
+////			logger.debug({
+////				requestHeaders: request.headers,
+////				responseHeaders: res.headers
+////			}, 'Proxy handler onResponse');
+//
+//			return err ? reply(err) : reply(res);
+//		}
+	});
+}
+
 /**
  * Adds routes to the server
  *
@@ -139,12 +208,6 @@ function onArticleResponse (request: Hapi.Request, reply: any, error: any, resul
  */
 function routes (server: Hapi.Server) {
 	var second = 1000,
-		indexRoutes = [
-			'/wiki/{title*}',
-			'/{title*}',
-			// TODO this is special case needed for /wiki path, it should be refactored
-			'/{title}'
-		],
 		proxyRoutes = [
 			'/favicon.ico',
 			'/robots.txt'
@@ -156,42 +219,39 @@ function routes (server: Hapi.Server) {
 			}
 		};
 
-	// all the routes that should resolve to loading single page app entry view
-	indexRoutes.forEach((route: string) => {
-		server.route({
-			method: 'GET',
-			path: route,
-			config: config,
-			handler: (request: Hapi.Request, reply: any) => {
-				var path: string = request.path,
-					wikiDomain: string = getWikiDomainName(request.headers.host);
+	// Ask if these should be displayed by Mercury and PROXY ALL THE (other) THINGS!
+	server.route({
+		method: 'GET',
+		path: '/{uri*}',
+		config: config,
+		handler: (request: Hapi.Request, reply: any) => {
+			var uri = request.params.uri;
 
-				if (path === '/' || path === '/wiki/') {
-					article.getWikiVariables(wikiDomain, (error: any, wikiVariables: any) => {
-						if (error) {
-							// TODO check error.statusCode and react accordingly
-							reply.redirect(localSettings.redirectUrlOnNoData);
-						} else {
-							article.getArticle({
-								wikiDomain: wikiDomain,
-								title: wikiVariables.mainPageTitle,
-								redirect: request.query.redirect
-							}, wikiVariables, (error: any, result: any = {}) => {
-								onArticleResponse(request, reply, error, result);
-							});
-						}
-					});
-				} else  {
-					article.getFull({
-						wikiDomain: wikiDomain,
-						title: request.params.title,
-						redirect: request.query.redirect
-					}, (error: any, result: any = {}) => {
-						onArticleResponse(request, reply, error, result);
-					});
-				}
+			console.log('~~~~~\nselecting the handler for ' + uri + '\n~~~~~');
+
+			if (!uri || uri === 'wiki') {
+				return articleRouteHandler(request, reply);
 			}
-		});
+
+			if (proxyRoutes.indexOf('/' + uri) !== -1) {
+				return nonArticleRouteHandler(request, reply);
+			}
+
+			new MediaWiki.IsArticleRequest(
+					getWikiDomainName(request.headers.host)
+				).fetch(
+					'/' + uri,
+					request.params.redirect
+				).then(function(response: any) {
+					console.log('response.isArticle: ', response.isArticle);
+					return response.isArticle ?
+						articleRouteHandler(request, reply) :
+						nonArticleRouteHandler(request, reply);
+				}); //.catch(function(error: any) {
+////						callback(error, null);
+//					console.log('error: ', error);
+//				});
+		}
 	});
 
 	// eg. article/muppet/Kermit_the_Frog
@@ -255,41 +315,6 @@ function routes (server: Hapi.Server) {
 		}
 	});
 
-	server.route({
-		method: 'GET',
-		path: localSettings.apiBase + '/proxy/{proxyUri*}',
-		handler: (request: Hapi.Request, reply: any): void => {
-			var proxyUri = request.params.proxyUri,
-				mediaWikiUrl = MediaWiki.createUrl(getWikiDomainName(request.headers.host), proxyUri);
-
-			logger.debug({
-				uri: proxyUri,
-				mediaWikiUrl: mediaWikiUrl
-			}, 'Proxy handler');
-
-			reply.proxy({
-				redirects: localSettings.proxyMaxRedirects,
-				passThrough: true,
-				localStatePassThrough: true,
-				mapUri: (request: Hapi.Request, next: Function) => {
-					next(null, mediaWikiUrl, {
-						// let's try to force the skin
-						'X-Skin': 'oasis',
-						'User-Agent': 'Chrome'
-					});
-				},
-				onResponse: (err: any, res: Hapi.Response, request: Hapi.Request, reply: any, settings: any, ttl: any) => {
-					logger.debug({
-						requestHeaders: request.headers,
-						responseHeaders: res.headers
-					}, 'Proxy handler onResponse');
-
-					return err ? reply(err) : reply(res);
-				}
-			});
-		}
-	});
-
 	// Set up static assets serving, this is probably not a final implementation as we should probably setup
 	// nginx or apache to serve static assets and route the rest of the requests to node.
 	server.route({
@@ -317,23 +342,6 @@ function routes (server: Hapi.Server) {
 				lookupCompressed: true
 			}
 		}
-	});
-
-	//eg. robots.txt
-	proxyRoutes.forEach((route: string) => {
-		server.route({
-			method: 'GET',
-			path: route,
-			handler: (request: any, reply: any) => {
-				var path = route.substr(1),
-					url = MediaWiki.createUrl(getWikiDomainName(request.headers.host), path);
-
-				reply.proxy({
-					uri: url,
-					redirects: localSettings.proxyMaxRedirects
-				});
-			}
-		});
 	});
 
 	// Heartbeat route for monitoring

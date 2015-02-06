@@ -123,6 +123,47 @@ export class ArticleRequest {
 }
 
 /**
+ * Checks if a given resource is an article
+ */
+export class IsArticleRequest {
+	wikiDomain: string;
+
+	/**
+	 * ArticleRequest constructor
+	 * @param wikiDomain
+	 */
+	constructor (wikiDomain: string) {
+		console.log(wikiDomain);
+		this.wikiDomain = wikiDomain;
+	}
+
+	/**
+	 * Fetch the answer for selected URI
+	 *
+	 * @param uri
+	 * @param redirect
+	 * @return {Promise<any>}
+	 */
+	fetch (uri: string, redirect: string) {
+//	fetch (uri: string, redirect: string): Promise<any> {
+//	TODO: Shouldn't be a return type defined here like this ↑?
+		var urlParams: any = {
+				controller: 'MercuryApi',
+				method: 'getResourceType',
+				uri: uri
+			},
+			url: string;
+		if (redirect) {
+			urlParams.redirect = redirect;
+		}
+		url = createUrl(this.wikiDomain, 'wikia.php', urlParams);
+
+		console.log('fetching: ' + url);
+		return fetch(url);
+	}
+}
+
+/**
  * Fetch http resource
  *
  * @param url the url to fetch
