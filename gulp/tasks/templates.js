@@ -1,5 +1,5 @@
 var gulp = require('gulp'),
-    //TODO how to do it better? build step shouldn't depend on bower install
+	// TODO can we do it better? build step shouldn't depend on bower install but there is no npm package with this file
 	compiler = require('../../front/vendor/ember/ember-template-compiler'),
 	concat = require('gulp-concat'),
 	uglify = require('gulp-uglify'),
