@@ -132,13 +132,12 @@ function onArticleResponse (request: Hapi.Request, reply: any, error: any, resul
 	}
 }
 
-function articleRouteHandler (request: Hapi.Request, reply: any, uriPrefix: string) {
+function articleRouteHandler (request: Hapi.Request, reply: any, title: string) {
 	console.log('~~~~~\nARTICLE Route Handler\n~~~~~');
 
 	var path: string = request.path,
 		wikiDomain: string = getWikiDomainName(request.headers.host),
-		defaultUriPrefix: string = '/wiki/',
-		title: string;
+		defaultUriPrefix: string = '/wiki/';
 
 	if (path === '/' || path === defaultUriPrefix) {
 		article.getWikiVariables(wikiDomain, (error: any, wikiVariables: any) => {
@@ -156,17 +155,6 @@ function articleRouteHandler (request: Hapi.Request, reply: any, uriPrefix: stri
 			}
 		});
 	} else {
-		// If the request path contains '/wiki/' (defaultUriPrefix) at the beginning,
-		// but the article path for the wiki is set to be '/wiki/'-less, strip it
-		// (as the MediaWiki redirects work in the same manner).
-		if (uriPrefix === '/' && path.indexOf(defaultUriPrefix) === 0) {
-			title = path.substr(defaultUriPrefix.length);
-		} else if (path.indexOf(uriPrefix) === 0) {
-			title = path.substr(uriPrefix.length);
-		} else {
-			title = path;
-		}
-
 		article.getFull({
 			wikiDomain: wikiDomain,
 			title: title,
@@ -255,7 +243,7 @@ function routes (server: Hapi.Server) {
 				).then(function(response: any) {
 					console.log('response.isArticle: ', response.isArticle);
 					return response.isArticle ?
-						articleRouteHandler(request, reply, response.uriPrefix) :
+						articleRouteHandler(request, reply, response.title) :
 						nonArticleRouteHandler(request, reply);
 				}); //.catch(function(error: any) {
 ////						callback(error, null);

@@ -144,9 +144,7 @@ export class IsArticleRequest {
 	 * @param redirect
 	 * @return {Promise<any>}
 	 */
-	fetch (uri: string, redirect: string) {
-//	fetch (uri: string, redirect: string): Promise<any> {
-//	TODO: Shouldn't be a return type defined here like this ↑?
+	fetch (uri: string, redirect: string): Promise<any> {
 		var urlParams: any = {
 				controller: 'MercuryApi',
 				method: 'getResourceType',
