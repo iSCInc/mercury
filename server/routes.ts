@@ -133,7 +133,7 @@ function onArticleResponse (request: Hapi.Request, reply: any, error: any, resul
 }
 
 function articleRouteHandler (request: Hapi.Request, reply: any, title: string) {
-	console.log('~~~~~\nARTICLE Route Handler\n~~~~~');
+	logger.debug('~~~~~ ARTICLE Route Handler ~~~~~');
 
 	var path: string = request.path,
 		wikiDomain: string = getWikiDomainName(request.headers.host),
@@ -165,13 +165,13 @@ function articleRouteHandler (request: Hapi.Request, reply: any, title: string) 
 	}
 }
 
-function nonArticleRouteHandler (request: Hapi.Request, reply: any) {
-	console.log('~~~~~\nNON-article Route Handler\n~~~~~');
+function proxyRouteHandler (request: Hapi.Request, reply: any) {
+	logger.debug('~~~~~ PROXY Route Handler ~~~~~');
 
 	var uri = request.params.uri,
 		mediaWikiUrl = MediaWiki.createUrl(getWikiDomainName(request.headers.host), uri);
 
-	console.log('proxying to:', mediaWikiUrl);
+	logger.debug('proxying to:', mediaWikiUrl);
 
 //	logger.debug({
 //		uri: uri,
@@ -227,14 +227,14 @@ function routes (server: Hapi.Server) {
 		handler: (request: Hapi.Request, reply: any) => {
 			var uri = request.params.uri;
 
-			console.log('~~~~~\nselecting the handler for ' + uri + '\n~~~~~');
+			logger.debug('selecting handler for URI:', uri);
 
 			if (!uri || uri === 'wiki/') {
 				return articleRouteHandler(request, reply, '');
 			}
 
 			if (proxyRoutes.indexOf('/' + uri) !== -1) {
-				return nonArticleRouteHandler(request, reply);
+				return proxyRouteHandler(request, reply);
 			}
 
 			new MediaWiki.IsArticleRequest(
@@ -243,13 +243,13 @@ function routes (server: Hapi.Server) {
 					uri,
 					request.params.redirect
 				).then(function(response: any) {
-					console.log('response.isArticle:', response.isArticle);
+					logger.debug('response.isArticle:', response.isArticle);
 					return response.isArticle ?
 						articleRouteHandler(request, reply, response.title) :
-						nonArticleRouteHandler(request, reply);
+						proxyRouteHandler(request, reply);
 				}); //.catch(function(error: any) {
 ////						callback(error, null);
-//					console.log('error: ', error);
+//					logger.debug('error: ', error);
 //				});
 		}
 	});

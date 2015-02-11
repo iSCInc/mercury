@@ -155,7 +155,7 @@ export class IsArticleRequest {
 		}
 		url = createUrl(this.wikiDomain, 'wikia.php', urlParams);
 
-		console.log('fetching:', url);
+		Logger.debug('fetching:', url);
 		return fetch(url);
 	}
 }
