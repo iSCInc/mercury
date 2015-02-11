@@ -133,7 +133,6 @@ export class IsArticleRequest {
 	 * @param wikiDomain
 	 */
 	constructor (wikiDomain: string) {
-		console.log(wikiDomain);
 		this.wikiDomain = wikiDomain;
 	}
 
@@ -156,7 +155,7 @@ export class IsArticleRequest {
 		}
 		url = createUrl(this.wikiDomain, 'wikia.php', urlParams);
 
-		console.log('fetching: ' + url);
+		console.log('fetching:', url);
 		return fetch(url);
 	}
 }

@@ -171,6 +171,8 @@ function nonArticleRouteHandler (request: Hapi.Request, reply: any) {
 	var uri = request.params.uri,
 		mediaWikiUrl = MediaWiki.createUrl(getWikiDomainName(request.headers.host), uri);
 
+	console.log('proxying to:', mediaWikiUrl);
+
 //	logger.debug({
 //		uri: uri,
 //		mediaWikiUrl: mediaWikiUrl
@@ -227,8 +229,8 @@ function routes (server: Hapi.Server) {
 
 			console.log('~~~~~\nselecting the handler for ' + uri + '\n~~~~~');
 
-			if (!uri || uri === 'wiki') {
-				return articleRouteHandler(request, reply, '/');
+			if (!uri || uri === 'wiki/') {
+				return articleRouteHandler(request, reply, '');
 			}
 
 			if (proxyRoutes.indexOf('/' + uri) !== -1) {
@@ -238,10 +240,10 @@ function routes (server: Hapi.Server) {
 			new MediaWiki.IsArticleRequest(
 					getWikiDomainName(request.headers.host)
 				).fetch(
-					'/' + uri,
+					uri,
 					request.params.redirect
 				).then(function(response: any) {
-					console.log('response.isArticle: ', response.isArticle);
+					console.log('response.isArticle:', response.isArticle);
 					return response.isArticle ?
 						articleRouteHandler(request, reply, response.title) :
 						nonArticleRouteHandler(request, reply);
