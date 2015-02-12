@@ -101,6 +101,7 @@ App.ApplicationView = Em.View.extend({
 	 * the external link in a new page _and_ the current page would be set to that external link.
 	 */
 	click: function (event: MouseEvent): void {
+		return;
 		/**
 		 * check if the target has a parent that is an anchor
 		 * We do this for links in the form <a href='...'>Blah <i>Blah</i> Blah</a>,
