@@ -168,25 +168,25 @@ function articleRouteHandler (request: Hapi.Request, reply: any, title: string) 
 function proxyRouteHandler (request: Hapi.Request, reply: any) {
 	logger.debug('~~~~~ PROXY Route Handler ~~~~~');
 
-	var uri = request.params.uri,
-		mediaWikiUrl = MediaWiki.createUrl(getWikiDomainName(request.headers.host), uri);
+	var path = request.path.substr(1),
+		url = MediaWiki.createUrl(getWikiDomainName(request.headers.host), path);
 
-	logger.debug('proxying to: ' + mediaWikiUrl);
+	logger.debug('proxying to: ' + url);
 
 //	logger.debug({
-//		uri: uri,
-//		mediaWikiUrl: mediaWikiUrl
-//	}, 'Proxy handler');
+//		path: path,
+//		url: url,
+//	}, 'Proxy handler vars');
 
 	reply.proxy({
-//		uri: mediaWikiUrl,
+//		uri: url,
 		redirects: localSettings.proxyMaxRedirects,
 		passThrough: true,
 		localStatePassThrough: true,
 		mapUri: (request: Hapi.Request, next: Function) => {
-			next(null, mediaWikiUrl, {
+			next(null, url, {
 				// let's try to force the skin
-				'X-Skin': null//,
+				'X-Skin': 'wikiamobile'//,
 //				'User-Agent': 'Chrome'
 			});
 		},
@@ -231,10 +231,6 @@ function routes (server: Hapi.Server) {
 
 			if (!uri || uri === 'wiki/') {
 				return articleRouteHandler(request, reply, '');
-			}
-
-			if (proxyRoutes.indexOf('/' + uri) !== -1) {
-				return proxyRouteHandler(request, reply);
 			}
 
 			new MediaWiki.IsArticleRequest(
@@ -342,6 +338,15 @@ function routes (server: Hapi.Server) {
 				lookupCompressed: true
 			}
 		}
+	});
+
+	//eg. robots.txt
+	proxyRoutes.forEach((route: string) => {
+		server.route({
+			method: 'GET',
+			path: route,
+			handler: proxyRouteHandler
+		});
 	});
 
 	// Heartbeat route for monitoring
