@@ -134,6 +134,26 @@ module Utils {
 		}
 		return null;
 	}
+
+	export function escapeHtml (html: string, rounds?: number = 1): string {
+		var map = {
+				'&': '&amp;',
+				'<': '&lt;',
+				'>': '&gt;',
+				'"': '&quot;',
+				"'": '&#039;'
+			},
+			i: number,
+			mapFunction = (m): string => {
+				return map[m];
+			};
+
+		for (i = 0; i < rounds; i++) {
+			html = html.replace(/[&<>"']/g, mapFunction);
+		}
+
+		return html;
+	}
 }
 
 export = Utils;

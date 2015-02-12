@@ -74,6 +74,9 @@ function beforeArticleRender (request: Hapi.Request, result: any): void {
 	if (result.article.details) {
 		articleDetails = result.article.details;
 		title = articleDetails.cleanTitle ? articleDetails.cleanTitle : articleDetails.title;
+
+		// MediaWiki escapes it two times
+		result.article.details.abstract = Utils.escapeHtml(result.article.details.abstract, 2);
 	} else if (request.params.title) {
 		title = request.params.title.replace(/_/g, ' ');
 	} else {
@@ -84,6 +87,9 @@ function beforeArticleRender (request: Hapi.Request, result: any): void {
 		// we want to return the article content only once - as HTML and not JS variable
 		result.articleContent = result.article.article.content;
 		delete result.article.article.content;
+
+		// MediaWiki escapes it two times
+		result.article.article.description = Utils.escapeHtml(result.article.article.description, 2);
 	}
 
 	if (result.wiki.language) {
