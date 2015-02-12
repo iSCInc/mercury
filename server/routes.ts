@@ -171,7 +171,7 @@ function proxyRouteHandler (request: Hapi.Request, reply: any) {
 	var uri = request.params.uri,
 		mediaWikiUrl = MediaWiki.createUrl(getWikiDomainName(request.headers.host), uri);
 
-	logger.debug('proxying to:', mediaWikiUrl);
+	logger.debug('proxying to: ' + mediaWikiUrl);
 
 //	logger.debug({
 //		uri: uri,
@@ -179,25 +179,25 @@ function proxyRouteHandler (request: Hapi.Request, reply: any) {
 //	}, 'Proxy handler');
 
 	reply.proxy({
-		uri: mediaWikiUrl,
+//		uri: mediaWikiUrl,
 		redirects: localSettings.proxyMaxRedirects,
 		passThrough: true,
-		localStatePassThrough: true//,
-//		mapUri: (request: Hapi.Request, next: Function) => {
-//			next(null, mediaWikiUrl, {
-////				// let's try to force the skin
-////				'X-Skin': 'oasis',
-////				'User-Agent': 'Chrome'
-//			});
-//		},
-//		onResponse: (err: any, res: Hapi.Response, request: Hapi.Request, reply: any, settings: any, ttl: any) => {
-////			logger.debug({
-////				requestHeaders: request.headers,
-////				responseHeaders: res.headers
-////			}, 'Proxy handler onResponse');
-//
-//			return err ? reply(err) : reply(res);
-//		}
+		localStatePassThrough: true,
+		mapUri: (request: Hapi.Request, next: Function) => {
+			next(null, mediaWikiUrl, {
+				// let's try to force the skin
+				'X-Skin': null//,
+//				'User-Agent': 'Chrome'
+			});
+		},
+		onResponse: (err: any, res: Hapi.Response, request: Hapi.Request, reply: any, settings: any, ttl: any) => {
+			logger.debug({
+				requestHeaders: request.headers,
+				responseHeaders: res.headers
+			}, 'Proxy handler onResponse');
+
+			return err ? reply(err) : reply(res);
+		}
 	});
 }
 
@@ -227,7 +227,7 @@ function routes (server: Hapi.Server) {
 		handler: (request: Hapi.Request, reply: any) => {
 			var uri = request.params.uri;
 
-			logger.debug('selecting handler for URI:', uri);
+			logger.debug('selecting handler for URI: ' + uri);
 
 			if (!uri || uri === 'wiki/') {
 				return articleRouteHandler(request, reply, '');
@@ -243,7 +243,7 @@ function routes (server: Hapi.Server) {
 					uri,
 					request.params.redirect
 				).then(function(response: any) {
-					logger.debug('response.isArticle:', response.isArticle);
+					logger.debug('response.isArticle: ' + response.isArticle);
 					return response.isArticle ?
 						articleRouteHandler(request, reply, response.title) :
 						proxyRouteHandler(request, reply);
