@@ -210,7 +210,52 @@ function routes (server: Hapi.Server) {
 	var second = 1000,
 		proxyRoutes = [
 			'/favicon.ico',
-			'/robots.txt'
+			// Taken from: chef-repo/cookbooks/_apache/files/default/rewritesLong.conf
+			// Those regexes might be too complex to handle by Hapi route path definitions
+			// - they can be added as a regex check in the '/{uri*}' path handler to
+			// use the proxyRouteHandler().
+			'/__load/{a}/{b}/{c*}',
+			'/load.php',
+			'/__am/{a}/{b}/{c}/{d*}',
+			'/akamai-sureroute-test-object.html',
+			'/opensearch_desc.php',
+			'/extensions',
+			'/skins',
+			'/static/{wildcartd}',
+			'/index.php',
+			'/wikia.php',
+			'/channel.php',
+			'/api.php',
+			'/wikiwyg',
+			'/google{number}.html',
+			'/google.php',
+			'/robots.txt',
+			'/redirect-robots.php',
+//			'/(sitemap.+.xml[.gz]*)$ /index.php?title=Special:Sitemap/$1&uselang=en',
+			'/wiki/c:{almostOk}',
+			'/wiki/C:{butNoSlashes}',
+//
+//			//  Wikia API V1 URL Rewrites
+//			'/api/(?:v1|test)/?$ /wikia.php?controller=ApiDocs&method=index',
+//			'	/api/(?:v1|test)/([^/]*)/([^/]*) /wikia.php?controller=$1Api&method=get$2',
+//
+//			//TODO: handle by Mercury (?)
+//			'/wiki/index.php/(.*)', '/wiki/$1',
+//			'/w/(.*) /wiki/$1',
+//			'/wiki/(.*) /index.php?title=${ampescape:$1}',
+//			'/images/(.*) /redirect-images.php?image=${ampescape:$1}',
+//
+//			//  new RSS feeds for hubs
+//			'/rss/Gaming$ /index.php?title=Special:HubRssFeed/Gaming',
+//			'/rss/Lifestyle$ /index.php?title=Special:HubRssFeed/Lifestyle',
+//			'/rss/Entertainment$ /index.php?title=Special:HubRssFeed/Entertainment',
+//			'/rss/TV$ /index.php?title=Special:HubRssFeed/TV',
+//			'/rss/Games$ /index.php?title=Special:HubRssFeed/Games',
+//			'/rss/Marvel$ /index.php?title=Special:HubRssFeed/Marvel',
+//			'/rss/StarWars$ /index.php?title=Special:HubRssFeed/StarWars',
+//
+//			'/rss/(.*) /index.php?title=${ampescape:$1}&feed=rss'
+
 		],
 		config = {
 			cache: {
