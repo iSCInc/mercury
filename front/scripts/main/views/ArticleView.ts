@@ -53,13 +53,6 @@ App.ArticleView = Em.View.extend(App.AdsMixin, {
 
 				M.trackPageView(model.get('adsContext.targeting'));
 				M.resetScrollDepthTracker();
-
-				Em.run.later(this, () => {
-					console.log('Adding needsclick for: ' + this.$('.ss-choice-item').length + ' items.');
-					this.$('.ss-choice-item').addClass('needsclick');
-					console.log('Adding needsclick for: ' + this.$('.ss-choice-label').length + ' items.');
-					this.$('.ss-choice-label').addClass('needsclick');
-				}, 1000);
 			}
 		});
 	},
