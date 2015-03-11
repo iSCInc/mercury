@@ -312,11 +312,11 @@ App.MediaLightboxView = App.LightboxView.extend(App.ArticleContentMixin, {
 		var currentMedia = this.get('controller.currentMedia');
 
 		if (currentMedia.type === 'video') {
-			Em.run.scheduleOnce('afterRender', this, (): void => {
+			Em.run.scheduleOnce('render', this, (): void => {
 				this.initVideoPlayer(currentMedia);
 			});
 		}
-	}.observes('controller.currentMedia'),
+	}.observes('controller.currentMedia').on('didInsertElement'),
 
 	/**
 	 * @method initVideoPlayer
