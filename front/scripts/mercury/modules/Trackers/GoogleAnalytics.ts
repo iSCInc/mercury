@@ -1,4 +1,6 @@
 /// <reference path="../../../../../typings/google.analytics/ga.d.ts" />
+/// <reference path="../../modules/Ads.ts" />
+/// <reference path="../../../baseline/mercury.ts" />
 interface Window {
 	_gaq: any[]
 }
@@ -34,7 +36,7 @@ module Mercury.Modules.Trackers {
 					'marveldatabase.com', 'memory-alpha.org', 'uncyclopedia.org',
 					'websitewiki.de', 'wowwiki.com', 'yoyowiki.org'
 				].filter((domain) => document.location.hostname.indexOf(domain) > -1)[0];
-			this.accounts = Mercury.tracking.ga;
+			this.accounts = M.prop('tracking.ga');
 			this.queue = window._gaq || [];
 
 			// Primary account
@@ -79,7 +81,8 @@ module Mercury.Modules.Trackers {
 				[prefix + '_setCustomVar', 15, 'IsCorporatePage', 'No', 3],
 				// TODO: Krux segmenting not implemented in Mercury https://wikia-inc.atlassian.net/browse/HG-456
 				// [prefix + '_setCustomVar', 16, 'Krux Segment', getKruxSegment(), 3],
-				[prefix + '_setCustomVar', 17, 'Vertical', Mercury.wiki.vertical, 3]
+				[prefix + '_setCustomVar', 17, 'Vertical', Mercury.wiki.vertical, 3],
+				[prefix + '_setCustomVar', 19, 'ArticleType', M.prop('article.type'), 3]
 			);
 
 			if (adsContext) {
@@ -119,18 +122,22 @@ module Mercury.Modules.Trackers {
 		 * @arguments set of parameters for ads-related event
 		 */
 		trackAds (): void {
-			this.queue.push(Array.prototype.slice.call(arguments));
+			var trackingData = Array.prototype.slice.call(arguments);
+			trackingData.unshift('ads._trackEvent');
+			this.queue.push(trackingData);
 		}
 
 		/**
 		 * Tracks the current page view
 		 */
 		trackPageView (): void {
+			var specialAccount = this.accounts[this.accountSpecial];
+
 			this.queue.push(['_trackPageview']);
 
 			// For now, send all wikis to this property. Filtering for Mercury is done on the dashboard side.
-			if (this.accounts[this.accountSpecial]) {
-				this.queue.push([this.accounts[this.accountSpecial].prefix + '._trackPageview']);
+			if (specialAccount) {
+				this.queue.push([specialAccount.prefix + '._trackPageview']);
 			}
 		}
 	}

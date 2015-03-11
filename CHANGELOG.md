@@ -1,3 +1,50 @@
+## release-45 (2015-03-05 19:20)
+* fix-statusCode-of-undefined: Check for error before trying to access response which can be undefined
+* search-results-fix: The search API was returning incorrect code when no results were found
+
+## release-44 (2015-03-05 16:20)
+* revert-563-Remove-backround-on-image: Revert "Rework how we load thumbnails"
+* i18n-update: i18-update | de, es, fr
+* process-env-port: Allow to override mediawikiHost and port with environment variables
+* [HG-502](https://wikia-inc.atlassian.net/browse/HG-502) Hammer improvements
+* handle-empty-response: Fix for crashing after empty response
+* [CONCF-168](https://wikia-inc.atlassian.net/browse/CONCF-168) CONCF-168
+* update-bunyan-syslog: Update bunyan-syslog, previous version incompatible with node 0.12.0
+* hapi-routes-refactor: Hapi Refactor
+* [HG-566](https://wikia-inc.atlassian.net/browse/HG-566) HG-566 Extended Optimizely integration
+* [CONCF-170](https://wikia-inc.atlassian.net/browse/CONCF-170) Unfixed top leaderboard ad height
+* consul: add consul support
+* release-script-windows: Fix release.sh on Windows
+* [CONCF-84](https://wikia-inc.atlassian.net/browse/CONCF-84) Fixed top leaderboard ad height
+* Remove-backround-on-image: Rework how we load thumbnails
+* [CONCF-7](https://wikia-inc.atlassian.net/browse/CONCF-7) CONCF-7 | 'Full site' footer link fix (switches skin to the wiki's default skin)
+
+## release-43 (2015-02-20 18:18)
+* [CONCF-151](https://wikia-inc.atlassian.net/browse/CONCF-151) Track articleType with GA
+* lightbox-actions-return-void: openLightbox and closeLightbox don't return anything
+
+## release-42 (2015-02-19 15:17)
+* [CONCF-82](https://wikia-inc.atlassian.net/browse/CONCF-82) Update release.sh and changelog.sh
+* [CONCF-70](https://wikia-inc.atlassian.net/browse/CONCF-70) Redirect to / when URI is malformed
+* [HG-559](https://wikia-inc.atlassian.net/browse/HG-559) HG-559 Base implementation for Optimizely
+* [CONCF-121](https://wikia-inc.atlassian.net/browse/CONCF-121) Change 'query' to 'search' in search query
+* update-server-dependencies: Update npm dependencies; fix browser-sync
+
+## release-41 (2015-02-16 18:15)
+* jquery-scroll-depth-https: Use https instead of ssh to get jquery-scrolldepth
+* [CONCF-71](https://wikia-inc.atlassian.net/browse/CONCF-71) Links to non-existing pages render 404 page
+* [CONCF-111](https://wikia-inc.atlassian.net/browse/CONCF-111) Stop escaping already escaped captions
+* [ADEN-1678](https://wikia-inc.atlassian.net/browse/ADEN-1678) ADEN-1678 Scroll depth measurement on mobile
+* fix-single-linked-image-chevron: Fix for chevron position on single linked image with caption
+* [CONCF-109](https://wikia-inc.atlassian.net/browse/CONCF-109) Stop stretching images in lightbox
+* query-params-fix: Use the correct queryParams variable
+* tslint-misplaced-opening-brace: Fix TSLint warning
+* query-params-improvement: Replace current implementation of sending queryParams to client
+* fix-prevent-default: Call event.preventDefault directly
+
+## release-40 (2015-02-09 18:42)
+* CONCF-39: Call preventdefault only when we do something with a click
+
 ## release-39 (2015-02-04 17:30)
 * [HG-536](https://wikia-inc.atlassian.net/browse/HG-536) Fix loading images in horizontal galleries after window resize
 * HG-update-npm-packages: Update dependencies

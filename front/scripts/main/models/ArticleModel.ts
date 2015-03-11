@@ -1,3 +1,4 @@
+/// <reference path="../../baseline/mercury" />
 /// <reference path="../app.ts" />
 /// <reference path="../../mercury/utils/string.ts" />
 /// <reference path="../../mercury/modules/Ads.ts" />
@@ -62,7 +63,7 @@ App.ArticleModel.reopenClass({
 	find: function (params: {basePath: string; wiki: string; title: string; redirect?: string}) {
 		var model = App.ArticleModel.create(params);
 
-		if (Mercury._state.firstPage) {
+		if (M.prop('firstPage')) {
 			this.setArticle(model);
 			return model;
 		}
@@ -76,7 +77,13 @@ App.ArticleModel.reopenClass({
 					resolve(model);
 				},
 				error: (err) => {
-					reject($.extend(err, model));
+					if (err.status === 404) {
+						this.setArticle(model, err.responseJSON);
+						resolve(model);
+					} else {
+						// TODO we currently abort transition when there was an error other than 404
+						reject($.extend(err, model));
+					}
 				}
 			});
 		});
@@ -86,15 +93,15 @@ App.ArticleModel.reopenClass({
 		var article = Mercury.article,
 			adsInstance: Mercury.Modules.Ads;
 
-		Mercury._state.firstPage = false;
+		M.prop('firstPage', false);
 
 		// On first page load the article content is available only in HTML
 		article.content = $('.article-content').html();
 
 		// Setup ads
-		if (Mercury.adsUrl && !Em.get(Mercury, 'query.noExternals')) {
+		if (M.prop('adsUrl') && !M.prop('queryParams.noexternals')) {
 			adsInstance = Mercury.Modules.Ads.getInstance();
-			adsInstance.init(Mercury.adsUrl, () => {
+			adsInstance.init(M.prop('adsUrl'), () => {
 				adsInstance.reload(article.adsContext);
 			});
 		}
@@ -133,6 +140,7 @@ App.ArticleModel.reopenClass({
 				data = $.extend(data, {
 					article: article.content || source.content,
 					mediaUsers: article.users,
+					type: article.type,
 					media: App.MediaModel.create({
 						media: article.media
 					}),
@@ -159,6 +167,11 @@ App.ArticleModel.reopenClass({
 			}
 		}
 
+		// We could keep whole article in global but we want to discourage that but
+		// We need to update global article.type
+		// to allow eg. for analytics to use it
+		// TODO: Should analytics be part of ember? That should simplify how to pass stuff around.
+		M.prop('article.type', data.type, true);
 		model.setProperties(data);
 	}
 });

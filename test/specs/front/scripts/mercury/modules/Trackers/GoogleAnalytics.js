@@ -1,19 +1,23 @@
 /* global Mercury, _gaq */
 QUnit.module('GoogleAnalytics tests', {
 	setup: function () {
-		Mercury.tracking = {
-			ga: {
-				primary: {
-					id: '123',
-					sampleRate: 10
-				},
-				ads: {
-					prefix: 'ads',
-					id: '789',
-					sampleRate: 100
+
+		M.props({
+			tracking: {
+				ga: {
+					primary: {
+						id: '123',
+						sampleRate: 10
+					},
+					ads: {
+						prefix: 'ads',
+						id: '789',
+						sampleRate: 100
+					}
 				}
 			}
-		};
+		// instantiate with mutation because tests are run multiple times
+		}, true);
 		// Mock GA queue
 		var queue = [];
 		window._gaq = {
@@ -93,6 +97,6 @@ QUnit.test('Track page view', function () {
 
 QUnit.test('Track ads-related event', function () {
 	var tracker = new Mercury.Modules.Trackers.GoogleAnalytics();
-	tracker.trackAds('ads._trackEvent', 'testCategory', 'testAction', 'testLabel', 0, true);
+	tracker.trackAds('testCategory', 'testAction', 'testLabel', 0, true);
 	deepEqual(this.queueContains(['ads._trackEvent', 'testCategory', 'testAction', 'testLabel', 0, true]), true);
 });

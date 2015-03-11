@@ -116,12 +116,12 @@ App.ApplicationView = Em.View.extend({
 
 			if (tagName === 'a') {
 				this.handleLink(<HTMLAnchorElement>target);
+				event.preventDefault();
 			} else if (this.shouldHandleMedia(target, tagName)) {
 				this.handleMedia(<HTMLElement>target);
+				event.preventDefault();
 			}
 		}
-
-		this.preventDefault(event);
 	},
 
 	/**
@@ -133,10 +133,6 @@ App.ApplicationView = Em.View.extend({
 	shouldHandleMedia: function(target: EventTarget, tagName: string): boolean {
 		return tagName === 'img' || tagName === 'figure'
 			&& $(target).children('a').length === 0;
-	},
-
-	preventDefault: function (event: Event): void {
-		event.preventDefault();
 	},
 
 	sideNavCollapsedObserver: function (): void {
